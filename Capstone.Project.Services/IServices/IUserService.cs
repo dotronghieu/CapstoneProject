@@ -13,6 +13,7 @@ namespace Capstone.Project.Services.IServices
         Task<User> GetByUserName(string username, string action = "");
         Task<User> CreateUser(RegisterModel model, string password);
         Task<bool> CheckPassWord(string username, string password);
-       
+         UserModel UpdateUser(string id, UserUpdateModel userUpdateModel);
+        Task<bool> CheckPasswordToUpdate(string username, string oldPassword, string newPassword);
     }
 }

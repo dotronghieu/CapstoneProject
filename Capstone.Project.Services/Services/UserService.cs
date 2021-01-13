@@ -21,10 +21,10 @@ namespace Capstone.Project.Services.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-
+ 
         public async Task<bool> CheckPassWord(string username, string password)
         {
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))   
             {
                 return false;
             }
@@ -44,10 +44,17 @@ namespace Capstone.Project.Services.Services
 
         public async Task<User> CreateUser(RegisterModel model, string password)
         {
-            var user = _mapper.Map<User>(model);
-            await _unitOfWork.UsersRepository.Create(user, password);
-            await _unitOfWork.SaveAsync();
-            return user;
+            if (await _unitOfWork.UsersRepository.GetByUsername(model.Username) == null)
+            {
+                var user = _mapper.Map<User>(model);
+                user.RoleId = Constants.Roles.ROLE_USER_ID;
+                user.UserId = Guid.NewGuid().ToString();
+                await _unitOfWork.UsersRepository.Create(user, password);
+                await _unitOfWork.SaveAsync();
+                return user;
+            }
+            return null;
+            
         }
             
         public async Task<User> GetByUserName(string username, string action)
@@ -90,6 +97,43 @@ namespace Capstone.Project.Services.Services
             return User;
         }
 
-      
+        public  UserModel UpdateUser(string id, UserUpdateModel userUpdateModel)
+        {
+            //User user = await _unitOfWork.UserGenRepository.GetById(id);
+            //if(user != null)
+            //{
+            //    User u = _mapper.Map<User>(userUpdateModel);
+            //    u.UserId = id;
+            //    u.RoleId = user.RoleId;
+            //    _unitOfWork.UsersRepository.Update(u);
+            //    return _mapper.Map<UserUpdateModel>(u);
+            //}
+            //return null;
+                var entity = _mapper.Map<User>(userUpdateModel);
+                entity.UserId = id;
+                bool check = _unitOfWork.UsersRepository.Update(entity);
+                if(check)
+            {
+                return _mapper.Map<UserModel>(entity);
+            } return null;
+                
+        }
+
+        public async Task<bool> CheckPasswordToUpdate(string username, string oldPassword, string newPassword)
+        {
+            if ( await this.CheckPassWord(username, oldPassword))
+            {
+                var user = await _unitOfWork.UsersRepository.GetByUsername(username);
+                byte[] passwordHash, passwordSalt;
+                _unitOfWork.UsersRepository.CreatePasswordHash(newPassword, out passwordHash, out passwordSalt);
+
+                user.PasswordHash = passwordHash;
+                user.PasswordSalt = passwordSalt;
+                _unitOfWork.UserGenRepository.Update(user);
+                await _unitOfWork.SaveAsync();
+                return true;
+            }
+            return false;
+        }
     }
 }

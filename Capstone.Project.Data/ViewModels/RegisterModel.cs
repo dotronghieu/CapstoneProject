@@ -14,7 +14,6 @@ namespace Capstone.Project.Data.ViewModels
         public DateTime? DayOfBirth { get; set; }
         public string Email { get; set; }
         public string Avatar { get; set; }
-        public int RoleId { get; set; }
         public string Description { get; set; }
     }
 }

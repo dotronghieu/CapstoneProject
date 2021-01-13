@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Capstone.Project.Data.Models;
+using Capstone.Project.Data.ViewModels;
+using AutoMapper;
 
 namespace Capstone.Project.Data.Repository
 {
@@ -44,10 +46,13 @@ namespace Capstone.Project.Data.Repository
         {
             user.DelFlg = true;
         }
-
+        public User GetById(string id)
+        {
+            return _context.Users.Where(x => x.UserId.Equals(id)).SingleOrDefault();
+        }
         public async Task<IEnumerable<User>> GetAll()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Users.Where(x => x.DelFlg == false).ToListAsync();
         }
 
         public async Task<User> GetByUsername(string username)
@@ -57,7 +62,7 @@ namespace Capstone.Project.Data.Repository
             return user;
         }
 
-        private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        public  void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             if (password == null) throw new ArgumentNullException("password");
             if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Value cannot be empty or whitespace only string.", "password");
@@ -67,6 +72,26 @@ namespace Capstone.Project.Data.Repository
                 passwordSalt = hmac.Key;
                 passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
             }
+        }
+
+        public bool Update(User user)
+        {
+            var entity = this.GetById(user.UserId);
+            if (entity != null)
+            {
+                entity.DelFlg = false;
+                entity.Address = user.Address;
+                entity.DayOfBirth = user.DayOfBirth;
+                entity.Description =     user.Description;
+                entity.Email = user.Email;
+                entity.Avatar = user.Avatar;
+                entity.Username = user.Username;
+                entity.FullName = user.FullName;
+                _context.Users.Update(entity);
+                _context.SaveChanges();
+                return true;
+            }
+            return false;
         }
     }
 }

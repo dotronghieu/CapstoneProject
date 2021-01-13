@@ -53,7 +53,9 @@ namespace Capstone.Project.API
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IRoleService, RoleService>();
-            services.AddScoped<IUserService, UserService>(); 
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IPhotoService, PhotoService>();
+            services.AddScoped<ICategoryService, CategoryService>();
             services.AddCors(opts =>
             {
                 opts.AddPolicy("AllowAll", builder =>
@@ -64,7 +66,7 @@ namespace Capstone.Project.API
                     //.AllowCredentials();
                 });
             });
-            
+            services.AddControllers().AddNewtonsoftJson(option => option.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             var pathToKey = Path.Combine(Directory.GetCurrentDirectory(), "Key", "capstoneproject-e02a0-firebase-adminsdk-8dzhg-86a04b1f95.json");
             FirebaseApp.Create(new AppOptions

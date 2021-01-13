@@ -22,6 +22,9 @@ namespace Capstone.Project.Data.Models
         public virtual DbSet<OrderDetail> OrderDetails { get; set; }
         public virtual DbSet<Photo> Photos { get; set; }
         public virtual DbSet<PhotoCategory> PhotoCategories { get; set; }
+        public virtual DbSet<PhotoReport> PhotoReports { get; set; }
+        public virtual DbSet<PhotoReportDetail> PhotoReportDetails { get; set; }
+        public virtual DbSet<Report> Reports { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<Type> Types { get; set; }
         public virtual DbSet<User> Users { get; set; }
@@ -44,6 +47,8 @@ namespace Capstone.Project.Data.Models
                 entity.ToTable("Category");
 
                 entity.Property(e => e.CategoryName).HasMaxLength(50);
+
+                entity.Property(e => e.Description).HasMaxLength(100);
             });
 
             modelBuilder.Entity<Order>(entity =>
@@ -53,6 +58,10 @@ namespace Capstone.Project.Data.Models
                 entity.Property(e => e.OrderId).ValueGeneratedNever();
 
                 entity.Property(e => e.InsDateTime).HasColumnType("datetime");
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Orders)
@@ -89,6 +98,12 @@ namespace Capstone.Project.Data.Models
 
                 entity.Property(e => e.Price).HasColumnType("money");
 
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Wmlink).HasColumnName("WMLink");
+
                 entity.HasOne(d => d.Type)
                     .WithMany(p => p.Photos)
                     .HasForeignKey(d => d.TypeId)
@@ -119,6 +134,51 @@ namespace Capstone.Project.Data.Models
                     .HasConstraintName("FK_PhotoCategory_Photo");
             });
 
+            modelBuilder.Entity<PhotoReport>(entity =>
+            {
+                entity.ToTable("PhotoReport");
+
+                entity.Property(e => e.Description).HasMaxLength(100);
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.Photo)
+                    .WithMany(p => p.PhotoReports)
+                    .HasForeignKey(d => d.PhotoId)
+                    .HasConstraintName("FK_PhotoReport_Photo");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.PhotoReports)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("FK_PhotoReport_User");
+            });
+
+            modelBuilder.Entity<PhotoReportDetail>(entity =>
+            {
+                entity.HasKey(e => new { e.PhotoReportId, e.ReportId });
+
+                entity.HasOne(d => d.PhotoReport)
+                    .WithMany(p => p.PhotoReportDetails)
+                    .HasForeignKey(d => d.PhotoReportId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PhotoReportDetails_PhotoReport");
+
+                entity.HasOne(d => d.Report)
+                    .WithMany(p => p.PhotoReportDetails)
+                    .HasForeignKey(d => d.ReportId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PhotoReportDetails_Report");
+            });
+
+            modelBuilder.Entity<Report>(entity =>
+            {
+                entity.ToTable("Report");
+
+                entity.Property(e => e.ReportReason).HasMaxLength(50);
+            });
+
             modelBuilder.Entity<Role>(entity =>
             {
                 entity.ToTable("Role");
@@ -137,9 +197,14 @@ namespace Capstone.Project.Data.Models
             {
                 entity.ToTable("User");
 
-                entity.Property(e => e.Address).HasMaxLength(100);
+                entity.HasIndex(e => e.Username, "IX_User")
+                    .IsUnique();
 
-                entity.Property(e => e.Avatar).HasMaxLength(50);
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Address).HasMaxLength(100);
 
                 entity.Property(e => e.DayOfBirth).HasColumnType("date");
 
@@ -152,6 +217,8 @@ namespace Capstone.Project.Data.Models
                 entity.Property(e => e.Phone)
                     .HasMaxLength(15)
                     .IsFixedLength(true);
+
+                entity.Property(e => e.SuspendTime).HasColumnType("date");
 
                 entity.Property(e => e.Username).HasMaxLength(50);
 

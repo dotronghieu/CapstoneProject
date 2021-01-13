@@ -14,6 +14,7 @@ namespace Capstone.Project.Data.Models
 
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
+        public string Description { get; set; }
         public bool? DelFlg { get; set; }
 
         public virtual ICollection<PhotoCategory> PhotoCategories { get; set; }

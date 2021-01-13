@@ -13,6 +13,7 @@ namespace Capstone.Project.Data.UnitOfWork
         IGenericRepository<Role> RoleRepository { get; }
         IGenericRepository<User> UserGenRepository { get; }
         IGenericRepository<Photo> PhotoRepository { get; }
+        IGenericRepository<PhotoCategory> PhotoCategoryRepository { get; }
         Task<int> SaveAsync();
     }
 }

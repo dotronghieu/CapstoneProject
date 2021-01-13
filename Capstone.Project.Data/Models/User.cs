@@ -10,13 +10,13 @@ namespace Capstone.Project.Data.Models
         public User()
         {
             Orders = new HashSet<Order>();
+            PhotoReports = new HashSet<PhotoReport>();
             Photos = new HashSet<Photo>();
         }
 
-        public int UserId { get; set; }
-        public string Username { get; set; }
-        public string Avatar { get; set; }
+        public string UserId { get; set; }
         public string UserKey { get; set; }
+        public string Username { get; set; }
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
         public string FullName { get; set; }
@@ -25,11 +25,15 @@ namespace Capstone.Project.Data.Models
         public string Phone { get; set; }
         public string Address { get; set; }
         public DateTime? DayOfBirth { get; set; }
+        public string Avatar { get; set; }
         public int? RoleId { get; set; }
         public bool? DelFlg { get; set; }
+        public DateTime? SuspendTime { get; set; }
+        public int? ReportCounter { get; set; }
 
         public virtual Role Role { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
+        public virtual ICollection<PhotoReport> PhotoReports { get; set; }
         public virtual ICollection<Photo> Photos { get; set; }
     }
 }

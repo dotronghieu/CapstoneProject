@@ -14,9 +14,17 @@ namespace Capstone.Project.Data.AutoMapper
             CreateMap<User, UserModel>();
             CreateMap<UserModel, User>();
             CreateMap<RegisterModel, User>();
+            CreateMap<UserUpdateModel, User>();
+            CreateMap<User, UserUpdateModel>();
 
             CreateMap<Role, RoleModel>();
             CreateMap<RoleModel, Role>();
+
+            CreateMap<Photo, PhotoModel>();
+            CreateMap<PhotoModel, Photo>();
+
+            CreateMap<Category, CategoryModel>();
+            CreateMap<CategoryModel, Category>();
 
         }
     }

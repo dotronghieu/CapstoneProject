@@ -40,7 +40,7 @@ namespace Capstone.Project.API.Controllers
                 return Created("", result);
             }
 
-            return BadRequest();
+            return BadRequest(new { msg = "Username already taken"});
         }
         [HttpPost]
         public async Task<ActionResult> Login([FromBody] LoginModel model)
