@@ -23,6 +23,7 @@ namespace Capstone.Project.Data.Models
         public string UserId { get; set; }
         public bool? DelFlg { get; set; }
         public DateTime? InsDateTime { get; set; }
+        public bool? ApproveFlg { get; set; }
 
         public virtual Type Type { get; set; }
         public virtual User User { get; set; }

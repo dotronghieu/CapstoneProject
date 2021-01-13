@@ -15,11 +15,13 @@ namespace Capstone.Project.API.Controllers
     public class PhotoController : ControllerBase
     {
         private readonly IPhotoService _photoService;
+        private readonly IPhotoCategoryService _photoCategoryService;
         private readonly IMapper mapper;
-        public PhotoController(IPhotoService categoryService, IMapper mapper)
+        public PhotoController(IPhotoService categoryService, IMapper mapper, IPhotoCategoryService photoCategoryService)
         {
             _photoService = categoryService;
             this.mapper = mapper;
+            _photoCategoryService = photoCategoryService;
         }
 
         [HttpGet()]
@@ -37,6 +39,16 @@ namespace Capstone.Project.API.Controllers
                 return Ok(photo);
             }
             return BadRequest( new { msg = "photo is not found"});
+        }
+        [HttpGet("{id}/getByCategory")]
+        public IActionResult GetByCategory(int id)
+        {
+            var photo = _photoCategoryService.GetPhotoByCategory(id);
+            if (photo != null)
+            {
+                return Ok(photo);
+            }
+            return BadRequest(new { msg = "List is null" });
         }
     }
 }

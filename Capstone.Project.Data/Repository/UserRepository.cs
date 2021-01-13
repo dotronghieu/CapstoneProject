@@ -80,7 +80,6 @@ namespace Capstone.Project.Data.Repository
             if (entity != null)
             {
                 entity.DelFlg = false;
-                entity.Address = user.Address;
                 entity.DayOfBirth = user.DayOfBirth;
                 entity.Description =     user.Description;
                 entity.Email = user.Email;

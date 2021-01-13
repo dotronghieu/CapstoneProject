@@ -23,7 +23,6 @@ namespace Capstone.Project.Data.Models
         public string Description { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
-        public string Address { get; set; }
         public DateTime? DayOfBirth { get; set; }
         public string Avatar { get; set; }
         public int? RoleId { get; set; }
