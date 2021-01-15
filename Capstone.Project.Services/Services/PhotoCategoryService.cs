@@ -36,5 +36,21 @@ namespace Capstone.Project.Services.Services
             }
             return null;
         }
+        public List<CategoryModel> GetCategoryByPhoto(int id)
+        {
+            var list = _unitOfWork.PhotoCategoryRepository.GetByObject(c => c.PhotoId == id);
+            if (list != null)
+            {
+                List<CategoryModel> result = new List<CategoryModel>();
+                foreach (var item in list)
+                {
+                    var category = _unitOfWork.CategoryRepository.GetById(item.CategoryId).Result;
+                    result.Add(_mapper.Map<CategoryModel>(category));
+
+                }
+                return result;
+            }
+            return null;
+        }
     }
 }

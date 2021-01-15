@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using Capstone.Project.Data.Helper;
 using Capstone.Project.Data.ViewModels;
 using Capstone.Project.Services.IServices;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -10,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Capstone.Project.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class CategoryController : ControllerBase
     {
@@ -18,15 +21,17 @@ namespace Capstone.Project.API.Controllers
         private readonly IMapper mapper;
         public CategoryController(ICategoryService CategoryService, IMapper mapper)
         {
-            _CategoryService = CategoryService;
+            _CategoryService = CategoryService; 
             this.mapper = mapper;
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet()]
         public IActionResult Get()
         {
             var result = _CategoryService.GetAll(filter: p => p.DelFlg == false);
             return Ok(result);
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Roles.ROLE_ADMIN)]
         [HttpPost]
         public async Task<IActionResult> CreateCategory([FromBody] CategoryModel model)
         {

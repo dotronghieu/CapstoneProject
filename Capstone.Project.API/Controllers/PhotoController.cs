@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Capstone.Project.Data.ViewModels;
 using Capstone.Project.Services.IServices;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -10,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace Capstone.Project.API.Controllers
 {
+    
     [Route("api/v1/[controller]")]
     [ApiController]
     public class PhotoController : ControllerBase
@@ -23,13 +26,34 @@ namespace Capstone.Project.API.Controllers
             this.mapper = mapper;
             _photoCategoryService = photoCategoryService;
         }
-
+        [AllowAnonymous]
         [HttpGet()]
         public IActionResult Get()
         {
-            var result = _photoService.GetAll(filter: p => p.DelFlg == false, includeProperties: "PhotoCategories");
-            return Ok(result);
+            var list = _photoService.GetAll(filter: p => p.DelFlg == false, includeProperties: "PhotoCategories");
+            if(list != null)
+            {
+                List<PhotoModelGetAll> result = new List<PhotoModelGetAll>();
+                foreach (var item in list)
+                {
+                    result.Add(mapper.Map<PhotoModelGetAll>(item));
+                }
+                return Ok(result);
+            }
+            return BadRequest(new { msg = "not found any photo" });
         }
+        [AllowAnonymous]
+        [HttpGet("random")]
+        public IActionResult GetRandom()
+        {
+            var list = _photoService.GetRandomPhoto();
+            if(list != null)
+            {
+                return Ok(list);
+            }
+            return BadRequest(new { msg = "Empty List" });
+        }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -40,15 +64,27 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest( new { msg = "photo is not found"});
         }
-        [HttpGet("{id}/getByCategory")]
-        public IActionResult GetByCategory(int id)
+        [AllowAnonymous]
+        [HttpGet("getByCategory/{id}")]
+        public IActionResult GetPhotoByCategory(int id)
         {
             var photo = _photoCategoryService.GetPhotoByCategory(id);
             if (photo != null)
             {
                 return Ok(photo);
             }
-            return BadRequest(new { msg = "List is null" });
+            return BadRequest();
+        }
+        [AllowAnonymous]
+        [HttpGet("getCategoryByPhoto/{id}")]
+        public IActionResult GetCategoryByPhoto(int id)
+        {
+            var category = _photoCategoryService.GetCategoryByPhoto(id);
+            if (category != null)
+            {
+                return Ok(category);
+            }
+            return BadRequest();
         }
     }
 }
