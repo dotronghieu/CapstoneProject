@@ -23,6 +23,9 @@ namespace Capstone.Project.Data.AutoMapper
             CreateMap<Photo, PhotoModel>();
             CreateMap<PhotoModel, Photo>();
 
+            CreateMap<Photo, PhotoModelGetAll>();
+            CreateMap<PhotoModelGetAll, Photo>();
+
             CreateMap<Category, CategoryModel>();
             CreateMap<CategoryModel, Category>();
 

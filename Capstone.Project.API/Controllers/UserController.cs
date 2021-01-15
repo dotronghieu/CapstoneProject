@@ -1,5 +1,6 @@
 ﻿using Capstone.Project.Data.ViewModels;
 using Capstone.Project.Services.IServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -30,6 +31,7 @@ namespace Capstone.Project.API.Controllers
             return BadRequest();
             
         }
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllUser()
         {
