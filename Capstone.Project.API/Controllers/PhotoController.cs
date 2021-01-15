@@ -71,7 +71,7 @@ namespace Capstone.Project.API.Controllers
             var photo = _photoCategoryService.GetPhotoByCategory(id);
             if (photo != null)
             {
-                return Ok(photo);
+                return Ok(photo.ToList());
             }
             return BadRequest();
         }
