@@ -72,11 +72,15 @@ namespace Capstone.Project.Data.Repository
             _dbSet.Remove(entity);
         }
 
-        public IQueryable<TEntity> GetByObject(Expression<Func<TEntity, bool>> filter)
+        public virtual IQueryable<TEntity> GetByObject(Expression<Func<TEntity, bool>> filter, string includeProperties = "")
         {
             IQueryable<TEntity> query = _dbSet;
             query = query.Where(filter);
-
+            foreach (var includeProperty in includeProperties.Split
+                                (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                query = query.Include(includeProperty);
+            }
             return query;
         }
 

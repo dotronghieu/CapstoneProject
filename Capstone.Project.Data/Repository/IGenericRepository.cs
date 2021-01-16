@@ -18,7 +18,7 @@ namespace Capstone.Project.Data.Repository
         Task<TEntity> GetFirst(Expression<Func<TEntity, bool>> filter = null, string includeProperties = "");
 
         Task<TEntity> GetById(object id);
-        IQueryable<TEntity> GetByObject(Expression<Func<TEntity, bool>> filter);
+        IQueryable<TEntity> GetByObject(Expression<Func<TEntity, bool>> filter, string includeProperties = "");
         void Add(TEntity entity);
         void Delete(object id);
         void Update(TEntity entityToUpdate);
