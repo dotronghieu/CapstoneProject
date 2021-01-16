@@ -20,16 +20,16 @@ namespace Capstone.Project.Services.Services
             _mapper = mapper;
         }
 
-        public List<PhotoModelGetAll> GetPhotoByCategory(int id)
+        public List<PhotoModel> GetPhotoByCategory(int id)
         {
             var list = _unitOfWork.PhotoCategoryRepository.GetByObject(c => c.CategoryId == id);
             if(list != null)
             {
-                List<PhotoModelGetAll> result = new List<PhotoModelGetAll>();
+                List<PhotoModel> result = new List<PhotoModel>();
                 foreach (var item in list)
                 {
                     var photo = _unitOfWork.PhotoRepository.GetById(item.PhotoId).Result;
-                    result.Add(_mapper.Map<PhotoModelGetAll>(photo));
+                    result.Add(_mapper.Map<PhotoModel>(photo));
 
                 }
                 return result;
@@ -52,21 +52,21 @@ namespace Capstone.Project.Services.Services
             }
             return null;
         }
-        public List<CategoryModel> GetCategoryByPhoto(int id)
-        {
-            var list = _unitOfWork.PhotoCategoryRepository.GetByObject(c => c.PhotoId == id);
-            if (list != null)
-            {
-                List<CategoryModel> result = new List<CategoryModel>();
-                foreach (var item in list)
-                {
-                    var category = _unitOfWork.CategoryRepository.GetById(item.CategoryId).Result;
-                    result.Add(_mapper.Map<CategoryModel>(category));
+        //public List<CategoryModel> GetCategoryByPhoto(int id)
+        //{
+        //    var list = _unitOfWork.PhotoCategoryRepository.GetByObject(c => c.PhotoId == id);
+        //    if (list != null)
+        //    {
+        //        List<CategoryModel> result = new List<CategoryModel>();
+        //        foreach (var item in list)
+        //        {
+        //            var category = _unitOfWork.CategoryRepository.GetById(item.CategoryId).Result;
+        //            result.Add(_mapper.Map<CategoryModel>(category));
 
-                }
-                return result;
-            }
-            return null;
-        }
+        //        }
+        //        return result;
+        //    }
+        //    return null;
+        //}
     }
 }
