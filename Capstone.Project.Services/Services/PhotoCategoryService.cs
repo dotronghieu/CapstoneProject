@@ -20,16 +20,32 @@ namespace Capstone.Project.Services.Services
             _mapper = mapper;
         }
 
-        public List<PhotoModel> GetPhotoByCategory(int id)
+        public List<PhotoModelGetAll> GetPhotoByCategory(int id)
         {
             var list = _unitOfWork.PhotoCategoryRepository.GetByObject(c => c.CategoryId == id);
             if(list != null)
             {
-                List<PhotoModel> result = new List<PhotoModel>();
+                List<PhotoModelGetAll> result = new List<PhotoModelGetAll>();
                 foreach (var item in list)
                 {
                     var photo = _unitOfWork.PhotoRepository.GetById(item.PhotoId).Result;
-                    result.Add(_mapper.Map<PhotoModel>(photo));
+                    result.Add(_mapper.Map<PhotoModelGetAll>(photo));
+
+                }
+                return result;
+            }
+            return null;
+        }
+        public List<CategoryModel> GetCategoryByPhoto(int id)
+        {
+            var list = _unitOfWork.PhotoCategoryRepository.GetByObject(c => c.PhotoId == id);
+            if (list != null)
+            {
+                List<CategoryModel> result = new List<CategoryModel>();
+                foreach (var item in list)
+                {
+                    var category = _unitOfWork.CategoryRepository.GetById(item.CategoryId).Result;
+                    result.Add(_mapper.Map<CategoryModel>(category));
 
                 }
                 return result;
