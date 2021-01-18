@@ -56,7 +56,7 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "Empty List" });
         }
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -89,6 +89,7 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest();
         }
+        [AllowAnonymous]
         [HttpPost("CreatePhoto")]
         public async Task<IActionResult> CreatePhoto([FromBody] PhotoCreateModel model)
         {
@@ -100,6 +101,7 @@ namespace Capstone.Project.API.Controllers
 
             return BadRequest(new { msg = "Photo upload failed" });
         }
+        [AllowAnonymous]
         [HttpGet("DownloadPhoto/{id}")]
         public async Task<IActionResult> Download(int id)
         {
