@@ -9,6 +9,8 @@ using Firebase.Storage;
 using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -55,6 +57,11 @@ namespace Capstone.Project.Services.Services
                     Directory.CreateDirectory(path);
                 }
 
+                DateTime dateTime = DateTime.Now;
+                string date = dateTime.ToString();
+                date = date.Replace("/", "");
+                date = date.Replace(":", "");
+
                 var auth = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
                 var a = await auth.SignInWithEmailAndPasswordAsync(AuthEmail, AuthPassword);
 
@@ -68,23 +75,114 @@ namespace Capstone.Project.Services.Services
                         ThrowOnCancel = true // when you cancel the upload, exception is thrown. By default no exception is thrown
                     })
                     .Child("images")
-                    .Child($"{file.FileName}")
+                    .Child(date+$"{file.FileName}")
                     .PutAsync(stream, cancellation.Token);
 
                 try
                 {
                     // error during upload will be thrown when you await the task
                     string link = await task;
+                    string link1;
+                    var user = _unitOfWork.UsersRepository.GetById(model.UserId);
+                    //watermark link
+                    FileStream wm = new FileStream(Path.Combine(path, "WM" + file.FileName), FileMode.Create);
+                    using (var img = Image.FromStream(stream))
+                    {
+                        using (var graphic = Graphics.FromImage(img))
+                        {
+                            string username = "PhotoPixel_" + user.FullName;
+                            var font = new Font(FontFamily.GenericSansSerif, 40, FontStyle.Bold, GraphicsUnit.Pixel);
+                            var color = Color.FromArgb(150, 0, 0, 0);
+                            var brush = new SolidBrush(color);
+                            double angle;
+                            if (img.Width <= img.Height) { angle = 180 - Math.Atan2(img.Width, img.Height) * 180; }
+                            else { angle = 180 - Math.Atan2(img.Width, img.Height) * 180; }
+                            if (angle < 0) { angle = -angle; }
+                            graphic.RotateTransform((float)angle);//xoay chiều watermark
+                            var point = new Point((int)(img.Width * 0.1f), (int)(img.Height * -0.1f));
+                            graphic.DrawString(username, font, brush, point);
+                            point = new Point((int)(img.Width * 0.5f), (int)(img.Height * -0.1f));
+                            graphic.DrawString(username, font, brush, point);
+                            point = new Point((int)(img.Width * 0.9f), (int)(img.Height * -0.1f));
+                            graphic.DrawString(username, font, brush, point);
+                            point = new Point((int)(img.Width * 0.3f), (int)(img.Height * -0.3f));
+                            graphic.DrawString(username, font, brush, point);
+                            point = new Point((int)(img.Width * 0.7f), (int)(img.Height * -0.3f));
+                            graphic.DrawString(username, font, brush, point);
+                            point = new Point((int)(img.Width * 0.1f), (int)(img.Height * 0.1f));
+                            graphic.DrawString(username, font, brush, point);
+                            point = new Point((int)(img.Width * 0.5f), (int)(img.Height * 0.1f));
+                            graphic.DrawString(username, font, brush, point);
+                            point = new Point((int)(img.Width * 0.9f), (int)(img.Height * 0.1f));
+                            graphic.DrawString(username, font, brush, point);
+                            point = new Point((int)(img.Width * 0.3f), (int)(img.Height * 0.3f));
+                            graphic.DrawString(username, font, brush, point);
+                            point = new Point((int)(img.Width * 0.7f), (int)(img.Height * 0.3f));
+                            graphic.DrawString(username, font, brush, point);
+                            point = new Point((int)(img.Width * 0.1f), (int)(img.Height * 0.5f));
+                            graphic.DrawString(username, font, brush, point);
+                            point = new Point((int)(img.Width * 0.5f), (int)(img.Height * 0.5f));
+                            graphic.DrawString(username, font, brush, point);
+                            point = new Point((int)(img.Width * 0.9f), (int)(img.Height * 0.5f));
+                            graphic.DrawString(username, font, brush, point);
+                            graphic.DrawString(username, font, brush, point);
+                            point = new Point((int)(img.Width * 0.3f), (int)(img.Height * 0.7f));
+                            graphic.DrawString(username, font, brush, point);
+                            point = new Point((int)(img.Width * 0.7f), (int)(img.Height * 0.7f));
+                            graphic.DrawString(username, font, brush, point);
+                            point = new Point((int)(img.Width * 0.1f), (int)(img.Height * -0.5f));
+                            graphic.DrawString(username, font, brush, point);
+                            point = new Point((int)(img.Width * 0.5f), (int)(img.Height * -0.5f));
+                            graphic.DrawString(username, font, brush, point);
+                            point = new Point((int)(img.Width * 0.9f), (int)(img.Height * -0.5f));
+                            graphic.DrawString(username, font, brush, point);
+                            graphic.DrawString(username, font, brush, point);
+                            point = new Point((int)(img.Width * 0.3f), (int)(img.Height * -0.7f));
+                            graphic.DrawString(username, font, brush, point);
+                            point = new Point((int)(img.Width * 0.7f), (int)(img.Height * -0.7f));
+                            graphic.DrawString(username, font, brush, point);
+                            ImageFormat imageFormat = GetImageFormat(file.FileName);
+                            img.Save(wm, imageFormat);
+                        }
+                    }
+                    wm.Dispose();
+                    wm = new FileStream(Path.Combine(path, "WM" + file.FileName), FileMode.Open);
+
+                    var task1 = new FirebaseStorage(
+                    Bucket,
+                    new FirebaseStorageOptions
+                    {
+                        AuthTokenAsyncFactory = () => Task.FromResult(a.FirebaseToken),
+                        ThrowOnCancel = true // when you cancel the upload, exception is thrown. By default no exception is thrown
+                    })
+                        .Child("images")
+                        .Child("WM" + date + file.FileName)
+                        .PutAsync(wm);
+                    try
+                    {
+                        link1 = await task1;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Exception_UploadPhotoService_WM: {0}", ex);
+                        return null;
+                    }
+
                     stream.Dispose();
                     string imgdel = Path.Combine(path, file.FileName);
+                    System.IO.File.Delete(imgdel);
+                    wm.Dispose();
+                    imgdel = Path.Combine(path, "WM" + file.FileName);
                     System.IO.File.Delete(imgdel);
                     Photo photo = new Photo();
                     photo.PhotoName = model.PhotoName;
                     photo.Link = link;
+                    photo.Wmlink = link1;
                     photo.Price = model.Price;
                     photo.TypeId = model.TypeId;
                     photo.UserId = model.UserId;
                     photo.DelFlg = false;
+                    photo.ApproveFlg = false;
                     // add to DB
                     _reponsitory.Add(photo);
                     await _unitOfWork.SaveAsync();
@@ -102,6 +200,72 @@ namespace Capstone.Project.Services.Services
         {
             var photo = _reponsitory.GetById(id);
             return photo.Result.Link;
+        }
+
+        public async Task<bool> DeletePhoto(int id)
+        {
+            var photo = _reponsitory.GetById(id);
+            string link = photo.Result.Wmlink;
+            int length = link.Length - 53 - 79;
+            link = link.Substring(79, length);
+            link = link.Replace("%20", " ");
+            string link1 = photo.Result.Link;
+            int length1 = link.Length - 53 - 79;
+            link1 = link1.Substring(79, length1);
+            link1 = link1.Replace("%20", " ");
+            FirebaseStorage task = new FirebaseStorage(Bucket);
+            try
+            {
+                await task.Child("images").Child(link).DeleteAsync();
+                await task.Child("images").Child(link1).DeleteAsync();
+                photo.Result.Link = "";
+                photo.Result.Wmlink = "";
+                photo.Result.DelFlg = true;
+                _reponsitory.Update(photo.Result);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception was thrown: {0}", ex);
+            }
+            return false;
+        }
+
+        private ImageFormat GetImageFormat(string fileName)
+        {
+            string extension = Path.GetExtension(fileName);
+            if (string.IsNullOrEmpty(extension))
+                throw new ArgumentException(
+                    string.Format("Unable to determine file extension for fileName: {0}", fileName));
+
+            switch (extension.ToLower())
+            {
+                case @".bmp":
+                    return ImageFormat.Bmp;
+
+                case @".gif":
+                    return ImageFormat.Gif;
+
+                case @".ico":
+                    return ImageFormat.Icon;
+
+                case @".jpg":
+                case @".jpeg":
+                    return ImageFormat.Jpeg;
+
+                case @".png":
+                    return ImageFormat.Png;
+
+                case @".tif":
+                case @".tiff":
+                    return ImageFormat.Tiff;
+
+                case @".wmf":
+                    return ImageFormat.Wmf;
+
+                default:
+                    throw new NotImplementedException();
+            }
         }
     }
 }

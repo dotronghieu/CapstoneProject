@@ -106,19 +106,34 @@ namespace Capstone.Project.API.Controllers
         public async Task<IActionResult> Download(int id)
         {
             string url = _photoUploadDownloadService.DownloadPhoto(id);
-            using var httpClient = new HttpClient();
-            byte[] imageBytes = await httpClient.GetByteArrayAsync(url);
-            httpClient.Dispose();
-            char[] charArray = url.ToCharArray();
-            Array.Reverse(charArray);
-            string rurl = new string(charArray);
-            rurl = rurl.Substring(53, 6);
-            int i = rurl.IndexOf('.');
-            rurl = rurl.Substring(0, i);
-            charArray = rurl.ToCharArray();
-            Array.Reverse(charArray);
-            rurl = new string(charArray);
-            return File(imageBytes, "image/*", "image." + rurl);
+            if(url != null)
+            {
+                using var httpClient = new HttpClient();
+                byte[] imageBytes = await httpClient.GetByteArrayAsync(url);
+                httpClient.Dispose();
+                char[] charArray = url.ToCharArray();
+                Array.Reverse(charArray);
+                string rurl = new string(charArray);
+                rurl = rurl.Substring(53, 6);
+                int i = rurl.IndexOf('.');
+                rurl = rurl.Substring(0, i);
+                charArray = rurl.ToCharArray();
+                Array.Reverse(charArray);
+                rurl = new string(charArray);
+                return File(imageBytes, "image/*", "image." + rurl);
+            }
+            return BadRequest();
+        }
+        [AllowAnonymous]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> DeletePhoto(int id)
+        {
+            bool result = await _photoUploadDownloadService.DeletePhoto(id);
+            if(result)
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
     }
 }
