@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Capstone.Project.API.Controllers
@@ -21,11 +22,13 @@ namespace Capstone.Project.API.Controllers
         private readonly IPhotoService _photoService;
         private readonly IPhotoCategoryService _photoCategoryService;
         private readonly IMapper mapper;
-        public PhotoController(IPhotoService categoryService, IMapper mapper, IPhotoCategoryService photoCategoryService)
+        private readonly IPhotoUploadDownloadService _photoUploadDownloadService;
+        public PhotoController(IPhotoService categoryService, IMapper mapper, IPhotoCategoryService photoCategoryService, IPhotoUploadDownloadService photoUploadDownloadService)
         {
             _photoService = categoryService;
             this.mapper = mapper;
             _photoCategoryService = photoCategoryService;
+            _photoUploadDownloadService = photoUploadDownloadService;
         }
         [AllowAnonymous]
         [HttpGet()]
@@ -55,6 +58,7 @@ namespace Capstone.Project.API.Controllers
             return BadRequest(new { msg = "Empty List" });
         }
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -97,6 +101,52 @@ namespace Capstone.Project.API.Controllers
                 return Ok(result);
             }
             return BadRequest(new { msg = "Photo Update Fail" });
+        }
+        [AllowAnonymous]
+        [HttpPost("CreatePhoto")]
+        public async Task<IActionResult> CreatePhoto([FromBody] PhotoCreateModel model)
+        {
+            var result = await _photoUploadDownloadService.CreatePhoto(model);
+            if (result != null)
+            {
+                return Created("", result);
+            }
+
+            return BadRequest(new { msg = "Photo upload failed" });
+        }
+        [AllowAnonymous]
+        [HttpGet("DownloadPhoto/{id}")]
+        public async Task<IActionResult> Download(int id)
+        {
+            string url = _photoUploadDownloadService.DownloadPhoto(id);
+            if(url != null)
+            {
+                using var httpClient = new HttpClient();
+                byte[] imageBytes = await httpClient.GetByteArrayAsync(url);
+                httpClient.Dispose();
+                char[] charArray = url.ToCharArray();
+                Array.Reverse(charArray);
+                string rurl = new string(charArray);
+                rurl = rurl.Substring(53, 6);
+                int i = rurl.IndexOf('.');
+                rurl = rurl.Substring(0, i);
+                charArray = rurl.ToCharArray();
+                Array.Reverse(charArray);
+                rurl = new string(charArray);
+                return File(imageBytes, "image/*", "image." + rurl);
+            }
+            return BadRequest();
+        }
+        [AllowAnonymous]
+        [HttpPut("DeletePhoto/{id}")]
+        public async Task<IActionResult> DeletePhoto(int id)
+        {
+            bool result = await _photoUploadDownloadService.DeletePhoto(id);
+            if(result)
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
     }
 }
