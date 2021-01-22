@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace Capstone.Project.Services.IServices
 {
-    public interface IPhotoCategoryService
+    public interface IOrderService
     {
-        List<PhotoModel> GetPhotoByCategory(int id);
-        List<CategoryModel> GetCategoryByPhoto(int id);
-        
+        public IEnumerable<PhotoModel> GetUserBoughtPhoto(string id);
     }
 }

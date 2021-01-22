@@ -46,9 +46,9 @@ namespace Capstone.Project.Data.Repository
         {
             user.DelFlg = true;
         }
-        public User GetById(string id)
+        public async Task<User> GetById(string id)
         {
-            return _context.Users.Where(x => x.UserId.Equals(id)).SingleOrDefault();
+            return await _context.Users.Where(x => x.UserId == id).SingleOrDefaultAsync();
         }
         public async Task<IEnumerable<User>> GetAll()
         {
@@ -76,7 +76,7 @@ namespace Capstone.Project.Data.Repository
 
         public bool Update(User user)
         {
-            var entity = this.GetById(user.UserId);
+            var entity = this.GetById(user.UserId).Result;
             if (entity != null)
             {
                 entity.DelFlg = false;

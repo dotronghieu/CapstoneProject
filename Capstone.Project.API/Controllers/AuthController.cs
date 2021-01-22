@@ -1,5 +1,8 @@
-﻿using Capstone.Project.Data.ViewModels;
+﻿using Capstone.Project.Data.Helper;
+using Capstone.Project.Data.Models;
+using Capstone.Project.Data.ViewModels;
 using Capstone.Project.Services.IServices;
+using FirebaseAdmin.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -81,6 +84,48 @@ namespace Capstone.Project.API.Controllers
                 });
             }
             return Unauthorized();
+        }
+        [HttpPost("Google")]
+        public async Task<IActionResult> LoginGoogle(UserModelRequestParam login)
+        {
+
+            FirebaseToken decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(login.Token);
+            if (decodedToken != null)
+            {
+                string uid = decodedToken.Uid;
+                UserModel user = await _userService.LoginGoogle(uid);
+
+
+                var authClaims = new List<Claim>
+                    {
+                        new Claim(JwtRegisteredClaimNames.Sub, user.Username),
+                        new Claim(ClaimTypes.NameIdentifier, user.Username),
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                        new Claim(ClaimTypes.Role, Constants.Roles.ROLE_USER)
+                    };
+
+                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
+                var firebaseProject = _config.GetSection("AppSettings:FirebaseProject").Value;
+                var token = new JwtSecurityToken(
+                    issuer: "https://securetoken.google.com/" + firebaseProject,
+                    audience: firebaseProject,
+                    expires: DateTime.Now.AddYears(13),
+                    claims: authClaims,
+                    signingCredentials: new Microsoft.IdentityModel.Tokens.SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256Signature)
+                    );
+
+                return Ok(new
+                {
+                    token = new JwtSecurityTokenHandler().WriteToken(token),
+                    role = Constants.Roles.ROLE_USER,
+                    email = user.Email,
+                    fullName = user.FullName,
+                    username = user.Username,
+                    avatar = user.Avatar,
+                    expiration = token.ValidTo
+                });
+            }
+            return BadRequest();
         }
     }
 }

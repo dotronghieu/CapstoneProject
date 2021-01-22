@@ -12,7 +12,7 @@ namespace Capstone.Project.Data.Repository
         Task<User> Create(User user, string password);
         void Delete(User user);
         bool Update(User user);
-        User GetById(string id);
+        Task<User> GetById(string id);
         void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt);
     }
 }

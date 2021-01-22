@@ -15,7 +15,7 @@ namespace Capstone.Project.API.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        
+        private readonly IOrderService _orderService;
         public UserController(IUserService userService)
         {
             _userService = userService;
@@ -31,12 +31,22 @@ namespace Capstone.Project.API.Controllers
             return BadRequest();
             
         }
-        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllUser()
         {
             var result = await _userService.GetAllUsers();
             return Ok(result);
+        }
+        [HttpGet("{id}")]
+        public IActionResult GetBoughtPhoto(string id)
+        {
+            var result = _orderService.GetUserBoughtPhoto(id);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(new { msg = "No order recorded" });
         }
         [HttpPut]
         public async Task<IActionResult> UpdateUserPassword([FromBody] UserUpdatePasswordModel viewModel)

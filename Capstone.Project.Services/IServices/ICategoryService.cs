@@ -9,6 +9,6 @@ namespace Capstone.Project.Services.IServices
 {
     public interface ICategoryService : IBaseService<Category, CategoryModel>
     {
-       
+       Task<CategoryModel> UpdateCategory(int id, CategoryModel model); 
     }
 }

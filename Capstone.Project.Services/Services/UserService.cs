@@ -4,6 +4,7 @@ using Capstone.Project.Data.Models;
 using Capstone.Project.Data.UnitOfWork;
 using Capstone.Project.Data.ViewModels;
 using Capstone.Project.Services.IServices;
+using FirebaseAdmin.Auth;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -134,6 +135,38 @@ namespace Capstone.Project.Services.Services
                 return true;
             }
             return false;
+        }
+
+        public async Task<UserModel> LoginGoogle(string uid)
+        {
+            UserRecord user_firebase = await FirebaseAuth.DefaultInstance.GetUserAsync(uid);
+            var currentUser = await _unitOfWork.UsersRepository.GetById(uid);
+
+            if (currentUser == null)
+            {
+                var user_info = new User()
+                {
+                    UserId = uid,
+                    Username = user_firebase.Email,
+                    RoleId = Constants.Roles.ROLE_USER_ID,
+                    Email = user_firebase.Email,
+                    FullName = user_firebase.DisplayName,
+                    DelFlg = false,
+                    Avatar = user_firebase.PhotoUrl
+                };
+
+                await _unitOfWork.UsersRepository.Create(user_info, "123456");
+
+                if (await _unitOfWork.SaveAsync() > 0)
+                {
+                    return _mapper.Map<UserModel>(user_info);
+                }
+                else
+                {
+                    throw new Exception("Create new account failed");
+                }
+            }
+            return _mapper.Map<UserModel>(currentUser);
         }
     }
 }

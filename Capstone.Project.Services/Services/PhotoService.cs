@@ -15,17 +15,17 @@ namespace Capstone.Project.Services.Services
 {
     public class PhotoService : BaseService<Photo, PhotoModel>, IPhotoService
     {
-        private readonly CapstoneProjectContext _capstoneProjectContext;
+        private readonly CapstoneProjectContext _context;
         public PhotoService(IUnitOfWork unitOfWork, IMapper mapper, CapstoneProjectContext capstoneProjectContext) : base(unitOfWork, mapper)
         {
-            _capstoneProjectContext = capstoneProjectContext;
+            _context = capstoneProjectContext;
         }
         protected override IGenericRepository<Photo> _reponsitory => _unitOfWork.PhotoRepository;
 
         public IEnumerable<PhotoModelGetAll> GetRandomPhoto()
         {
             List<PhotoModelGetAll> resultList = new List<PhotoModelGetAll>();
-            var sourceList =   _reponsitory.GetAll(filter: c => c.DelFlg == false).ToList();
+            var sourceList =   _reponsitory.GetAll(filter: c => c.DelFlg == false).ToList();    
         
             if(sourceList != null)
             {
@@ -40,6 +40,23 @@ namespace Capstone.Project.Services.Services
             }
             return null;
         }
+
+        public PhotoModel UpdatePhoto(int id, PhotoModel model)
+        {
+            var entity =  _reponsitory.GetById(id).Result;
+            if(entity != null)
+            {
+                entity.PhotoName = model.PhotoName;
+                entity.Price = model.Price;
+                entity.TypeId = model.TypeId;
+                _reponsitory.Update(entity);
+                _context.SaveChanges();
+                return _mapper.Map<PhotoModel>(entity);
+            }
+       
+            return null;
+        }
+   
 
         //public override async Task<PhotoModel> CreateAsync(PhotoModel dto)
         //{

@@ -31,5 +31,20 @@ namespace Capstone.Project.Services.Services
             await _unitOfWork.SaveAsync();
             return _mapper.Map<CategoryModel>(entity);
         }
+
+
+        public async Task<CategoryModel> UpdateCategory(int id, CategoryModel model)
+        {
+            if (await _unitOfWork.CategoryRepository.GetFirst(c => c.CategoryId == id) != null)
+            {
+                var entity = _reponsitory.GetById(id).Result;
+                entity.CategoryName = model.CategoryName;
+                entity.Description = model.Description;
+                _reponsitory.Update(entity);
+                await _unitOfWork.SaveAsync();
+                return _mapper.Map<CategoryModel>(entity);
+            }
+            return null;
+        }
     }
 }

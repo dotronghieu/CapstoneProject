@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Capstone.Project.Data.Helper;
 using Capstone.Project.Data.ViewModels;
 using Capstone.Project.Services.IServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -53,7 +54,7 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "Empty List" });
         }
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -85,6 +86,17 @@ namespace Capstone.Project.API.Controllers
                 return Ok(category);
             }
             return BadRequest();
+        }
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Roles.ROLE_USER)]
+        [HttpPut("{id}")]
+        public IActionResult UserUpdatePhoto(int id, [FromBody] PhotoModel model)
+        {
+            var result =  _photoService.UpdatePhoto(id, model);
+            if(result != null)
+            {
+                return Ok(result);
+            }
+            return BadRequest(new { msg = "Photo Update Fail" });
         }
     }
 }
