@@ -125,7 +125,7 @@ namespace Capstone.Project.API.Controllers
             return BadRequest();
         }
         [AllowAnonymous]
-        [HttpPut("{id}")]
+        [HttpPut("DeletePhoto/{id}")]
         public async Task<IActionResult> DeletePhoto(int id)
         {
             bool result = await _photoUploadDownloadService.DeletePhoto(id);
