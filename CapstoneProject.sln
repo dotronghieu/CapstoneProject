@@ -10,7 +10,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capstone.Project.API", "Cap
 		{336A7ED5-E4AE-44D4-A934-D74EC0DB3C70} = {336A7ED5-E4AE-44D4-A934-D74EC0DB3C70}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capstone.Project.Services", "Capstone.Project.Services\Capstone.Project.Services.csproj", "{F12ECD96-75BA-4000-9CD3-19406F3F62A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Capstone.Project.Services", "Capstone.Project.Services\Capstone.Project.Services.csproj", "{F12ECD96-75BA-4000-9CD3-19406F3F62A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

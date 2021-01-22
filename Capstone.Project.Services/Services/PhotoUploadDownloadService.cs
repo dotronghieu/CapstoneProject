@@ -90,7 +90,7 @@ namespace Capstone.Project.Services.Services
                     {
                         using (var graphic = Graphics.FromImage(img))
                         {
-                            string username = "PhotoPixel_" + user.FullName;
+                            string username = "PhotoPixel_" + user.Result.FullName;
                             var font = new Font(FontFamily.GenericSansSerif, 40, FontStyle.Bold, GraphicsUnit.Pixel);
                             var color = Color.FromArgb(150, 0, 0, 0);
                             var brush = new SolidBrush(color);
