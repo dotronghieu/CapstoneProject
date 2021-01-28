@@ -7,6 +7,8 @@ using Capstone.Project.Services.IServices;
 using FirebaseAdmin.Auth;
 using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -50,6 +52,7 @@ namespace Capstone.Project.Services.Services
                 var user = _mapper.Map<User>(model);
                 user.RoleId = Constants.Roles.ROLE_USER_ID;
                 user.UserId = Guid.NewGuid().ToString();
+                user.IsVerify = false;
                 await _unitOfWork.UsersRepository.Create(user, password);
                 await _unitOfWork.SaveAsync();
                 return user;
@@ -100,16 +103,6 @@ namespace Capstone.Project.Services.Services
 
         public  UserModel UpdateUser(string id, UserUpdateModel userUpdateModel)
         {
-            //User user = await _unitOfWork.UserGenRepository.GetById(id);
-            //if(user != null)
-            //{
-            //    User u = _mapper.Map<User>(userUpdateModel);
-            //    u.UserId = id;
-            //    u.RoleId = user.RoleId;
-            //    _unitOfWork.UsersRepository.Update(u);
-            //    return _mapper.Map<UserUpdateModel>(u);
-            //}
-            //return null;
                 var entity = _mapper.Map<User>(userUpdateModel);
                 entity.UserId = id;
                 bool check = _unitOfWork.UsersRepository.Update(entity);
@@ -137,7 +130,7 @@ namespace Capstone.Project.Services.Services
             return false;
         }
 
-        public async Task<UserModel> LoginGoogle(string uid)
+        public async Task<UserModel> LoginGoogle(string uid, string username, string password)
         {
             UserRecord user_firebase = await FirebaseAuth.DefaultInstance.GetUserAsync(uid);
             var currentUser = await _unitOfWork.UsersRepository.GetById(uid);
@@ -147,15 +140,16 @@ namespace Capstone.Project.Services.Services
                 var user_info = new User()
                 {
                     UserId = uid,
-                    Username = user_firebase.Email,
+                    Username = username,
                     RoleId = Constants.Roles.ROLE_USER_ID,
                     Email = user_firebase.Email,
                     FullName = user_firebase.DisplayName,
+                    IsVerify = true,
                     DelFlg = false,
                     Avatar = user_firebase.PhotoUrl
                 };
 
-                await _unitOfWork.UsersRepository.Create(user_info, "123456");
+                await _unitOfWork.UsersRepository.Create(user_info, password);
 
                 if (await _unitOfWork.SaveAsync() > 0)
                 {
@@ -167,6 +161,46 @@ namespace Capstone.Project.Services.Services
                 }
             }
             return _mapper.Map<UserModel>(currentUser);
+        }
+
+        public void RequestVerify(string email)
+        {
+            var verifyUrl = "https://capstonerestapi.azurewebsites.net/api/v1/Auth/Verify/" + email;
+            var fromMail = new MailAddress("dotronghieu113@gmail.com", "Imago (No Reply)");
+            var toMail = new MailAddress(email);
+            var frontEmailPassowrd = "Tronghieu@0206";
+            string subject = "Your account is successfull created";
+            string body = "<br/><br/>We are excited to tell you that your account is" +
+              " successfully created. Please click on the below link to verify your account" +
+              " <br/><br/><a href='" + verifyUrl + "'>" + verifyUrl + "</a> ";
+
+            var smtp = new SmtpClient
+            {
+                Host = "smtp.gmail.com",
+                Port = 587,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(fromMail.Address, frontEmailPassowrd)
+
+            };
+            using (var message = new MailMessage(fromMail, toMail)
+            {
+                Subject = subject,
+                Body = body,
+                IsBodyHtml = true
+            })
+                smtp.Send(message);
+        }
+
+        public void Activate(string email)
+        {
+            var user = _unitOfWork.UserGenRepository.GetFirst(u => u.Email == email).Result;
+            if(user != null)
+            {
+                user.IsVerify = true;
+                _unitOfWork.SaveAsync();
+            }
         }
     }
 }

@@ -57,6 +57,17 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "Empty List" });
         }
+        [AllowAnonymous]
+        [HttpGet("random2")]
+        public IActionResult GetRandom2()
+        {
+            var list = _photoService.GetRandomPhoto2();
+            if (list != null)
+            {
+                return Ok(list);
+            }
+            return BadRequest(new { msg = "Empty List" });
+        }
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [AllowAnonymous]
         [HttpGet("{id}")]

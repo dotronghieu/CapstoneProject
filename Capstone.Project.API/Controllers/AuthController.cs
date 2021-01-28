@@ -42,8 +42,19 @@ namespace Capstone.Project.API.Controllers
             {
                 return Created("", result);
             }
-
             return BadRequest(new { msg = "Username already taken"});
+        }
+        [HttpGet("Verify/{email}")]
+        public IActionResult Verify(string email)
+        {
+            _userService.Activate(email);
+            return Ok();
+        }
+        [HttpGet("RequestVerify/{email}")]
+        public IActionResult RequestVerify(string email)
+        {
+            _userService.RequestVerify(email);
+            return Ok();
         }
         [HttpPost]
         public async Task<ActionResult> Login([FromBody] LoginModel model)
@@ -80,6 +91,7 @@ namespace Capstone.Project.API.Controllers
                     fullName = user.FullName,
                     username = user.Username,
                     avatar = user.Avatar,
+                    isVerified = user.IsVerify,
                     expiration = token.ValidTo
                 });
             }
@@ -88,12 +100,11 @@ namespace Capstone.Project.API.Controllers
         [HttpPost("Google")]
         public async Task<IActionResult> LoginGoogle(UserModelRequestParam login)
         {
-
             FirebaseToken decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(login.Token);
             if (decodedToken != null)
             {
                 string uid = decodedToken.Uid;
-                UserModel user = await _userService.LoginGoogle(uid);
+                UserModel user = await _userService.LoginGoogle(uid, login.Username, login.Password);
 
 
                 var authClaims = new List<Claim>

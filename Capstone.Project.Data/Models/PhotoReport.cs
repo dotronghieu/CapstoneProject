@@ -16,6 +16,7 @@ namespace Capstone.Project.Data.Models
         public string UserId { get; set; }
         public int? PhotoId { get; set; }
         public string Description { get; set; }
+        public bool? IsApprove { get; set; }
 
         public virtual Photo Photo { get; set; }
         public virtual User User { get; set; }

@@ -12,6 +12,7 @@ namespace Capstone.Project.Data.Models
             OrderDetails = new HashSet<OrderDetail>();
             PhotoCategories = new HashSet<PhotoCategory>();
             PhotoReports = new HashSet<PhotoReport>();
+            RequestDeletePhotos = new HashSet<RequestDeletePhoto>();
         }
 
         public int PhotoId { get; set; }
@@ -24,11 +25,13 @@ namespace Capstone.Project.Data.Models
         public bool? DelFlg { get; set; }
         public DateTime? InsDateTime { get; set; }
         public bool? ApproveFlg { get; set; }
+        public bool? IsBought { get; set; }
 
         public virtual Type Type { get; set; }
         public virtual User User { get; set; }
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
         public virtual ICollection<PhotoCategory> PhotoCategories { get; set; }
         public virtual ICollection<PhotoReport> PhotoReports { get; set; }
+        public virtual ICollection<RequestDeletePhoto> RequestDeletePhotos { get; set; }
     }
 }

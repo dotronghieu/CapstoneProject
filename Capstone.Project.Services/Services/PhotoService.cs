@@ -25,11 +25,11 @@ namespace Capstone.Project.Services.Services
         public IEnumerable<PhotoModelGetAll> GetRandomPhoto()
         {
             List<PhotoModelGetAll> resultList = new List<PhotoModelGetAll>();
-            var sourceList =   _reponsitory.GetAll(filter: c => c.DelFlg == false).ToList();    
-        
+            Random rnd = new Random();
+            var sourceList =   _reponsitory.GetAll(filter: c => c.DelFlg == false).ToList();
             if(sourceList != null)
             {
-                Random rnd = new Random();
+                
                 int skip = rnd.Next(1, 3);
                 var list = sourceList.Skip(skip).Take(20);
                 foreach (var item in list)
@@ -40,7 +40,20 @@ namespace Capstone.Project.Services.Services
             }
             return null;
         }
-
+        public IEnumerable<PhotoModelGetAll> GetRandomPhoto2()
+        {
+            List<PhotoModelGetAll> resultList = new List<PhotoModelGetAll>();
+            var list = _unitOfWork.PhotoRepository.GetByObject(c => c.DelFlg == false).OrderBy(c => Guid.NewGuid()).Take(20);
+            if (list != null)
+            {
+                foreach (var item in list)
+                {
+                    resultList.Add(_mapper.Map<PhotoModelGetAll>(item));
+                }
+                return resultList.AsEnumerable<PhotoModelGetAll>();
+            }
+            return null;
+        }
         public PhotoModel UpdatePhoto(int id, PhotoModel model)
         {
             var entity =  _reponsitory.GetById(id).Result;

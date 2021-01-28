@@ -16,9 +16,10 @@ namespace Capstone.Project.API.Controllers
     {
         private readonly IUserService _userService;
         private readonly IOrderService _orderService;
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IOrderService orderService)
         {
             _userService = userService;
+            _orderService = orderService;
         }
         [HttpPut("{id}")]
         public IActionResult UpdateUser(string id, [FromBody] UserUpdateModel viewModel)
@@ -38,9 +39,9 @@ namespace Capstone.Project.API.Controllers
             return Ok(result);
         }
         [HttpGet("{id}")]
-        public IActionResult GetBoughtPhoto(string id)
+        public async Task<IActionResult> GetBoughtPhoto(string id)
         {
-            var result = _orderService.GetUserBoughtPhoto(id);
+            var result = await _orderService.GetUserBoughtPhoto(id);
             if (result != null)
             {
                 return Ok(result);

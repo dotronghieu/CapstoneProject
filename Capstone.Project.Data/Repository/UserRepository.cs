@@ -79,10 +79,14 @@ namespace Capstone.Project.Data.Repository
             var entity = this.GetById(user.UserId).Result;
             if (entity != null)
             {
+                if (entity.Email != user.Email)
+            {
+                    entity.Email = user.Email;
+                    entity.IsVerify = false;
+            }          
                 entity.DelFlg = false;
                 entity.DayOfBirth = user.DayOfBirth;
-                entity.Description =     user.Description;
-                entity.Email = user.Email;
+                entity.Description = user.Description;                
                 entity.Avatar = user.Avatar;
                 entity.Username = user.Username;
                 entity.FullName = user.FullName;

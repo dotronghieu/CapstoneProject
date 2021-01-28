@@ -8,6 +8,6 @@ namespace Capstone.Project.Services.IServices
 {
     public interface IOrderService
     {
-        public IEnumerable<PhotoModel> GetUserBoughtPhoto(string id);
+        public Task<IEnumerable<PhotoModel>> GetUserBoughtPhoto(string id);
     }
 }

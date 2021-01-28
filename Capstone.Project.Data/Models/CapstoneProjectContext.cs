@@ -25,7 +25,9 @@ namespace Capstone.Project.Data.Models
         public virtual DbSet<PhotoReport> PhotoReports { get; set; }
         public virtual DbSet<PhotoReportDetail> PhotoReportDetails { get; set; }
         public virtual DbSet<Report> Reports { get; set; }
+        public virtual DbSet<RequestDeletePhoto> RequestDeletePhotos { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
+        public virtual DbSet<Transaction> Transactions { get; set; }
         public virtual DbSet<Type> Types { get; set; }
         public virtual DbSet<User> Users { get; set; }
 
@@ -92,7 +94,9 @@ namespace Capstone.Project.Data.Models
             {
                 entity.ToTable("Photo");
 
-                entity.Property(e => e.InsDateTime).HasColumnType("datetime");
+                entity.Property(e => e.InsDateTime)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.PhotoName).HasMaxLength(50);
 
@@ -179,11 +183,52 @@ namespace Capstone.Project.Data.Models
                 entity.Property(e => e.ReportReason).HasMaxLength(50);
             });
 
+            modelBuilder.Entity<RequestDeletePhoto>(entity =>
+            {
+                entity.HasKey(e => new { e.UserId, e.PhotoId });
+
+                entity.ToTable("RequestDeletePhoto");
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.Photo)
+                    .WithMany(p => p.RequestDeletePhotos)
+                    .HasForeignKey(d => d.PhotoId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_RequestDeletePhoto_Photo");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.RequestDeletePhotos)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_RequestDeletePhoto_User");
+            });
+
             modelBuilder.Entity<Role>(entity =>
             {
                 entity.ToTable("Role");
 
                 entity.Property(e => e.RoleName).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<Transaction>(entity =>
+            {
+                entity.ToTable("Transaction");
+
+                entity.Property(e => e.TransactionId)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Transactions)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("FK_Transaction_User");
             });
 
             modelBuilder.Entity<Type>(entity =>
@@ -211,6 +256,8 @@ namespace Capstone.Project.Data.Models
                 entity.Property(e => e.Email).HasMaxLength(50);
 
                 entity.Property(e => e.FullName).HasMaxLength(50);
+
+                entity.Property(e => e.PayPalAccount).HasMaxLength(50);
 
                 entity.Property(e => e.Phone)
                     .HasMaxLength(15)

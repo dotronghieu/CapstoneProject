@@ -10,7 +10,8 @@ namespace Capstone.Project.Services.IServices
     public interface IPhotoService : IBaseService<Photo, PhotoModel>
     {
        IEnumerable<PhotoModelGetAll> GetRandomPhoto();
-       PhotoModel UpdatePhoto(int id, PhotoModel model);
+        IEnumerable<PhotoModelGetAll> GetRandomPhoto2();
+        PhotoModel UpdatePhoto(int id, PhotoModel model);
 
     }
 }

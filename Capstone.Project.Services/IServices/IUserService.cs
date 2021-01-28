@@ -9,7 +9,7 @@ namespace Capstone.Project.Services.IServices
 {
     public interface IUserService
     {
-        Task<UserModel> LoginGoogle(string uid);
+        Task<UserModel> LoginGoogle(string uid, string username, string password);
         Task<IEnumerable<User>> GetAllUsers();
         Task<User> GetByUserName(string username, string action = "");
         Task<User> CreateUser(RegisterModel model, string password);
@@ -17,5 +17,8 @@ namespace Capstone.Project.Services.IServices
          UserModel UpdateUser(string id, UserUpdateModel userUpdateModel);
         Task<bool> CheckPasswordToUpdate(string username, string oldPassword, string newPassword);
 
+        void RequestVerify(string email);
+
+        void Activate(string email);
     }
 }

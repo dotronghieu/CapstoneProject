@@ -12,10 +12,11 @@ namespace Capstone.Project.Data.Models
             Orders = new HashSet<Order>();
             PhotoReports = new HashSet<PhotoReport>();
             Photos = new HashSet<Photo>();
+            RequestDeletePhotos = new HashSet<RequestDeletePhoto>();
+            Transactions = new HashSet<Transaction>();
         }
 
         public string UserId { get; set; }
-        public string UserKey { get; set; }
         public string Username { get; set; }
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
@@ -29,10 +30,14 @@ namespace Capstone.Project.Data.Models
         public bool? DelFlg { get; set; }
         public DateTime? SuspendTime { get; set; }
         public int? ReportCounter { get; set; }
+        public bool? IsVerify { get; set; }
+        public string PayPalAccount { get; set; }
 
         public virtual Role Role { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<PhotoReport> PhotoReports { get; set; }
         public virtual ICollection<Photo> Photos { get; set; }
+        public virtual ICollection<RequestDeletePhoto> RequestDeletePhotos { get; set; }
+        public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }
