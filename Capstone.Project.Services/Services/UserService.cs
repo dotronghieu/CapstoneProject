@@ -175,7 +175,7 @@ namespace Capstone.Project.Services.Services
                 string subject = "Your account is successfull created";
                 string body = "<br/><br/>We are excited to tell you that your account is" +
                   " successfully created. Please click on the below link to verify your account" +
-                  " <br/><br/><a href='" + verifyUrl + "'>" + verifyUrl + "</a> ";
+                  " <br/><br/><a href='" + verifyUrl + "'>" + "Click here to verify" + "</a> ";
 
                 var smtp = new SmtpClient
                 {
