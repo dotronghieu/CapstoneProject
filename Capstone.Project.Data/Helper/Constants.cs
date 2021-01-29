@@ -12,6 +12,8 @@ namespace Capstone.Project.Data.Helper
             public const int ROLE_USER_ID = 2;
             public const string ROLE_ADMIN = "Admin";
             public const string ROLE_USER = "User";
+            public const string IMAGO_EMAIL = "imagoworkplace@gmail.com";
+            public const string IMAGO_EMAIL_PASSWORD = "sa@123456";
         }
     }
 }

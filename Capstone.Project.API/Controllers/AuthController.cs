@@ -44,17 +44,25 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "Username already taken"});
         }
-        [HttpGet("Verify/{email}")]
-        public IActionResult Verify(string email)
+        [HttpGet("Verify/{id}")]
+        public async Task<IActionResult> Verify(string id)
         {
-            _userService.Activate(email);
-            return Ok();
+            var result = await _userService.Activate(id);
+            if (result)
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
-        [HttpGet("RequestVerify/{email}")]
-        public IActionResult RequestVerify(string email)
+        [HttpPost("RequestVerify")]
+        public async Task<IActionResult> RequestVerify([FromBody] RequestEmailModel model)
         {
-            _userService.RequestVerify(email);
-            return Ok();
+            var result = await _userService.RequestVerify(model);
+            if (result)
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
         [HttpPost]
         public async Task<ActionResult> Login([FromBody] LoginModel model)

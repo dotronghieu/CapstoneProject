@@ -17,8 +17,8 @@ namespace Capstone.Project.Services.IServices
          UserModel UpdateUser(string id, UserUpdateModel userUpdateModel);
         Task<bool> CheckPasswordToUpdate(string username, string oldPassword, string newPassword);
 
-        void RequestVerify(string email);
+        Task<bool> RequestVerify(RequestEmailModel model);
 
-        void Activate(string email);
+        Task<bool> Activate(string id);
     }
 }

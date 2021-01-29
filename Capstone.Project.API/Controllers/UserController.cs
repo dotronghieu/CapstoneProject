@@ -38,7 +38,7 @@ namespace Capstone.Project.API.Controllers
             var result = await _userService.GetAllUsers();
             return Ok(result);
         }
-        [HttpGet("{id}")]
+        [HttpGet("GetBoughtPhoto/{id}")]
         public async Task<IActionResult> GetBoughtPhoto(string id)
         {
             var result = await _orderService.GetUserBoughtPhoto(id);

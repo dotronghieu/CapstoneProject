@@ -163,44 +163,53 @@ namespace Capstone.Project.Services.Services
             return _mapper.Map<UserModel>(currentUser);
         }
 
-        public void RequestVerify(string email)
+        public async Task<bool> RequestVerify(RequestEmailModel model)
         {
-            var verifyUrl = "https://capstonerestapi.azurewebsites.net/api/v1/Auth/Verify/" + email;
-            var fromMail = new MailAddress("dotronghieu113@gmail.com", "Imago (No Reply)");
-            var toMail = new MailAddress(email);
-            var frontEmailPassowrd = "Tronghieu@0206";
-            string subject = "Your account is successfull created";
-            string body = "<br/><br/>We are excited to tell you that your account is" +
-              " successfully created. Please click on the below link to verify your account" +
-              " <br/><br/><a href='" + verifyUrl + "'>" + verifyUrl + "</a> ";
-
-            var smtp = new SmtpClient
+            var user = await _unitOfWork.UsersRepository.GetById(model.UserId);
+            if(model.Email == user.Email)
             {
-                Host = "smtp.gmail.com",
-                Port = 587,
-                EnableSsl = true,
-                DeliveryMethod = SmtpDeliveryMethod.Network,
-                UseDefaultCredentials = false,
-                Credentials = new NetworkCredential(fromMail.Address, frontEmailPassowrd)
+                var verifyUrl = "https://capstonerestapi.azurewebsites.net/api/v1/Auth/Verify/" + model.UserId;
+                var fromMail = new MailAddress(Constants.Roles.IMAGO_EMAIL, "Imago (No Reply)");
+                var toMail = new MailAddress(model.Email);
+                var imagoPassword = Constants.Roles.IMAGO_EMAIL_PASSWORD;
+                string subject = "Your account is successfull created";
+                string body = "<br/><br/>We are excited to tell you that your account is" +
+                  " successfully created. Please click on the below link to verify your account" +
+                  " <br/><br/><a href='" + verifyUrl + "'>" + verifyUrl + "</a> ";
 
-            };
-            using (var message = new MailMessage(fromMail, toMail)
-            {
-                Subject = subject,
-                Body = body,
-                IsBodyHtml = true
-            })
-                smtp.Send(message);
+                var smtp = new SmtpClient
+                {
+                    Host = "smtp.gmail.com",
+                    Port = 587,
+                    EnableSsl = true,
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(fromMail.Address, imagoPassword)
+
+                };
+                using (var message = new MailMessage(fromMail, toMail)
+                {
+                    Subject = subject,
+                    Body = body,
+                    IsBodyHtml = true
+                })
+                    smtp.Send(message);
+                return true;
+            }
+            return false;
+           
         }
 
-        public void Activate(string email)
+        public async Task<bool> Activate(string id)
         {
-            var user = _unitOfWork.UserGenRepository.GetFirst(u => u.Email == email).Result;
+            var user = await _unitOfWork.UserGenRepository.GetById(id);
             if(user != null)
             {
                 user.IsVerify = true;
-                _unitOfWork.SaveAsync();
+               await  _unitOfWork.SaveAsync();
+                return true;
             }
+            return false;
         }
     }
 }
