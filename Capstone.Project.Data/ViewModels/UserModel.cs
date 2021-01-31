@@ -8,7 +8,6 @@ namespace Capstone.Project.Data.ViewModels
     {
         public string Username { get; set; }
         public string Avatar { get; set; }
-        public string UserKey { get; set; }
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
         public string FullName { get; set; }

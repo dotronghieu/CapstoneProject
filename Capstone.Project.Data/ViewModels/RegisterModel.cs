@@ -14,5 +14,6 @@ namespace Capstone.Project.Data.ViewModels
         public string Email { get; set; }
         public string Avatar { get; set; }
         public string Description { get; set; }
+
     }
 }

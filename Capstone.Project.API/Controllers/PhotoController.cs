@@ -46,22 +46,12 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "not found any photo" });
         }
+
         [AllowAnonymous]
         [HttpGet("random")]
         public IActionResult GetRandom()
         {
             var list = _photoService.GetRandomPhoto();
-            if(list != null)
-            {
-                return Ok(list);
-            }
-            return BadRequest(new { msg = "Empty List" });
-        }
-        [AllowAnonymous]
-        [HttpGet("random2")]
-        public IActionResult GetRandom2()
-        {
-            var list = _photoService.GetRandomPhoto2();
             if (list != null)
             {
                 return Ok(list);
@@ -113,6 +103,13 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "Photo Update Fail" });
         }
+        //[HttpPut]
+        //public IActionResult EncryptPhoto()
+        //{
+        //     _photoService.EncryptAllPhoto();         
+        //     return Ok();
+         
+        //}
         [AllowAnonymous]
         [HttpPost("CreatePhoto")]
         public async Task<IActionResult> CreatePhoto([FromBody] PhotoCreateModel model)

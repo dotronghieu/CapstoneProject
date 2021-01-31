@@ -32,6 +32,17 @@ namespace Capstone.Project.API.Controllers
             return BadRequest();
             
         }
+        [HttpGet("GetById/{id}")]
+        public async Task<IActionResult> GetUserById(string id)
+        {
+            var user = await  _userService.GetByID(id);
+            if (user != null)
+            {
+                return Ok(user);
+            }
+            return BadRequest(new {msg = "No user found" });
+
+        }
         [HttpGet]
         public async Task<IActionResult> GetAllUser()
         {

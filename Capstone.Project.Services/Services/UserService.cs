@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Capstone.Project.Services.Services
 {
-    public class UserService : IUserService
+    public class UserService :  IUserService  
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -52,6 +52,7 @@ namespace Capstone.Project.Services.Services
                 var user = _mapper.Map<User>(model);
                 user.RoleId = Constants.Roles.ROLE_USER_ID;
                 user.UserId = Guid.NewGuid().ToString();
+                user.EncryptCode = Guid.NewGuid().ToString();
                 user.IsVerify = false;
                 await _unitOfWork.UsersRepository.Create(user, password);
                 await _unitOfWork.SaveAsync();
@@ -210,6 +211,16 @@ namespace Capstone.Project.Services.Services
                 return true;
             }
             return false;
+        }
+
+        public async Task<UserModel> GetByID(string id)
+        {
+            var user = await _unitOfWork.UserGenRepository.GetById(id);
+            if(user != null)
+            {
+                return _mapper.Map<UserModel>(user);
+            }
+            return null;
         }
     }
 }

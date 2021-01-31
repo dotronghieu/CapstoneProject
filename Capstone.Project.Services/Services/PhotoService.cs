@@ -22,25 +22,22 @@ namespace Capstone.Project.Services.Services
         }
         protected override IGenericRepository<Photo> _reponsitory => _unitOfWork.PhotoRepository;
 
-        public IEnumerable<PhotoModelGetAll> GetRandomPhoto()
+        public void EncryptAllPhoto()
         {
-            List<PhotoModelGetAll> resultList = new List<PhotoModelGetAll>();
-            Random rnd = new Random();
-            var sourceList =   _reponsitory.GetAll(filter: c => c.DelFlg == false).ToList();
-            if(sourceList != null)
+            var encryptCode = _unitOfWork.UsersRepository.GetById(_reponsitory.GetById(2).Result.UserId).Result.EncryptCode;
+            var photoList = _unitOfWork.PhotoRepository.GetAll().ToList();
+            foreach (var item in photoList)
             {
-                
-                int skip = rnd.Next(1, 3);
-                var list = sourceList.Skip(skip).Take(20);
-                foreach (var item in list)
-                {
-                    resultList.Add(_mapper.Map<PhotoModelGetAll>(item));
-                }
-                return resultList.AsEnumerable<PhotoModelGetAll>();
+                string linkAfterEncrypt = Encryption.StringCipher.Encrypt(item.Link, encryptCode);
+                item.Link = linkAfterEncrypt;
+                _unitOfWork.PhotoRepository.Update(item);
+                _unitOfWork.SaveAsync();
+
             }
-            return null;
+            
         }
-        public IEnumerable<PhotoModelGetAll> GetRandomPhoto2()
+
+        public IEnumerable<PhotoModelGetAll> GetRandomPhoto()
         {
             List<PhotoModelGetAll> resultList = new List<PhotoModelGetAll>();
             var list = _unitOfWork.PhotoRepository.GetByObject(c => c.DelFlg == false).OrderBy(c => Guid.NewGuid()).Take(20);

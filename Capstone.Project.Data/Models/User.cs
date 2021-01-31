@@ -31,7 +31,7 @@ namespace Capstone.Project.Data.Models
         public DateTime? SuspendTime { get; set; }
         public int? ReportCounter { get; set; }
         public bool? IsVerify { get; set; }
-        public string PayPalAccount { get; set; }
+        public string EncryptCode { get; set; }
 
         public virtual Role Role { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
