@@ -67,11 +67,7 @@ namespace Capstone.Project.Services.Services
             var entity = await _unitOfWork.UsersRepository.GetByUsername(username);
             if (entity == null)
             {
-                if (action == "Login")
-                {
-                    return null;
-                }
-                throw new AppException("Cannot find " + username);
+                return null;
             }
             return entity;
         }

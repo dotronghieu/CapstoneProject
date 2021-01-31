@@ -62,14 +62,18 @@ namespace Capstone.Project.API.Controllers
             {
                 return Ok();
             }
-            return BadRequest();
+            return BadRequest(new { msg = "Email not correct"});
         }
         [HttpPost]
         public async Task<ActionResult> Login([FromBody] LoginModel model)
         {
             var user = await _userService.GetByUserName(model.Username);
             var result = await _userService.CheckPassWord(model.Username, model.Password);
-            if (user != null && result)
+            if(user == null)
+            {
+                return BadRequest(new { msg = "not found user " + model.Username });
+            }
+            if (result)
             {
                 var _role = _roleService.GetRole(user);
 
@@ -99,7 +103,7 @@ namespace Capstone.Project.API.Controllers
                     fullName = user.FullName,
                     username = user.Username,
                     avatar = user.Avatar,
-                    isVerified = user.IsVerify,
+                    isVerify = user.IsVerify,
                     expiration = token.ValidTo
                 });
             }
