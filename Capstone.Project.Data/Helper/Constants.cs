@@ -10,6 +10,7 @@ namespace Capstone.Project.Data.Helper
         {
             public const int ROLE_ADMIN_ID = 1;
             public const int ROLE_USER_ID = 2;
+            public const int NUMBER_OF_PHOTO_HOMEPAGE = 21;
             public const string ROLE_ADMIN = "Admin";
             public const string ROLE_USER = "User";
             public const string IMAGO_EMAIL = "imagoworkplace@gmail.com";
