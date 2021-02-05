@@ -57,7 +57,9 @@ namespace Capstone.Project.Data.Models
             {
                 entity.ToTable("Order");
 
-                entity.Property(e => e.OrderId).ValueGeneratedNever();
+                entity.Property(e => e.OrderId)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.InsDateTime).HasColumnType("datetime");
 
@@ -76,6 +78,10 @@ namespace Capstone.Project.Data.Models
                 entity.HasKey(e => new { e.OrderId, e.PhotoId });
 
                 entity.ToTable("OrderDetail");
+
+                entity.Property(e => e.OrderId)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
 
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.OrderDetails)
@@ -256,7 +262,7 @@ namespace Capstone.Project.Data.Models
                 entity.Property(e => e.Email).HasMaxLength(50);
 
                 entity.Property(e => e.EncryptCode)
-                    .HasMaxLength(50)
+                    .HasMaxLength(100)
                     .IsUnicode(false);
 
                 entity.Property(e => e.FullName).HasMaxLength(50);

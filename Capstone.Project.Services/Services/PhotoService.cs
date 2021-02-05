@@ -37,6 +37,19 @@ namespace Capstone.Project.Services.Services
             
         }
 
+        public async Task<PhotoModel> GetPhotoById(int id)
+        {
+            var photo = _reponsitory.GetById(id).Result;
+            if (photo != null)
+            {
+                var user =  await  _unitOfWork.UsersRepository.GetById(photo.UserId);
+                var decryptLink = Encryption.StringCipher.Decrypt(photo.Link, user.EncryptCode);
+                photo.Link = decryptLink;
+                return _mapper.Map<PhotoModel>(photo);
+            }
+            return null;
+        }
+
         public IEnumerable<PhotoModelGetAll> GetRandomPhoto()
         {
             List<PhotoModelGetAll> resultList = new List<PhotoModelGetAll>();

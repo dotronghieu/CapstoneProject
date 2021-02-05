@@ -29,6 +29,12 @@ namespace Capstone.Project.Data.AutoMapper
             CreateMap<Category, CategoryModel>();
             CreateMap<CategoryModel, Category>();
 
+            CreateMap<Order, OrderModel>();
+            CreateMap<OrderModel, Order>();
+
+            CreateMap<OrderDetail, OrderDetailModel>();
+            CreateMap<OrderDetailModel, OrderDetail>();
+
         }
     }
 }

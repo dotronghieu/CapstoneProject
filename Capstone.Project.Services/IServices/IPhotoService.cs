@@ -11,7 +11,7 @@ namespace Capstone.Project.Services.IServices
     {
         IEnumerable<PhotoModelGetAll> GetRandomPhoto();
         PhotoModel UpdatePhoto(int id, PhotoModel model);
-
+        Task<PhotoModel> GetPhotoById(int id);
         void EncryptAllPhoto();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Capstone.Project.Data.Helper;
 using Capstone.Project.Data.Models;
 using Capstone.Project.Data.Repository;
 using Capstone.Project.Data.UnitOfWork;
@@ -83,14 +84,14 @@ namespace Capstone.Project.Services.Services
                     // error during upload will be thrown when you await the task
                     string link = await task;
                     string link1;
-                    var user = _unitOfWork.UsersRepository.GetById(model.UserId);
+                    var user = await _unitOfWork.UsersRepository.GetById(model.UserId);
                     //watermark link
                     FileStream wm = new FileStream(Path.Combine(path, "WM" + file.FileName), FileMode.Create);
                     using (var img = Image.FromStream(stream))
                     {
                         using (var graphic = Graphics.FromImage(img))
                         {
-                            string username = "PhotoPixel_" + user.Result.FullName;
+                            string username = "PhotoPixel_" + user.FullName;
                             var font = new Font(FontFamily.GenericSansSerif, 40, FontStyle.Bold, GraphicsUnit.Pixel);
                             var color = Color.FromArgb(150, 0, 0, 0);
                             var brush = new SolidBrush(color);
@@ -176,7 +177,7 @@ namespace Capstone.Project.Services.Services
                     System.IO.File.Delete(imgdel);
                     Photo photo = new Photo();
                     photo.PhotoName = model.PhotoName;
-                    photo.Link = link;
+                    photo.Link = Encryption.StringCipher.Encrypt(link, user.EncryptCode);
                     photo.Wmlink = link1;
                     photo.Price = model.Price;
                     photo.TypeId = model.TypeId;

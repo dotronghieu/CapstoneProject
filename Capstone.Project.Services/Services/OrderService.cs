@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Capstone.Project.Data.Models;
 using Capstone.Project.Data.UnitOfWork;
 using Capstone.Project.Data.ViewModels;
 using Capstone.Project.Services.IServices;
@@ -38,6 +39,35 @@ namespace Capstone.Project.Services.Services
                 return result.AsEnumerable<PhotoModel>();
             }
             return null;
+        }
+
+        public async Task<Order> OrderPhoto(OrderModel orderModel)
+        {
+            Order order = null;
+            if (orderModel != null)
+            {
+                order = new Order
+                {
+                    OrderId = Guid.NewGuid().ToString(),
+                    UserId = orderModel.UserId,
+                    InsDateTime = DateTime.Now,
+                    Total = orderModel.Total,
+
+                };
+                _unitOfWork.OrdersRepository.Add(order);
+                foreach (OrderDetailModel item in orderModel.OrderDetail)
+                {
+                    var orderDetailModel = new OrderDetailModel()
+                    {
+                        OrderId = order.OrderId,
+                        PhotoId = item.PhotoId,
+                        Price = item.Price
+                    };
+                    _unitOfWork.OrderDetailRepository.Add(_mapper.Map<OrderDetail>(orderDetailModel));
+                }
+                await _unitOfWork.SaveAsync();
+            }
+            return _mapper.Map<Order>(order);
         }
     }
 }
