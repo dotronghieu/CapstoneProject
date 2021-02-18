@@ -50,7 +50,7 @@ namespace Capstone.Project.Services.Services
             if (await _unitOfWork.UsersRepository.GetByUsername(model.Username) == null)
             {
                 var user = _mapper.Map<User>(model);
-                user.RoleId = Constants.Roles.ROLE_USER_ID;
+                user.RoleId = Constants.Const.ROLE_USER_ID;
                 user.UserId = Guid.NewGuid().ToString();
                 user.EncryptCode = Guid.NewGuid().ToString();
                 user.IsVerify = false;
@@ -138,7 +138,7 @@ namespace Capstone.Project.Services.Services
                 {
                     UserId = uid,
                     Username = username,
-                    RoleId = Constants.Roles.ROLE_USER_ID,
+                    RoleId = Constants.Const.ROLE_USER_ID,
                     Email = user_firebase.Email,
                     FullName = user_firebase.DisplayName,
                     IsVerify = true,
@@ -166,9 +166,9 @@ namespace Capstone.Project.Services.Services
             if(model.Email == user.Email)
             {
                 var verifyUrl = "https://capstonerestapi.azurewebsites.net/api/v1/Auth/Verify/" + model.UserId;
-                var fromMail = new MailAddress(Constants.Roles.IMAGO_EMAIL, "Imago (No Reply)");
+                var fromMail = new MailAddress(Constants.Const.IMAGO_EMAIL, "Imago (No Reply)");
                 var toMail = new MailAddress(model.Email);
-                var imagoPassword = Constants.Roles.IMAGO_EMAIL_PASSWORD;
+                var imagoPassword = Constants.Const.IMAGO_EMAIL_PASSWORD;
                 string subject = "Your account is successfull created";
                 string body = "<br/><br/>We are excited to tell you that your account is" +
                   " successfully created. Please click on the below link to verify your account" +

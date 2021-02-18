@@ -58,6 +58,17 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "Empty List" });
         }
+        [AllowAnonymous]
+        [HttpGet("getToApprove")]
+        public IActionResult GetPhotoNotApproved()
+        {
+            var list = _photoService.GetPhotoNotApproved();
+            if (list != null)
+            {
+                return Ok(list);
+            }
+            return BadRequest(new { msg = "There is no photo to approve yet" });
+        }
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [AllowAnonymous]
         [HttpGet("{id}")]

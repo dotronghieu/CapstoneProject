@@ -124,7 +124,7 @@ namespace Capstone.Project.API.Controllers
                         new Claim(JwtRegisteredClaimNames.Sub, user.Username),
                         new Claim(ClaimTypes.NameIdentifier, user.Username),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                        new Claim(ClaimTypes.Role, Constants.Roles.ROLE_USER)
+                        new Claim(ClaimTypes.Role, Constants.Const.ROLE_USER)
                     };
 
                 var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
@@ -140,7 +140,7 @@ namespace Capstone.Project.API.Controllers
                 return Ok(new
                 {
                     token = new JwtSecurityTokenHandler().WriteToken(token),
-                    role = Constants.Roles.ROLE_USER,
+                    role = Constants.Const.ROLE_USER,
                     email = user.Email,
                     fullName = user.FullName,
                     username = user.Username,

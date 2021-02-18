@@ -50,10 +50,24 @@ namespace Capstone.Project.Services.Services
             return null;
         }
 
+        public  IEnumerable<PhotoModel> GetPhotoNotApproved()
+        {
+            var list =  _reponsitory.GetByObject(p => p.DelFlg == false && p.ApproveFlg == false).OrderBy(c => c.PhotoId).Take(Constants.Const.NUMBER_OF_NOT_APPROVED_PHOTO);
+            if (list != null)
+            {
+                List<PhotoModel> resultList = new List<PhotoModel>();
+                foreach (var item in list)
+                {
+                    resultList.Add(_mapper.Map<PhotoModel>(item));
+                }
+                return resultList.AsEnumerable<PhotoModel>();
+            }
+            return null;
+        }
         public IEnumerable<PhotoModelGetAll> GetRandomPhoto()
         {
             List<PhotoModelGetAll> resultList = new List<PhotoModelGetAll>();
-            var list = _unitOfWork.PhotoRepository.GetByObject(c => c.DelFlg == false).OrderBy(c => Guid.NewGuid()).Take(Constants.Roles.NUMBER_OF_PHOTO_HOMEPAGE);
+            var list = _unitOfWork.PhotoRepository.GetByObject(c => c.DelFlg == false).OrderBy(c => Guid.NewGuid()).Take(Constants.Const.NUMBER_OF_PHOTO_HOMEPAGE);
             if (list != null)
             {
                 foreach (var item in list)
