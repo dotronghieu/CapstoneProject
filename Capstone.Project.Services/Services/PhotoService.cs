@@ -67,7 +67,7 @@ namespace Capstone.Project.Services.Services
         public IEnumerable<PhotoModelGetAll> GetRandomPhoto()
         {
             List<PhotoModelGetAll> resultList = new List<PhotoModelGetAll>();
-            var list = _unitOfWork.PhotoRepository.GetByObject(c => c.DelFlg == false).OrderBy(c => Guid.NewGuid()).Take(Constants.Const.NUMBER_OF_PHOTO_HOMEPAGE);
+            var list = _unitOfWork.PhotoRepository.GetByObject(c => c.DelFlg == false && c.ApproveFlg == true).OrderBy(c => Guid.NewGuid()).Take(Constants.Const.NUMBER_OF_PHOTO_HOMEPAGE);
             if (list != null)
             {
                 foreach (var item in list)

@@ -104,7 +104,8 @@ namespace Capstone.Project.API.Controllers
                     username = user.Username,
                     avatar = user.Avatar,
                     isVerify = user.IsVerify,
-                    expiration = token.ValidTo
+                    expiration = token.ValidTo,
+                    userId = user.UserId
                 });
             }
             return Unauthorized();
