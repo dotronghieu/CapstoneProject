@@ -78,7 +78,7 @@ namespace Capstone.Project.Services.Services
             }
             return null;
         }
-        public PhotoModel UpdatePhoto(int id, PhotoModel model)
+        public PhotoModel UpdatePhoto(int id, PhotoModel model) 
         {
             var entity =  _reponsitory.GetById(id).Result;
             if(entity != null)

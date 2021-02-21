@@ -218,5 +218,18 @@ namespace Capstone.Project.Services.Services
             }
             return null;
         }
+
+        public async Task<bool> ApprovePhoto(int photoId)
+        {
+            var photo = await _unitOfWork.PhotoRepository.GetById(photoId);
+            if(photo != null)
+            {
+                photo.ApproveFlg = true;
+                _unitOfWork.PhotoRepository.Update(photo);
+                await _unitOfWork.SaveAsync();
+                return true;
+            }
+            return false;
+        }
     }
 }

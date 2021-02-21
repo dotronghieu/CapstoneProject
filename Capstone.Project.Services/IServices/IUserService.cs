@@ -18,7 +18,7 @@ namespace Capstone.Project.Services.IServices
         Task<bool> CheckPasswordToUpdate(string username, string oldPassword, string newPassword);
         Task<UserModel> GetByID(string id);
         Task<bool> RequestVerify(RequestEmailModel model);
-
+        Task<bool> ApprovePhoto(int photoId);
         Task<bool> Activate(string id);
     }
 }

@@ -69,5 +69,14 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "Old Password is not correct"});
         }
+        [HttpPut("ApprovePhoto/{id}")]
+        public async Task<IActionResult> ApprovePhoto(int id)
+        {
+            if (await _userService.ApprovePhoto(id))
+            {
+                return Ok(new { msg = "Photo has been approved"});
+            }
+            return BadRequest(new { msg = "Invalid PhotoID" });
+        }
     }
 }
