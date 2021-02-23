@@ -78,5 +78,46 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "Invalid PhotoID" });
         }
+        [HttpPut("DeniedPhoto/{id}")]
+        public async Task<IActionResult> DeniedPhoto(int id)
+        {
+            if (await _userService.DeniedPhoto(id))
+            {
+                return Ok(new { msg = "Photo has been denied" });
+            }
+            return BadRequest(new { msg = "Invalid PhotoID" });
+        }
+        [HttpGet("GetUserApprovedPhoto/{id}")]
+        public  IActionResult GetUserApprovedPhoto(string id)
+        {
+            var result =  _userService.GetAllPhotoApproved(id);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(new { msg = "No photo recorded" });
+        }
+        [HttpGet("GetUserPendingPhoto/{id}")]
+        public IActionResult GetUserPendingPhoto(string id)
+        {
+            var result = _userService.GetAllPendingPhoto(id);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(new { msg = "No photo recorded" });
+        }
+        [HttpGet("GetUserDeniedPhoto/{id}")]
+        public IActionResult GetUserDeniedPhoto(string id)
+        {
+            var result = _userService.GetAllDeniedPhoto(id);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return BadRequest(new { msg = "No photo recorded" });
+        }
     }
 }

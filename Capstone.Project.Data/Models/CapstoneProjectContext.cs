@@ -100,9 +100,17 @@ namespace Capstone.Project.Data.Models
             {
                 entity.ToTable("Photo");
 
+                entity.Property(e => e.ApproveStatus)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.InsDateTime)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.Note)
+                    .HasMaxLength(150)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.PhotoName).HasMaxLength(50);
 

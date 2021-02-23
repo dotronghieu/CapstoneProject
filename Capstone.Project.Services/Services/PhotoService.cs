@@ -52,7 +52,7 @@ namespace Capstone.Project.Services.Services
 
         public  IEnumerable<PhotoModel> GetPhotoNotApproved()
         {
-            var list =  _reponsitory.GetByObject(p => p.DelFlg == false && p.ApproveFlg == false).OrderBy(c => c.PhotoId).Take(Constants.Const.NUMBER_OF_NOT_APPROVED_PHOTO);
+            var list =  _reponsitory.GetByObject(p => p.DelFlg == false && p.ApproveStatus == Constants.Const.PHOTO_STATUS_PENDING).OrderBy(c => c.PhotoId).Take(Constants.Const.NUMBER_OF_NOT_APPROVED_PHOTO);
             if (list != null)
             {
                 List<PhotoModel> resultList = new List<PhotoModel>();
@@ -67,7 +67,7 @@ namespace Capstone.Project.Services.Services
         public IEnumerable<PhotoModelGetAll> GetRandomPhoto()
         {
             List<PhotoModelGetAll> resultList = new List<PhotoModelGetAll>();
-            var list = _unitOfWork.PhotoRepository.GetByObject(c => c.DelFlg == false && c.ApproveFlg == true).OrderBy(c => Guid.NewGuid()).Take(Constants.Const.NUMBER_OF_PHOTO_HOMEPAGE);
+            var list = _unitOfWork.PhotoRepository.GetByObject(c => c.DelFlg == false && c.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED).OrderBy(c => Guid.NewGuid()).Take(Constants.Const.NUMBER_OF_PHOTO_HOMEPAGE);
             if (list != null)
             {
                 foreach (var item in list)

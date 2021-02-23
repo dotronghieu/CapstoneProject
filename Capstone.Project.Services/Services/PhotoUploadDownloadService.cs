@@ -183,7 +183,7 @@ namespace Capstone.Project.Services.Services
                     photo.TypeId = model.TypeId;
                     photo.UserId = model.UserId;
                     photo.DelFlg = false;
-                    photo.ApproveFlg = false;
+                    photo.ApproveStatus = Constants.Const.PHOTO_STATUS_PENDING;
                     // add to DB
                     _reponsitory.Add(photo);
                     await _unitOfWork.SaveAsync();

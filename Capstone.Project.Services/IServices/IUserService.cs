@@ -19,6 +19,10 @@ namespace Capstone.Project.Services.IServices
         Task<UserModel> GetByID(string id);
         Task<bool> RequestVerify(RequestEmailModel model);
         Task<bool> ApprovePhoto(int photoId);
+        Task<bool> DeniedPhoto(int photoId);
         Task<bool> Activate(string id);
+        IEnumerable<PhotoModel> GetAllPhotoApproved(string userId);
+        IEnumerable<PhotoModel> GetAllPendingPhoto(string userId);
+        IEnumerable<PhotoModel> GetAllDeniedPhoto(string userId);
     }
 }

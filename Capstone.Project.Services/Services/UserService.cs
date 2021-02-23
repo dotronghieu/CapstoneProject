@@ -7,6 +7,7 @@ using Capstone.Project.Services.IServices;
 using FirebaseAdmin.Auth;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
@@ -224,12 +225,70 @@ namespace Capstone.Project.Services.Services
             var photo = await _unitOfWork.PhotoRepository.GetById(photoId);
             if(photo != null)
             {
-                photo.ApproveFlg = true;
+                photo.ApproveStatus = Constants.Const.PHOTO_STATUS_APPROVED;
                 _unitOfWork.PhotoRepository.Update(photo);
                 await _unitOfWork.SaveAsync();
                 return true;
             }
             return false;
+        }
+        public async Task<bool> DeniedPhoto(int photoId)
+        {
+            var photo = await _unitOfWork.PhotoRepository.GetById(photoId);
+            if (photo != null)
+            {
+                photo.ApproveStatus = Constants.Const.PHOTO_STATUS_DENIED;
+                _unitOfWork.PhotoRepository.Update(photo);
+                await _unitOfWork.SaveAsync();
+                return true;
+            }
+            return false;
+        }
+
+        public IEnumerable<PhotoModel> GetAllPhotoApproved(string userId)
+        {
+            var listPhotoApproved =  _unitOfWork.PhotoRepository.GetByObject(p => p.DelFlg == false && p.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED && p.UserId == userId).ToList();
+            if(listPhotoApproved != null)
+            {
+                List<PhotoModel> result = new List<PhotoModel>();
+                foreach (var item in listPhotoApproved)
+                {
+                    result.Add(_mapper.Map<PhotoModel>(item));
+                }
+                return result.AsEnumerable<PhotoModel>();
+            }
+            return null;
+
+        }
+
+        public IEnumerable<PhotoModel> GetAllPendingPhoto(string userId)
+        {
+            var listPhotoPending = _unitOfWork.PhotoRepository.GetByObject(p => p.DelFlg == false && p.ApproveStatus == Constants.Const.PHOTO_STATUS_PENDING && p.UserId == userId).ToList();
+            if (listPhotoPending != null)
+            {
+                List<PhotoModel> result = new List<PhotoModel>();
+                foreach (var item in listPhotoPending)
+                {
+                    result.Add(_mapper.Map<PhotoModel>(item));
+                }
+                return result.AsEnumerable<PhotoModel>();
+            }
+            return null;
+        }
+
+        public IEnumerable<PhotoModel> GetAllDeniedPhoto(string userId)
+        {
+            var listPhotoDenied = _unitOfWork.PhotoRepository.GetByObject(p => p.DelFlg == false && p.ApproveStatus == Constants.Const.PHOTO_STATUS_PENDING && p.UserId == userId).ToList();
+            if (listPhotoDenied != null)
+            {
+                List<PhotoModel> result = new List<PhotoModel>();
+                foreach (var item in listPhotoDenied)
+                {
+                    result.Add(_mapper.Map<PhotoModel>(item));
+                }
+                return result.AsEnumerable<PhotoModel>();
+            }
+            return null;
         }
     }
 }

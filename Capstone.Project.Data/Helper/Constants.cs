@@ -16,6 +16,9 @@ namespace Capstone.Project.Data.Helper
             public const string ROLE_USER = "User";
             public const string IMAGO_EMAIL = "imagoworkplace@gmail.com";
             public const string IMAGO_EMAIL_PASSWORD = "sa@123456";
+            public const string PHOTO_STATUS_PENDING = "pending";
+            public const string PHOTO_STATUS_APPROVED = "approved";
+            public const string PHOTO_STATUS_DENIED = "denied";
         }
     }
 }
