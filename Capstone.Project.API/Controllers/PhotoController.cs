@@ -134,7 +134,7 @@ namespace Capstone.Project.API.Controllers
         //}
         [AllowAnonymous]
         [HttpPost("CreatePhoto")]
-        public async Task<IActionResult> CreatePhoto([FromBody] PhotoCreateModel model)
+        public async Task<IActionResult> CreatePhoto([FromForm] PhotoCreateModel model)
         {
             var result = await _photoUploadDownloadService.CreatePhoto(model);
             if (result != null)

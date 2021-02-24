@@ -41,7 +41,7 @@ namespace Capstone.Project.Services.Services
             if (file.Length > 0)
             {
                 string folder = "firebaseFiles";
-                string path = Path.Combine(_environment.WebRootPath, $"images/{folder}");
+                string path = Path.Combine(_environment.ContentRootPath, $"firebaseimages/{folder}");
 
                 if (Directory.Exists(path))
                 {
@@ -91,8 +91,12 @@ namespace Capstone.Project.Services.Services
                     {
                         using (var graphic = Graphics.FromImage(img))
                         {
-                            string username = "PhotoPixel_" + user.FullName;
-                            var font = new Font(FontFamily.GenericSansSerif, 40, FontStyle.Bold, GraphicsUnit.Pixel);
+                            string username = "Imago - " + user.FullName;
+                            int fontSize;
+                            if (img.Width < img.Height)
+                            { fontSize = img.Height; }
+                            else { fontSize = img.Width; }
+                            var font = new Font(FontFamily.GenericSansSerif, fontSize / 35, FontStyle.Bold, GraphicsUnit.Pixel);
                             var color = Color.FromArgb(150, 0, 0, 0);
                             var brush = new SolidBrush(color);
                             double angle;
@@ -156,7 +160,7 @@ namespace Capstone.Project.Services.Services
                         AuthTokenAsyncFactory = () => Task.FromResult(a.FirebaseToken),
                         ThrowOnCancel = true // when you cancel the upload, exception is thrown. By default no exception is thrown
                     })
-                        .Child("images")
+                        .Child("vmimages")
                         .Child("WM" + date + file.FileName)
                         .PutAsync(wm);
                     try
