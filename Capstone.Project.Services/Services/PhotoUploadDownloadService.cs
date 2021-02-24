@@ -201,10 +201,12 @@ namespace Capstone.Project.Services.Services
             return null;
         }
 
-        public string DownloadPhoto(int id)
+        public async Task<string> DownloadPhoto(int id)
         {
             var photo = _reponsitory.GetById(id);
-            return photo.Result.Link;
+            var user = await _unitOfWork.UsersRepository.GetById(photo.Result.UserId);
+            string link = Encryption.StringCipher.Decrypt(photo.Result.Link, user.EncryptCode);
+            return link;
         }
 
         public async Task<bool> DeletePhoto(int id)

@@ -148,7 +148,7 @@ namespace Capstone.Project.API.Controllers
         [HttpGet("DownloadPhoto/{id}")]
         public async Task<IActionResult> Download(int id)
         {
-            string url = _photoUploadDownloadService.DownloadPhoto(id);
+            string url = await _photoUploadDownloadService.DownloadPhoto(id);
             if(url != null)
             {
                 using var httpClient = new HttpClient();
