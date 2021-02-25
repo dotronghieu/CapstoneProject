@@ -78,10 +78,10 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "Invalid PhotoID" });
         }
-        [HttpPut("DeniedPhoto/{id}")]
-        public async Task<IActionResult> DeniedPhoto(int id)
+        [HttpPut("DeniedPhoto")]
+        public async Task<IActionResult> DeniedPhoto([FromBody] DeniedPhotoModel model)
         {
-            if (await _userService.DeniedPhoto(id))
+            if (await _userService.DeniedPhoto(model))
             {
                 return Ok(new { msg = "Photo has been denied" });
             }

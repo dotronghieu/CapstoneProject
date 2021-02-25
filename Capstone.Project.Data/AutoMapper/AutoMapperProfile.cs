@@ -35,6 +35,7 @@ namespace Capstone.Project.Data.AutoMapper
             CreateMap<OrderDetail, OrderDetailModel>();
             CreateMap<OrderDetailModel, OrderDetail>();
 
+
         }
     }
 }
