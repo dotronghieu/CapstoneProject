@@ -34,6 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="firebaseimages\firebaseFiles\" />
     <Folder Include="Key\" />
     <Folder Include="firebaseimages\" />
   </ItemGroup>
