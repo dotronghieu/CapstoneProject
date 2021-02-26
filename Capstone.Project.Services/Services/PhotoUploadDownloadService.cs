@@ -200,7 +200,7 @@ namespace Capstone.Project.Services.Services
 
                     _unitOfWork.PhotoCategoryRepository.Add(photoCategory);
                     await _unitOfWork.SaveAsync();
-                    if (model.ListCategory[1] != null)
+                    if (model.ListCategory.Count == 2)
                     {
                         PhotoCategory photoCategory1 = new PhotoCategory();
 
