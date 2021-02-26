@@ -12,7 +12,7 @@ namespace Capstone.Project.Services.Services
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public ReportService(IUnitOfWork unitOfWork, IMapper mapper)
+        public ReportService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }

@@ -10,17 +10,17 @@ namespace Capstone.Project.API.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class ReportController : ControllerBase
+    public class TypeController : ControllerBase
     {
-        private readonly IReportService _reportService;
-        public ReportController(IReportService reportService)
+        private readonly ITypeService _typeService;
+        public TypeController(ITypeService typeService)
         {
-            _reportService = reportService;
+            _typeService = typeService;
         }
-        [HttpGet("GetAllReportReason")]
+        [HttpGet("GetAllType")]
         public IActionResult GetAllReportReason()
         {
-            var result = _reportService.GetAllReportReason();
+            var result = _typeService.GetAllType();
             if (result != null)
             {
                 return Ok(result);

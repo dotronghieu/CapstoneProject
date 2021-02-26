@@ -84,6 +84,7 @@ namespace Capstone.Project.API
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IPhotoUploadDownloadService, PhotoUploadDownloadService>();
             services.AddScoped<IReportService, ReportService>();
+            services.AddScoped<ITypeService, TypeService>();
             services.AddCors(opts =>
             {
                 opts.AddPolicy("AllowAll", builder =>
