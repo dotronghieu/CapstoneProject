@@ -232,12 +232,13 @@ namespace Capstone.Project.Services.Services
             }
             return false;
         }
-        public async Task<bool> DeniedPhoto(int photoId)
+        public async Task<bool> DeniedPhoto(DeniedPhotoModel model)
         {
-            var photo = await _unitOfWork.PhotoRepository.GetById(photoId);
+            var photo = await _unitOfWork.PhotoRepository.GetById(model.Id);
             if (photo != null)
             {
                 photo.ApproveStatus = Constants.Const.PHOTO_STATUS_DENIED;
+                photo.Note = model.Reason;
                 _unitOfWork.PhotoRepository.Update(photo);
                 await _unitOfWork.SaveAsync();
                 return true;
