@@ -191,6 +191,28 @@ namespace Capstone.Project.Services.Services
                     // add to DB
                     _reponsitory.Add(photo);
                     await _unitOfWork.SaveAsync();
+
+                    var lastphoto = await _unitOfWork.PhotoRepository.GetFirst(c => c.Wmlink == link1);
+
+                    PhotoCategory photoCategory = new PhotoCategory();
+                    photoCategory.PhotoId = lastphoto.PhotoId;
+                    photoCategory.CategoryId = model.ListCategory[0];
+
+                    _unitOfWork.PhotoCategoryRepository.Add(photoCategory);
+                    await _unitOfWork.SaveAsync();
+                    if (model.ListCategory.Count == 2)
+                    {
+                        PhotoCategory photoCategory1 = new PhotoCategory();
+
+                        photoCategory1.PhotoId = lastphoto.PhotoId;
+                        photoCategory1.CategoryId = model.ListCategory[1];
+
+                        _unitOfWork.PhotoCategoryRepository.Add(photoCategory1);
+
+                        await _unitOfWork.SaveAsync();
+                    }
+
+
                     return photo;
                 }
                 catch (Exception ex)
