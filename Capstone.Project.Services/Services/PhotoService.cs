@@ -50,17 +50,26 @@ namespace Capstone.Project.Services.Services
             return null;
         }
 
-        public  IEnumerable<PhotoModel> GetPhotoNotApproved()
+        public  IEnumerable<PhotoModelAdmin> GetPhotoNotApproved()
         {
+            PhotoCategoryService service = new PhotoCategoryService();
             var list =  _reponsitory.GetByObject(p => p.DelFlg == false && p.ApproveStatus == Constants.Const.PHOTO_STATUS_PENDING).OrderBy(c => c.PhotoId).Take(Constants.Const.NUMBER_OF_NOT_APPROVED_PHOTO);
             if (list != null)
             {
-                List<PhotoModel> resultList = new List<PhotoModel>();
+                List<PhotoModelAdmin> resultList = new List<PhotoModelAdmin>();
                 foreach (var item in list)
                 {
-                    resultList.Add(_mapper.Map<PhotoModel>(item));
+                    var categoryList = _unitOfWork.PhotoCategoryRepository.GetByObject(c => c.PhotoId == item.PhotoId, includeProperties: "Category").ToList();
+                    List<CategoryModel> categoryResult = new List<CategoryModel>();
+                    foreach (var item1 in categoryList)
+                    {
+                        categoryResult.Add(_mapper.Map<CategoryModel>(item1.Category));
+                    }
+                    PhotoModelAdmin photo = _mapper.Map<PhotoModelAdmin>(item);
+                    photo.Category = categoryResult;
+                    resultList.Add(photo);
                 }
-                return resultList.AsEnumerable<PhotoModel>();
+                return resultList.AsEnumerable<PhotoModelAdmin>();
             }
             return null;
         }

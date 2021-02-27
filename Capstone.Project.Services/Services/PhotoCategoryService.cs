@@ -20,7 +20,10 @@ namespace Capstone.Project.Services.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-
+        public PhotoCategoryService()
+        {
+      
+        }
         public List<PhotoModel> GetPhotoByCategory(int id)
         {
             var list = _unitOfWork.PhotoCategoryRepository.GetByObject(c => c.CategoryId == id, includeProperties: "Photo").ToList();

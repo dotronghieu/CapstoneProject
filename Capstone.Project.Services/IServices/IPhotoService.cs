@@ -14,7 +14,7 @@ namespace Capstone.Project.Services.IServices
         Task<PhotoModel> GetPhotoById(int id);
         void EncryptAllPhoto();
 
-        IEnumerable<PhotoModel> GetPhotoNotApproved();
+        IEnumerable<PhotoModelAdmin> GetPhotoNotApproved();
     }
 
 }

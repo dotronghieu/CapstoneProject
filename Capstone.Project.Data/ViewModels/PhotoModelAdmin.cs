@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Capstone.Project.Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Capstone.Project.Data.ViewModels
 {
-    public class PhotoModel
+    public class PhotoModelAdmin
     {
         public int PhotoId { get; set; }
         public string PhotoName { get; set; }
@@ -16,7 +17,7 @@ namespace Capstone.Project.Data.ViewModels
         public string ApproveStatus { get; set; }
         public string Note { get; set; }
         public bool? DelFlg { get; set; }
+        public virtual ICollection<CategoryModel> Category { get; set; }
         public DateTime? InsDateTime { get; set; }
     }
 }
-
