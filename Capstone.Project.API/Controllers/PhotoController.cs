@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -177,6 +178,39 @@ namespace Capstone.Project.API.Controllers
                 return Ok();
             }
             return BadRequest();
+        }
+        [AllowAnonymous]
+        [HttpGet("SearchPhoto/{key}")]
+        public IActionResult GetPhotoByCategory(string key, int PageSize, int CurrentPage)
+        {
+            var list = _photoService.SearchPhoto(key, PageSize, CurrentPage);
+            var TotalCount = list.Item2;
+            int TotalPages = (int)Math.Ceiling(TotalCount / (double)PageSize);
+            bool HasPrevious = false;
+            bool HasNext = false;
+            if (CurrentPage > 1)
+            {
+                HasPrevious = true;
+            }
+            if (CurrentPage < TotalPages)
+            {
+                HasNext = true;
+            }
+            var metadata = new
+            {
+                TotalCount,
+                PageSize,
+                CurrentPage,
+                TotalPages,
+                HasNext,
+                HasPrevious
+            };
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            if (list.Item1 != null)
+            {
+                return Ok(list.Item1);
+            }
+            return BadRequest(new { msg = "Empty List" });
         }
     }
 }

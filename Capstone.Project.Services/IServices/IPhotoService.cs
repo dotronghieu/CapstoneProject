@@ -1,4 +1,5 @@
-﻿using Capstone.Project.Data.Models;
+﻿using Capstone.Project.Data.Helper;
+using Capstone.Project.Data.Models;
 using Capstone.Project.Data.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace Capstone.Project.Services.IServices
         void EncryptAllPhoto();
 
         IEnumerable<PhotoModel> GetPhotoNotApproved();
+        (IEnumerable<PhotoModelGetAll>,int) SearchPhoto(string key, int pageSize, int pageNumber);
     }
 
 }

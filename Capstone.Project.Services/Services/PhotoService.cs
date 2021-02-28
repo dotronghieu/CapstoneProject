@@ -78,6 +78,49 @@ namespace Capstone.Project.Services.Services
             }
             return null;
         }
+
+        public (IEnumerable<PhotoModelGetAll>,int) SearchPhoto(string key, int pageSize, int pageNumber)
+        {
+            List<PhotoModelGetAll> resultList = new List<PhotoModelGetAll>();
+            var list1 = _unitOfWork.PhotoRepository.GetByObject(c => c.PhotoName.Contains(key));
+            var list2 = _unitOfWork.PhotoCategoryRepository.GetByObject(c => c.Category.CategoryName.Contains(key), includeProperties: "Photo").ToList();
+            if (list1 != null)
+            {
+
+                foreach (var item in list1)
+                {
+                    resultList.Add(_mapper.Map<PhotoModelGetAll>(item));
+                }
+            }
+            if (list2 != null)
+            {
+                foreach (var item in list2)
+                {
+                    //var photo = _unitOfWork.PhotoRepository.GetById(item.PhotoId).Result;
+                    var photo = item.Photo;
+                    var flag = true;
+                    foreach (var result in resultList)
+                    {
+                        if (result.PhotoId == photo.PhotoId)
+                        {
+                            flag = false;
+                        }
+                    }
+                    if (flag)
+                    {
+                        resultList.Add(_mapper.Map<PhotoModelGetAll>(photo));
+                    }
+
+                }
+            }
+            int  total = resultList.Count();
+            if (resultList != null)
+            {
+                return (resultList.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList(), total);
+            }
+            return (null,0);
+        }
+
         public PhotoModel UpdatePhoto(int id, PhotoModel model) 
         {
             var entity =  _reponsitory.GetById(id).Result;
