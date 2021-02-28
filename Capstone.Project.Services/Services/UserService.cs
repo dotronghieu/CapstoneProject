@@ -279,7 +279,7 @@ namespace Capstone.Project.Services.Services
 
         public IEnumerable<PhotoModel> GetAllDeniedPhoto(string userId)
         {
-            var listPhotoDenied = _unitOfWork.PhotoRepository.GetByObject(p => p.DelFlg == false && p.ApproveStatus == Constants.Const.PHOTO_STATUS_PENDING && p.UserId == userId).ToList();
+            var listPhotoDenied = _unitOfWork.PhotoRepository.GetByObject(p => p.DelFlg == false && p.ApproveStatus == Constants.Const.PHOTO_STATUS_DENIED && p.UserId == userId).ToList();
             if (listPhotoDenied != null)
             {
                 List<PhotoModel> result = new List<PhotoModel>();
