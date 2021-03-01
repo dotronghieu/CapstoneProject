@@ -13,7 +13,6 @@ namespace Capstone.Project.Data.Models
             PhotoReports = new HashSet<PhotoReport>();
             Photos = new HashSet<Photo>();
             RequestDeletePhotos = new HashSet<RequestDeletePhoto>();
-            Transactions = new HashSet<Transaction>();
         }
 
         public string UserId { get; set; }
@@ -38,6 +37,5 @@ namespace Capstone.Project.Data.Models
         public virtual ICollection<PhotoReport> PhotoReports { get; set; }
         public virtual ICollection<Photo> Photos { get; set; }
         public virtual ICollection<RequestDeletePhoto> RequestDeletePhotos { get; set; }
-        public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }

@@ -32,6 +32,7 @@ namespace Capstone.Project.Data.UnitOfWork
         public IGenericRepository<Photo> PhotoRepository { get; set; }
         public IGenericRepository<PhotoCategory> PhotoCategoryRepository { get; set; }
         public IGenericRepository<Report> ReportRepository { get; set; }
+        public IGenericRepository<Transaction> TransactionRepository { get; set; }
         public IGenericRepository<Models.Type> TypeRepository { get; set; }
         private void InitRepository()
         {
@@ -45,6 +46,7 @@ namespace Capstone.Project.Data.UnitOfWork
             PhotoCategoryRepository = new GenericRepository<PhotoCategory>(_context);
             ReportRepository = new GenericRepository<Report>(_context);
             TypeRepository = new GenericRepository<Models.Type>(_context);
+            TransactionRepository = new GenericRepository<Transaction>(_context);
         }
 
         public async Task<int> SaveAsync()

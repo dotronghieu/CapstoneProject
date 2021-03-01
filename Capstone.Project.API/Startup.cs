@@ -91,7 +91,9 @@ namespace Capstone.Project.API
                 {
                     builder.AllowAnyOrigin()
                             .AllowAnyMethod()
-                            .AllowAnyHeader();
+                            .AllowAnyHeader()
+                            .WithExposedHeaders("X-Pagination");
+
                     //.AllowCredentials();
                 });
             });

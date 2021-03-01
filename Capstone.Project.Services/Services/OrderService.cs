@@ -44,15 +44,24 @@ namespace Capstone.Project.Services.Services
         public async Task<Order> OrderPhoto(OrderModel orderModel)
         {
             Order order = null;
+            Transaction transaction = null;
             if (orderModel != null)
             {
+                transaction = new Transaction
+                {
+                    TransactionId = orderModel.TransactionId,
+                    Amount = orderModel.Amount,
+                    CreateTime = orderModel.CreateTime,
+                    PayerId = orderModel.PayerId,
+                    PayerPaypalEmail = orderModel.PayerPaypalEmail
+                };
+                _unitOfWork.TransactionRepository.Add(transaction);
                 order = new Order
                 {
                     OrderId = Guid.NewGuid().ToString(),
                     UserId = orderModel.UserId,
                     InsDateTime = DateTime.Now,
-                    Total = orderModel.Total,
-
+                    TransactionId = orderModel.TransactionId
                 };
                 _unitOfWork.OrdersRepository.Add(order);
                 foreach (OrderDetailModel item in orderModel.OrderDetail)

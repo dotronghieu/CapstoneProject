@@ -36,7 +36,7 @@ namespace Capstone.Project.Data.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=DESKTOP-329BBUF;Database=CapstoneProject;User Id=sa;Password=123456;");
+                optionsBuilder.UseSqlServer("Server=tcp:haihieuchien.database.windows.net,1433;Initial Catalog=CapstoneProject;Persist Security Info=False;User ID=haihieuchien;Password=Hai19hieuchien;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
             }
         }
 
@@ -57,11 +57,19 @@ namespace Capstone.Project.Data.Models
             {
                 entity.ToTable("Order");
 
+                entity.HasIndex(e => e.TransactionId, "IX_Order")
+                    .IsUnique();
+
                 entity.Property(e => e.OrderId)
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
                 entity.Property(e => e.InsDateTime).HasColumnType("datetime");
+
+                entity.Property(e => e.TransactionId)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.UserId)
                     .HasMaxLength(100)
@@ -232,17 +240,27 @@ namespace Capstone.Project.Data.Models
                 entity.ToTable("Transaction");
 
                 entity.Property(e => e.TransactionId)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.UserId)
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.Transactions)
-                    .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK_Transaction_User");
+                entity.Property(e => e.Amount).HasColumnType("money");
+
+                entity.Property(e => e.CreateTime).HasColumnType("datetime");
+
+                entity.Property(e => e.PayerId)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PayerPaypalEmail)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.TransactionNavigation)
+                    .WithOne(p => p.Transaction)
+                    .HasPrincipalKey<Order>(p => p.TransactionId)
+                    .HasForeignKey<Transaction>(d => d.TransactionId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Transaction_Order");
             });
 
             modelBuilder.Entity<Type>(entity =>

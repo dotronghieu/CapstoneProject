@@ -16,6 +16,7 @@ namespace Capstone.Project.Data.UnitOfWork
         IGenericRepository<PhotoCategory> PhotoCategoryRepository { get; }
         IGenericRepository<Report> ReportRepository { get; }
         IGenericRepository<Type> TypeRepository { get; }
+        IGenericRepository<Transaction> TransactionRepository { get; }
         Task<int> SaveAsync();
     }
 }

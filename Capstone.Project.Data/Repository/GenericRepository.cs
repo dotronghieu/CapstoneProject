@@ -49,7 +49,7 @@ namespace Capstone.Project.Data.Repository
         {
             return await _dbSet.FindAsync(id);
         }
-
+    
 
         public virtual void Add(TEntity entity)
         {
