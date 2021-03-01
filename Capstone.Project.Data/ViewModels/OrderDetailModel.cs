@@ -7,8 +7,7 @@ namespace Capstone.Project.Data.ViewModels
     public class OrderDetailModel
     {
         public int Id { get; set; }
-        public string OrderId { get; set; }
-        public string PhotoId { get; set; }
+        public int PhotoId { get; set; }
         public double Price { get; set; }
     }
 }

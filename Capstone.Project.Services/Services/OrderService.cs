@@ -66,13 +66,13 @@ namespace Capstone.Project.Services.Services
                 _unitOfWork.OrdersRepository.Add(order);
                 foreach (OrderDetailModel item in orderModel.OrderDetail)
                 {
-                    var orderDetailModel = new OrderDetailModel()
+                    var orderDetail = new OrderDetail()
                     {
                         OrderId = order.OrderId,
                         PhotoId = item.PhotoId,
                         Price = item.Price
                     };
-                    _unitOfWork.OrderDetailRepository.Add(_mapper.Map<OrderDetail>(orderDetailModel));
+                    _unitOfWork.OrderDetailRepository.Add(orderDetail);
                 }
                 await _unitOfWork.SaveAsync();
             }

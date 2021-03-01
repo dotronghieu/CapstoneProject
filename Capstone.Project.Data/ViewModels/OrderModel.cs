@@ -6,7 +6,6 @@ namespace Capstone.Project.Data.ViewModels
 {
     public class OrderModel
     {
-        public string OrderId { get; set; }
         public string UserId { get; set; }
         public string TransactionId { get; set; }
         public DateTime? CreateTime { get; set; }
