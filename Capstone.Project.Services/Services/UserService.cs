@@ -239,6 +239,7 @@ namespace Capstone.Project.Services.Services
             {
                 photo.ApproveStatus = Constants.Const.PHOTO_STATUS_DENIED;
                 photo.Note = model.Reason;
+                photo.Description = model.Description;
                 _unitOfWork.PhotoRepository.Update(photo);
                 await _unitOfWork.SaveAsync();
                 return true;

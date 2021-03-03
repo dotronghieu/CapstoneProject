@@ -8,6 +8,7 @@ namespace Capstone.Project.Data.ViewModels
     {
         public int Id { get; set; }
         public string Reason { get; set; }
+        public string Description { get; set; }
 
     }
 }
