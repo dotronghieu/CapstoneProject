@@ -49,7 +49,7 @@ namespace Capstone.Project.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("random")]
+        [HttpGet("Random")]
         public IActionResult GetRandom()
         {
             var list = _photoService.GetRandomPhoto();
@@ -60,7 +60,7 @@ namespace Capstone.Project.API.Controllers
             return BadRequest(new { msg = "Empty List" });
         }
         [AllowAnonymous]
-        [HttpGet("getToApprove")]
+        [HttpGet("GetToApprove")]
         public IActionResult GetPhotoNotApproved()
         {
             var list = _photoService.GetPhotoNotApproved();
@@ -75,7 +75,7 @@ namespace Capstone.Project.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var photo = await _photoService.GetByIdAsync(id);
+            var photo = await _photoService.GetById(id);
             if(photo != null)
             {
                 return Ok(photo);
@@ -94,7 +94,7 @@ namespace Capstone.Project.API.Controllers
             return BadRequest(new { msg = "photo is not found" });
         }
         [AllowAnonymous]
-        [HttpGet("getByCategory/{id}")]
+        [HttpGet("GetByCategory/{id}")]
         public IActionResult GetPhotoByCategory(int id)
         {
             var photo = _photoCategoryService.GetPhotoByCategory(id);
@@ -105,7 +105,18 @@ namespace Capstone.Project.API.Controllers
             return BadRequest();
         }
         [AllowAnonymous]
-        [HttpGet("getCategoryByPhoto/{id}")]
+        [HttpGet("GetPhotoByUserId/{id}")]
+        public IActionResult GetPhotoByUser(string id)
+        {
+            var result = _photoService.GetPhotoByUser(id);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return BadRequest();
+        }
+        [AllowAnonymous]
+        [HttpGet("GetCategoryByPhoto/{id}")]
         public IActionResult GetCategoryByPhoto(int id)
         {
             var category = _photoCategoryService.GetCategoryByPhoto(id);

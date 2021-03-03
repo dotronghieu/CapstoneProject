@@ -27,6 +27,7 @@ namespace Capstone.Project.Data.Models
         public string ApproveStatus { get; set; }
         public bool? IsBought { get; set; }
         public string Note { get; set; }
+        public string Description { get; set; }
 
         public virtual Type Type { get; set; }
         public virtual User User { get; set; }

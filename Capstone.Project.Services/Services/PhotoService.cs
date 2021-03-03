@@ -50,6 +50,7 @@ namespace Capstone.Project.Services.Services
             return null;
         }
 
+     
         public  IEnumerable<PhotoModelAdmin> GetPhotoNotApproved()
         {
             PhotoCategoryService service = new PhotoCategoryService();
@@ -145,8 +146,46 @@ namespace Capstone.Project.Services.Services
        
             return null;
         }
-   
 
+        public IEnumerable<PhotoModel> GetPhotoByUser(string userId)
+        {
+            var listPhoto =  _reponsitory.GetByObject(c => c.DelFlg == false && c.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED && c.UserId == userId).ToList();
+            List<PhotoModel> result = new List<PhotoModel>();
+            foreach (var item in listPhoto)
+            {
+                result.Add(_mapper.Map<PhotoModel>(item));
+            }
+            return result;
+        }
+        public async Task<PhotoModel> GetById(int id)
+        {     
+                var photo = await _reponsitory.GetFirst(c => c.DelFlg == false && c.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED && c.PhotoId == id);
+                if(photo != null)
+                {
+                    List<CategoryModel> categoryList = this.GetCategoryByPhoto(id);
+                    var photoResult = _mapper.Map<PhotoModel>(photo);
+                    photoResult.UserName = _unitOfWork.UsersRepository.GetById(photo.UserId).Result.Username;
+                    photoResult.Category = categoryList;
+                    return photoResult;
+                }          
+            return null;
+        }
+        public List<CategoryModel> GetCategoryByPhoto(int id)
+        {
+            var list = _unitOfWork.PhotoCategoryRepository.GetByObject(c => c.PhotoId == id, includeProperties: "Category").ToList();
+            if (list != null)
+            {
+                List<CategoryModel> result = new List<CategoryModel>();
+                foreach (var item in list)
+                {
+                    var category = item.Category;
+                    result.Add(_mapper.Map<CategoryModel>(category));
+
+                }
+                return result;
+            }
+            return null;
+        }
         //public override async Task<PhotoModel> CreateAsync(PhotoModel dto)
         //{
         //    var entity = _mapper.Map<Photo>(dto);

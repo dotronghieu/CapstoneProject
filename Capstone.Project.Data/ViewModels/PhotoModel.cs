@@ -16,6 +16,9 @@ namespace Capstone.Project.Data.ViewModels
         public string ApproveStatus { get; set; }
         public string Note { get; set; }
         public bool? DelFlg { get; set; }
+        public string Description { get; set; }
+        public string UserName { get; set; }
+        public virtual ICollection<CategoryModel> Category { get; set; }
         public DateTime? InsDateTime { get; set; }
     }
 }

@@ -13,10 +13,13 @@ namespace Capstone.Project.Services.IServices
         IEnumerable<PhotoModelGetAll> GetRandomPhoto();
         PhotoModel UpdatePhoto(int id, PhotoModel model);
         Task<PhotoModel> GetPhotoById(int id);
+        Task<PhotoModel> GetById(int id);
         void EncryptAllPhoto();
 
         IEnumerable<PhotoModelAdmin> GetPhotoNotApproved();
         (IEnumerable<PhotoModelGetAll>,int) SearchPhoto(string key, int pageSize, int pageNumber);
+
+        IEnumerable<PhotoModel> GetPhotoByUser(String userId);
     }
 
 }

@@ -50,7 +50,6 @@ namespace Capstone.Project.Services.Services
                 List<CategoryModel> result = new List<CategoryModel>();
                 foreach (var item in list)
                 {
-                    //var category = _unitOfWork.CategoryRepository.GetById(item.CategoryId).Result;
                     var category = item.Category;
                     result.Add(_mapper.Map<CategoryModel>(category));
 
