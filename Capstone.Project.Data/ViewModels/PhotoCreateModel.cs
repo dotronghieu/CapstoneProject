@@ -13,5 +13,6 @@ namespace Capstone.Project.Data.ViewModels
         public int? TypeId { get; set; }
         public string UserId { get; set; }
         public List<int> ListCategory { get; set; }
+        public string Description { get; set; }
     }
 }
