@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Capstone.Project.Data.Helper;
+using Capstone.Project.Data.Helper.HashAlgorithms;
 using Capstone.Project.Data.Models;
 using Capstone.Project.Data.Repository;
 using Capstone.Project.Data.UnitOfWork;
@@ -186,15 +187,11 @@ namespace Capstone.Project.Services.Services
             }
             return null;
         }
-        //public override async Task<PhotoModel> CreateAsync(PhotoModel dto)
-        //{
-        //    var entity = _mapper.Map<Photo>(dto);
-        //    entity.DelFlg = false;
-        //    entity.InsDateTime = DateTime.Now;
 
-
-        //}
-
+        public double percentage(string hash1, string hash2)
+        {
+            return NewPerceptualHash.CalcSimilarDegree(hash1, hash2);
+        }
     }
 }
     

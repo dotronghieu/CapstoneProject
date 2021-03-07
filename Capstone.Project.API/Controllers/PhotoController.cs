@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Capstone.Project.API.Controllers
@@ -154,7 +155,19 @@ namespace Capstone.Project.API.Controllers
                 return Created("", result);
             }
 
-            return BadRequest(new { msg = "Photo upload failed" });
+            return BadRequest();
+        }
+        [AllowAnonymous]
+        [HttpPost("CheckSimilarity")]
+        public  IActionResult Similarity([FromForm] HashModel model)
+        {
+            var result = _photoService.percentage(model.Hash1, model.Hash2);
+            if (result > 0)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest();
         }
         [AllowAnonymous]
         [HttpGet("DownloadPhoto/{id}")]

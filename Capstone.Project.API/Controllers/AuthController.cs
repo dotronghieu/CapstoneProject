@@ -64,6 +64,16 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "Email not correct"});
         }
+        //[HttpPost("RequestNewPassword")]
+        //public async Task<IActionResult> RequestNewPassword([FromBody] RequestEmailModel model)
+        //{
+        //    var result = await _userService.RequestVerify(model);
+        //    if (result)
+        //    {
+        //        return Ok();
+        //    }
+        //    return BadRequest(new { msg = "Email not correct" });
+        //}
         [HttpPost]
         public async Task<ActionResult> Login([FromBody] LoginModel model)
         {

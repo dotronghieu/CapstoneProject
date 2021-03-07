@@ -21,6 +21,7 @@ namespace Capstone.Project.Data.Repository
         IQueryable<TEntity> GetByObject(Expression<Func<TEntity, bool>> filter, string includeProperties = "");
         void Add(TEntity entity);
         void Delete(object id);
+        void Delete2(object id, object id2);
         void Update(TEntity entityToUpdate);
     }
 }

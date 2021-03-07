@@ -292,5 +292,91 @@ namespace Capstone.Project.Services.Services
             }
             return null;
         }
+
+        public async Task<bool> RequestNewPassword(string email)
+        {
+            var user = await _unitOfWork.UserGenRepository.GetFirst(c => c.Email == email && c.DelFlg == false && c.IsVerify == true);
+            if(user != null)
+            {
+                var verifyUrl = "https://imago.azurewebsites.net/api/v1/Auth/Verify/" + user.UserId;
+                var fromMail = new MailAddress(Constants.Const.IMAGO_EMAIL, "Imago (No Reply)");
+                var toMail = new MailAddress(email);
+                var imagoPassword = Constants.Const.IMAGO_EMAIL_PASSWORD;
+                string subject = "Account recovery";
+                string body = "<br/><br/>Hi" +user.FullName+
+                  " Your login username is" + user.Username+
+                  "<br/>Click recovery link below to change your password" +
+                  " <br/><br/><a href='" + verifyUrl + "'>" + "Recovery" + "</a> ";
+
+                var smtp = new SmtpClient
+                {
+                    Host = "smtp.gmail.com",
+                    Port = 587,
+                    EnableSsl = true,
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(fromMail.Address, imagoPassword)
+
+                };
+                using (var message = new MailMessage(fromMail, toMail)
+                {
+                    Subject = subject,
+                    Body = body,
+                    IsBodyHtml = true
+                })
+                    smtp.Send(message);
+                return true;
+            }
+            return false;
+        }
+
+        public async Task <bool> Follow(FollowModel model)
+        {
+            if(model.UserId != null && model.FollowUserId != null)
+            {
+                var followModel = new FollowModel()
+                {
+                    UserId = model.UserId,
+                    FollowUserId = model.FollowUserId
+                }
+                ;
+                _unitOfWork.FollowRepository.Add(_mapper.Map<Follow>(followModel));
+                await _unitOfWork.SaveAsync();
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> Unfollow(FollowModel model)
+        {
+            Follow followModel = await _unitOfWork.FollowRepository.GetFirst(c => c.UserId == model.UserId && c.FollowUserId == model.FollowUserId);
+            if(followModel != null)
+            {
+                _unitOfWork.FollowRepository.Delete2(followModel.UserId, followModel.FollowUserId);
+                await _unitOfWork.SaveAsync();
+                return true;
+            }
+            return false;
+        }
+
+        public IEnumerable<UserFollowProfileModel> GetAllFollowingUser(string userId)
+        {
+            var userFollowList = _unitOfWork.FollowRepository.GetByObject(c => c.UserId == userId).ToList();
+            List<UserFollowProfileModel> resultList = new List<UserFollowProfileModel>();
+            if(userFollowList.Count >= 1)
+            {
+                foreach (var item in userFollowList)
+                {
+                    resultList.Add(_mapper.Map<UserFollowProfileModel>(_unitOfWork.UserGenRepository.GetById(item.FollowUserId).Result));
+                }
+                return resultList;
+            }
+            return null;
+        }
+
+        public async Task<UserFollowProfileModel> GetProfileByID(string id)
+        {
+            return  _mapper.Map<UserFollowProfileModel>(await _unitOfWork.UsersRepository.GetById(id));
+        }
     }
 }

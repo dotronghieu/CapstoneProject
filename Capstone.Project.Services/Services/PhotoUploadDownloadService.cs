@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Capstone.Project.Data.Helper;
+using Capstone.Project.Data.Helper.HashAlgorithms;
 using Capstone.Project.Data.Models;
 using Capstone.Project.Data.Repository;
 using Capstone.Project.Data.UnitOfWork;
@@ -8,6 +9,9 @@ using Capstone.Project.Services.IServices;
 using Firebase.Auth;
 using Firebase.Storage;
 using Microsoft.AspNetCore.Hosting;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -87,7 +91,7 @@ namespace Capstone.Project.Services.Services
                     var user = await _unitOfWork.UsersRepository.GetById(model.UserId);
                     //watermark link
                     FileStream wm = new FileStream(Path.Combine(path, "WM" + file.FileName), FileMode.Create);
-                    using (var img = Image.FromStream(stream))
+                    using (var img = System.Drawing.Image.FromStream(stream))
                     {
                         using (var graphic = Graphics.FromImage(img))
                         {
@@ -97,54 +101,54 @@ namespace Capstone.Project.Services.Services
                             { fontSize = img.Height; }
                             else { fontSize = img.Width; }
                             var font = new Font(FontFamily.GenericSansSerif, fontSize / 35, FontStyle.Bold, GraphicsUnit.Pixel);
-                            var color = Color.FromArgb(150, 0, 0, 0);
+                            var color = System.Drawing.Color.FromArgb(150, 0, 0, 0);
                             var brush = new SolidBrush(color);
                             double angle;
                             if (img.Width <= img.Height) { angle = 180 - Math.Atan2(img.Width, img.Height) * 180; }
                             else { angle = 180 - Math.Atan2(img.Width, img.Height) * 180; }
                             if (angle < 0) { angle = -angle; }
                             graphic.RotateTransform((float)angle);//xoay chiều watermark
-                            var point = new Point((int)(img.Width * 0.1f), (int)(img.Height * -0.1f));
+                            var point = new System.Drawing.Point((int)(img.Width * 0.1f), (int)(img.Height * -0.1f));
                             graphic.DrawString(username, font, brush, point);
-                            point = new Point((int)(img.Width * 0.5f), (int)(img.Height * -0.1f));
+                            point = new System.Drawing.Point((int)(img.Width * 0.5f), (int)(img.Height * -0.1f));
                             graphic.DrawString(username, font, brush, point);
-                            point = new Point((int)(img.Width * 0.9f), (int)(img.Height * -0.1f));
+                            point = new System.Drawing.Point((int)(img.Width * 0.9f), (int)(img.Height * -0.1f));
                             graphic.DrawString(username, font, brush, point);
-                            point = new Point((int)(img.Width * 0.3f), (int)(img.Height * -0.3f));
+                            point = new System.Drawing.Point((int)(img.Width * 0.3f), (int)(img.Height * -0.3f));
                             graphic.DrawString(username, font, brush, point);
-                            point = new Point((int)(img.Width * 0.7f), (int)(img.Height * -0.3f));
+                            point = new System.Drawing.Point((int)(img.Width * 0.7f), (int)(img.Height * -0.3f));
                             graphic.DrawString(username, font, brush, point);
-                            point = new Point((int)(img.Width * 0.1f), (int)(img.Height * 0.1f));
+                            point = new System.Drawing.Point((int)(img.Width * 0.1f), (int)(img.Height * 0.1f));
                             graphic.DrawString(username, font, brush, point);
-                            point = new Point((int)(img.Width * 0.5f), (int)(img.Height * 0.1f));
+                            point = new System.Drawing.Point((int)(img.Width * 0.5f), (int)(img.Height * 0.1f));
                             graphic.DrawString(username, font, brush, point);
-                            point = new Point((int)(img.Width * 0.9f), (int)(img.Height * 0.1f));
+                            point = new System.Drawing.Point((int)(img.Width * 0.9f), (int)(img.Height * 0.1f));
                             graphic.DrawString(username, font, brush, point);
-                            point = new Point((int)(img.Width * 0.3f), (int)(img.Height * 0.3f));
+                            point = new System.Drawing.Point((int)(img.Width * 0.3f), (int)(img.Height * 0.3f));
                             graphic.DrawString(username, font, brush, point);
-                            point = new Point((int)(img.Width * 0.7f), (int)(img.Height * 0.3f));
+                            point = new System.Drawing.Point((int)(img.Width * 0.7f), (int)(img.Height * 0.3f));
                             graphic.DrawString(username, font, brush, point);
-                            point = new Point((int)(img.Width * 0.1f), (int)(img.Height * 0.5f));
+                            point = new System.Drawing.Point((int)(img.Width * 0.1f), (int)(img.Height * 0.5f));
                             graphic.DrawString(username, font, brush, point);
-                            point = new Point((int)(img.Width * 0.5f), (int)(img.Height * 0.5f));
+                            point = new System.Drawing.Point((int)(img.Width * 0.5f), (int)(img.Height * 0.5f));
                             graphic.DrawString(username, font, brush, point);
-                            point = new Point((int)(img.Width * 0.9f), (int)(img.Height * 0.5f));
-                            graphic.DrawString(username, font, brush, point);
-                            graphic.DrawString(username, font, brush, point);
-                            point = new Point((int)(img.Width * 0.3f), (int)(img.Height * 0.7f));
-                            graphic.DrawString(username, font, brush, point);
-                            point = new Point((int)(img.Width * 0.7f), (int)(img.Height * 0.7f));
-                            graphic.DrawString(username, font, brush, point);
-                            point = new Point((int)(img.Width * 0.1f), (int)(img.Height * -0.5f));
-                            graphic.DrawString(username, font, brush, point);
-                            point = new Point((int)(img.Width * 0.5f), (int)(img.Height * -0.5f));
-                            graphic.DrawString(username, font, brush, point);
-                            point = new Point((int)(img.Width * 0.9f), (int)(img.Height * -0.5f));
+                            point = new System.Drawing.Point((int)(img.Width * 0.9f), (int)(img.Height * 0.5f));
                             graphic.DrawString(username, font, brush, point);
                             graphic.DrawString(username, font, brush, point);
-                            point = new Point((int)(img.Width * 0.3f), (int)(img.Height * -0.7f));
+                            point = new System.Drawing.Point((int)(img.Width * 0.3f), (int)(img.Height * 0.7f));
                             graphic.DrawString(username, font, brush, point);
-                            point = new Point((int)(img.Width * 0.7f), (int)(img.Height * -0.7f));
+                            point = new System.Drawing.Point((int)(img.Width * 0.7f), (int)(img.Height * 0.7f));
+                            graphic.DrawString(username, font, brush, point);
+                            point = new System.Drawing.Point((int)(img.Width * 0.1f), (int)(img.Height * -0.5f));
+                            graphic.DrawString(username, font, brush, point);
+                            point = new System.Drawing.Point((int)(img.Width * 0.5f), (int)(img.Height * -0.5f));
+                            graphic.DrawString(username, font, brush, point);
+                            point = new System.Drawing.Point((int)(img.Width * 0.9f), (int)(img.Height * -0.5f));
+                            graphic.DrawString(username, font, brush, point);
+                            graphic.DrawString(username, font, brush, point);
+                            point = new System.Drawing.Point((int)(img.Width * 0.3f), (int)(img.Height * -0.7f));
+                            graphic.DrawString(username, font, brush, point);
+                            point = new System.Drawing.Point((int)(img.Width * 0.7f), (int)(img.Height * -0.7f));
                             graphic.DrawString(username, font, brush, point);
                             ImageFormat imageFormat = GetImageFormat(file.FileName);
                             img.Save(wm, imageFormat);
@@ -172,7 +176,7 @@ namespace Capstone.Project.Services.Services
                         Console.WriteLine("Exception_UploadPhotoService_WM: {0}", ex);
                         return null;
                     }
-
+                    System.Drawing.Image image = System.Drawing.Image.FromStream(stream);
                     stream.Dispose();
                     string imgdel = Path.Combine(path, file.FileName);
                     System.IO.File.Delete(imgdel);
@@ -187,6 +191,7 @@ namespace Capstone.Project.Services.Services
                     photo.TypeId = model.TypeId;
                     photo.UserId = model.UserId;
                     photo.DelFlg = false;
+                    photo.Hash = NewPerceptualHash.GetHash(image);
                     photo.Description = model.Description;
                     photo.ApproveStatus = Constants.Const.PHOTO_STATUS_PENDING;
                     // add to DB

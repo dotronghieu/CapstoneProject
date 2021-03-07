@@ -15,9 +15,11 @@ namespace Capstone.Project.Data.Models
         public CapstoneProjectContext(DbContextOptions<CapstoneProjectContext> options)
             : base(options)
         {
+        
         }
 
         public virtual DbSet<Category> Categories { get; set; }
+        public virtual DbSet<Follow> Follows { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<OrderDetail> OrderDetails { get; set; }
         public virtual DbSet<Photo> Photos { get; set; }
@@ -51,6 +53,33 @@ namespace Capstone.Project.Data.Models
                 entity.Property(e => e.CategoryName).HasMaxLength(50);
 
                 entity.Property(e => e.Description).HasMaxLength(100);
+            });
+
+            modelBuilder.Entity<Follow>(entity =>
+            {
+                entity.HasKey(e => new { e.UserId, e.FollowUserId });
+
+                entity.ToTable("Follow");
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.FollowUserId)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.FollowUser)
+                    .WithMany(p => p.FollowFollowUsers)
+                    .HasForeignKey(d => d.FollowUserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Follow_User1");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.FollowUsers)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Follow_User");
             });
 
             modelBuilder.Entity<Order>(entity =>
@@ -111,6 +140,8 @@ namespace Capstone.Project.Data.Models
                 entity.Property(e => e.ApproveStatus)
                     .HasMaxLength(50)
                     .IsUnicode(false);
+
+                entity.Property(e => e.Hash).IsUnicode(false);
 
                 entity.Property(e => e.InsDateTime)
                     .HasColumnType("datetime")

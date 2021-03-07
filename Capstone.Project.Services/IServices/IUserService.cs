@@ -18,11 +18,16 @@ namespace Capstone.Project.Services.IServices
         Task<bool> CheckPasswordToUpdate(string username, string oldPassword, string newPassword);
         Task<UserModel> GetByID(string id);
         Task<bool> RequestVerify(RequestEmailModel model);
+        Task<bool> RequestNewPassword(string email);
         Task<bool> ApprovePhoto(int photoId);
         Task<bool> DeniedPhoto(DeniedPhotoModel model);
         Task<bool> Activate(string id);
+        Task<bool> Follow(FollowModel model);
+        Task<bool> Unfollow(FollowModel model);
         IEnumerable<PhotoModel> GetAllPhotoApproved(string userId);
         IEnumerable<PhotoModel> GetAllPendingPhoto(string userId);
         IEnumerable<PhotoModel> GetAllDeniedPhoto(string userId);
+        IEnumerable<UserFollowProfileModel> GetAllFollowingUser(String userId);
+        Task<UserFollowProfileModel> GetProfileByID(string id);
     }
 }

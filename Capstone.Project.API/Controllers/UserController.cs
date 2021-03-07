@@ -119,5 +119,6 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "No photo recorded" });
         }
+
     }
 }

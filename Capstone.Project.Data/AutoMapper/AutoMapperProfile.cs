@@ -16,6 +16,8 @@ namespace Capstone.Project.Data.AutoMapper
             CreateMap<RegisterModel, User>();
             CreateMap<UserUpdateModel, User>();
             CreateMap<User, UserUpdateModel>();
+            CreateMap<User, UserFollowProfileModel>();
+            CreateMap<UserFollowProfileModel, User>();
 
             CreateMap<Role, RoleModel>();
             CreateMap<RoleModel, Role>();
@@ -37,6 +39,9 @@ namespace Capstone.Project.Data.AutoMapper
 
             CreateMap<OrderDetail, OrderDetailModel>();
             CreateMap<OrderDetailModel, OrderDetail>();
+
+            CreateMap<Follow, FollowModel>();
+            CreateMap<FollowModel, Follow>();
 
 
         }

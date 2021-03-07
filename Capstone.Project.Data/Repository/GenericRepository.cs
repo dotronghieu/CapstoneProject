@@ -71,6 +71,12 @@ namespace Capstone.Project.Data.Repository
             _dbSet.Attach(entity);
             _dbSet.Remove(entity);
         }
+        public virtual void Delete2(object id, object id2)
+        {
+            TEntity entity = _dbSet.Find(id, id2);
+            _dbSet.Attach(entity);
+            _dbSet.Remove(entity);
+        }
 
         public virtual IQueryable<TEntity> GetByObject(Expression<Func<TEntity, bool>> filter, string includeProperties = "")
         {
