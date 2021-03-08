@@ -70,7 +70,8 @@ namespace Capstone.Project.Services.Services
                     {
                         OrderId = order.OrderId,
                         PhotoId = item.PhotoId,
-                        Price = item.Price
+                        Price = item.Price,
+                        PaymentFlag = false
                     };
                     _unitOfWork.OrderDetailRepository.Add(orderDetail);
                 }
