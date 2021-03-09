@@ -15,7 +15,6 @@ namespace Capstone.Project.Data.Models
         public CapstoneProjectContext(DbContextOptions<CapstoneProjectContext> options)
             : base(options)
         {
-        
         }
 
         public virtual DbSet<Category> Categories { get; set; }
@@ -119,6 +118,8 @@ namespace Capstone.Project.Data.Models
                 entity.Property(e => e.OrderId)
                     .HasMaxLength(100)
                     .IsUnicode(false);
+
+                entity.Property(e => e.Price).HasColumnType("money");
 
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.OrderDetails)

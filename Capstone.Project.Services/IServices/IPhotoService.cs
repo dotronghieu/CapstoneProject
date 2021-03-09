@@ -19,7 +19,7 @@ namespace Capstone.Project.Services.IServices
         IEnumerable<PhotoModelAdmin> GetPhotoNotApproved();
         (IEnumerable<PhotoModelGetAll>,int) SearchPhoto(string key, int pageSize, int pageNumber);
 
-
+        //Task<PhotoModel> GetSimilarPhoto(int photoId); 
         IEnumerable<PhotoModel> GetPhotoByUser(String userId);
     }
 
