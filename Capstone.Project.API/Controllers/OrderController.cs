@@ -19,7 +19,7 @@ namespace Capstone.Project.API.Controllers
             _orderService = orderService;
         }
         [HttpPost()]
-        public async Task<IActionResult> OrderPhoto([FromBody] OrderModel orderModel)
+        public async Task<IActionResult> OrderPhoto([FromForm] OrderModel orderModel)
         {
             var result = await _orderService.OrderPhoto(orderModel);
             if (result != null)
