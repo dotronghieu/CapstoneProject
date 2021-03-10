@@ -84,6 +84,17 @@ namespace Capstone.Project.API.Controllers
             return BadRequest( new { msg = "photo is not found"});
         }
         [AllowAnonymous]
+        [HttpGet("GetSimilarPhoto/{id}")]
+        public async Task<IActionResult> GetSimilarPhoto(int id)
+        {
+            var photo = await _photoService.GetSimilarPhoto(id);
+            if (photo != null)
+            {
+                return Ok(photo);
+            }
+            return BadRequest(new { msg = "No similar photo found" });
+        }
+        [AllowAnonymous]
         [HttpGet("GetByIdDecrypted/{id}")]
         public async Task<IActionResult> GetByIdDecrypted(int id)
         {

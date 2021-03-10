@@ -26,7 +26,6 @@ namespace Capstone.Project.Data.Models
         public string Email { get; set; }
         public string Phone { get; set; }
         public DateTime? DayOfBirth { get; set; }
-        public string Avatar { get; set; }
         public int? RoleId { get; set; }
         public bool? DelFlg { get; set; }
         public DateTime? SuspendTime { get; set; }

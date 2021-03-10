@@ -306,6 +306,9 @@ namespace Capstone.Project.Data.Models
             {
                 entity.ToTable("User");
 
+                entity.HasIndex(e => e.Email, "IX_Email")
+                    .IsUnique();
+
                 entity.HasIndex(e => e.Username, "IX_User")
                     .IsUnique();
 

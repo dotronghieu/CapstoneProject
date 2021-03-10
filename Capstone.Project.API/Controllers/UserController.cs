@@ -69,6 +69,7 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "Old Password is not correct"});
         }
+       
         [HttpPut("ApprovePhoto/{id}")]
         public async Task<IActionResult> ApprovePhoto(int id)
         {

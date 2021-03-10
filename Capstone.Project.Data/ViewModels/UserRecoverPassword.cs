@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Capstone.Project.Data.ViewModels
 {
-    public class OrderDetailModel
+    public class UserRecoverPassword
     {
-        public int PhotoId { get; set; }
-        public decimal? Price { get; set; }
+        public string UserId { get; set; }
+        public string NewPassword { get; set; }
     }
 }

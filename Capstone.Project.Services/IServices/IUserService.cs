@@ -16,6 +16,7 @@ namespace Capstone.Project.Services.IServices
         Task<bool> CheckPassWord(string username, string password);
          UserModel UpdateUser(string id, UserUpdateModel userUpdateModel);
         Task<bool> CheckPasswordToUpdate(string username, string oldPassword, string newPassword);
+        Task<bool> RecoverPasswordForUser(string userId, string newPassword);
         Task<UserModel> GetByID(string id);
         Task<bool> RequestVerify(RequestEmailModel model);
         Task<bool> RequestNewPassword(string email);

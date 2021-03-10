@@ -127,7 +127,17 @@ namespace Capstone.Project.Services.Services
             }
             return false;
         }
-
+        public async Task<bool> RecoverPasswordForUser(string userId, string newPassword)
+        {          
+                var user = await _unitOfWork.UsersRepository.GetById(userId);
+                byte[] passwordHash, passwordSalt;
+                _unitOfWork.UsersRepository.CreatePasswordHash(newPassword, out passwordHash, out passwordSalt);
+                user.PasswordHash = passwordHash;
+                user.PasswordSalt = passwordSalt;
+                _unitOfWork.UserGenRepository.Update(user);
+                await _unitOfWork.SaveAsync();
+                return true;
+        }
         public async Task<UserModel> LoginGoogle(string uid, string username, string password)
         {
             UserRecord user_firebase = await FirebaseAuth.DefaultInstance.GetUserAsync(uid);
@@ -144,7 +154,6 @@ namespace Capstone.Project.Services.Services
                     FullName = user_firebase.DisplayName,
                     IsVerify = true,
                     DelFlg = false,
-                    Avatar = user_firebase.PhotoUrl
                 };
 
                 await _unitOfWork.UsersRepository.Create(user_info, password);
@@ -166,7 +175,7 @@ namespace Capstone.Project.Services.Services
             var user = await _unitOfWork.UsersRepository.GetById(model.UserId);
             if(model.Email == user.Email)
             {
-                var verifyUrl = "https://capstonerestapi.azurewebsites.net/api/v1/Auth/Verify/" + model.UserId;
+                var verifyUrl = "https://imago.azurewebsites.net//api/v1/Auth/Verify/" + model.UserId;
                 var fromMail = new MailAddress(Constants.Const.IMAGO_EMAIL, "Imago (No Reply)");
                 var toMail = new MailAddress(model.Email);
                 var imagoPassword = Constants.Const.IMAGO_EMAIL_PASSWORD;
@@ -298,13 +307,13 @@ namespace Capstone.Project.Services.Services
             var user = await _unitOfWork.UserGenRepository.GetFirst(c => c.Email == email && c.DelFlg == false && c.IsVerify == true);
             if(user != null)
             {
-                var verifyUrl = "https://imago.azurewebsites.net/api/v1/Auth/Verify/" + user.UserId;
+                var verifyUrl = "http://localhost:8081/#/changepassword/" + user.UserId;
                 var fromMail = new MailAddress(Constants.Const.IMAGO_EMAIL, "Imago (No Reply)");
                 var toMail = new MailAddress(email);
                 var imagoPassword = Constants.Const.IMAGO_EMAIL_PASSWORD;
                 string subject = "Account recovery";
-                string body = "<br/><br/>Hi" +user.FullName+
-                  " Your login username is" + user.Username+
+                string body = "<br/><br/>Hi " + user.FullName+
+                  " Your login username is : " + "<b>" + user.Username+ "</b>" +
                   "<br/>Click recovery link below to change your password" +
                   " <br/><br/><a href='" + verifyUrl + "'>" + "Recovery" + "</a> ";
 

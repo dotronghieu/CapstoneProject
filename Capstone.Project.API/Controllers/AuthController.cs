@@ -64,16 +64,16 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "Email not correct"});
         }
-        //[HttpPost("RequestNewPassword")]
-        //public async Task<IActionResult> RequestNewPassword([FromBody] RequestEmailModel model)
-        //{
-        //    var result = await _userService.RequestVerify(model);
-        //    if (result)
-        //    {
-        //        return Ok();
-        //    }
-        //    return BadRequest(new { msg = "Email not correct" });
-        //}
+        [HttpPost("RequestRecoveryPassword/{email}")]
+        public async Task<IActionResult> RequestNewPassword(string email)
+        {
+            var result = await _userService.RequestNewPassword(email);
+            if (result)
+            {
+                return Ok();
+            }
+            return BadRequest(new { msg = "Email not correct" });
+        }
         [HttpPost]
         public async Task<ActionResult> Login([FromBody] LoginModel model)
         {
@@ -112,7 +112,6 @@ namespace Capstone.Project.API.Controllers
                     email = user.Email,
                     fullName = user.FullName,
                     username = user.Username,
-                    avatar = user.Avatar,
                     isVerify = user.IsVerify,
                     expiration = token.ValidTo,
                     userId = user.UserId,
@@ -121,6 +120,15 @@ namespace Capstone.Project.API.Controllers
                 });
             }
             return Unauthorized();
+        }
+        [HttpPut("RecoveryPasswordForUser")]
+        public async Task<IActionResult> RecoverPassword([FromBody] UserRecoverPassword viewModel)
+        {
+            if (await _userService.RecoverPasswordForUser(viewModel.UserId, viewModel.NewPassword))
+            {
+                return Ok(new { msg = "Password has been recovered" });
+            }
+            return BadRequest(new { msg = "Failed" });
         }
         [HttpPost("Google")]
         public async Task<IActionResult> LoginGoogle(UserModelRequestParam login)
@@ -157,7 +165,6 @@ namespace Capstone.Project.API.Controllers
                     email = user.Email,
                     fullName = user.FullName,
                     username = user.Username,
-                    avatar = user.Avatar,
                     expiration = token.ValidTo
                 });
             }

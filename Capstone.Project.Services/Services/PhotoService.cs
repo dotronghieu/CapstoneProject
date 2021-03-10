@@ -193,14 +193,23 @@ namespace Capstone.Project.Services.Services
             return NewPerceptualHash.CalcSimilarDegree(hash1, hash2);
         }
 
-        //public async Task<PhotoModel> GetSimilarPhoto(int photoId)
-        //{
-        //    var photoToCheck = await _reponsitory.GetById(photoId);
-        //    if(photoToCheck != null)
-        //    {
-        //        var listOfPhotoInDB = _reponsitory.GetByObject(p => p.DelFlg == false && p.ApproveStatus != "Denied");
-        //    }
-        //}
+        public async Task<PhotoModel> GetSimilarPhoto(int photoId)
+        {
+            var photoToCheck = await _reponsitory.GetById(photoId);
+            if (photoToCheck != null)
+            {
+                var listOfPhotoInDB = _reponsitory.GetByObject(p => p.DelFlg == false && p.ApproveStatus != "Denied" && p.PhotoId != photoId).ToList();
+                foreach (var item in listOfPhotoInDB)
+                {
+                    double check = NewPerceptualHash.CalcSimilarDegree(photoToCheck.Hash, item.Hash);
+                    if(check <= 5)
+                    {
+                        return _mapper.Map<PhotoModel>(item);
+                    }
+                }          
+            }
+            return null;
+        }
     }
 }
     
