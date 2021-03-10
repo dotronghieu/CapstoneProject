@@ -51,7 +51,7 @@ namespace Capstone.Project.Services.Services
                 {
                     TransactionId = orderModel.TransactionId,
                     Amount = orderModel.Amount,
-                    CreateTime = orderModel.CreateTime,
+                    CreateTime = DateTime.Parse(orderModel.CreateTime),
                     PayerId = orderModel.PayerId,
                     PayerPaypalEmail = orderModel.PayerPaypalEmail
                 };
@@ -64,13 +64,13 @@ namespace Capstone.Project.Services.Services
                     TransactionId = orderModel.TransactionId
                 };
                 _unitOfWork.OrdersRepository.Add(order);
-                foreach (OrderDetailModel item in orderModel.OrderDetail)
+                foreach (int item in orderModel.ListPhotoId)
                 {
                     var orderDetail = new OrderDetail()
                     {
                         OrderId = order.OrderId,
-                        PhotoId = item.PhotoId,
-                        Price = item.Price,
+                        PhotoId = item,
+                        Price = _unitOfWork.PhotoRepository.GetById(item).Result.Price,
                         PaymentFlag = false
                     };
                     _unitOfWork.OrderDetailRepository.Add(orderDetail);
