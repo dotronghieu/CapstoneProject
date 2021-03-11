@@ -65,7 +65,7 @@ namespace Capstone.Project.API.Controllers
         {
             if (await _userService.CheckPasswordToUpdate(viewModel.Username, viewModel.OldPassword, viewModel.NewPassword))
             {
-                return Ok(_userService.GetByUserName(viewModel.Username));
+                return Ok(_userService.GetByUserName(viewModel.Username).Result);
             }
             return BadRequest(new { msg = "Old Password is not correct"});
         }

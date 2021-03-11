@@ -6,7 +6,6 @@ namespace Capstone.Project.Data.ViewModels
 {
     public class UserUpdateModel
     {
-        public string Username { get; set; } 
         public string FullName { get; set; }
         public string Description { get; set; }
         public string Email { get; set; }

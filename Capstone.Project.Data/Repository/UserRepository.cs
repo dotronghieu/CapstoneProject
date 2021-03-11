@@ -87,7 +87,6 @@ namespace Capstone.Project.Data.Repository
                 entity.DelFlg = false;
                 entity.DayOfBirth = user.DayOfBirth;
                 entity.Description = user.Description;                
-                entity.Username = user.Username;
                 entity.FullName = user.FullName;
                 _context.Users.Update(entity);
                 _context.SaveChanges();
