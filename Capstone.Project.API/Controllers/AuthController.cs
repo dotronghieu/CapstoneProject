@@ -64,8 +64,8 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "Email not correct"});
         }
-        [HttpPost("RequestRecoveryPassword/{email}")]
-        public async Task<IActionResult> RequestNewPassword(string email)
+        [HttpPost("RequestRecoveryPassword")]
+        public async Task<IActionResult> RequestNewPassword([FromForm] string email)
         {
             var result = await _userService.RequestNewPassword(email);
             if (result)
