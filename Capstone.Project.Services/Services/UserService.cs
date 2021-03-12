@@ -307,7 +307,7 @@ namespace Capstone.Project.Services.Services
             var user = await _unitOfWork.UserGenRepository.GetFirst(c => c.Email == email && c.DelFlg == false && c.IsVerify == true);
             if(user != null)
             {
-                var verifyUrl = "http://localhost:8081/#/changeforgotpassword/" + user.UserId;
+                var verifyUrl = "http://localhost:8081/#/changeforgotpassword?userId=" + user.UserId;
                 var fromMail = new MailAddress(Constants.Const.IMAGO_EMAIL, "Imago (No Reply)");
                 var toMail = new MailAddress(email);
                 var imagoPassword = Constants.Const.IMAGO_EMAIL_PASSWORD;
