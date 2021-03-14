@@ -92,9 +92,8 @@ namespace Capstone.Project.API
                     builder.AllowAnyOrigin()
                             .AllowAnyMethod()
                             .AllowAnyHeader()
-                            .WithExposedHeaders("X-Pagination");
-
-                    //.AllowCredentials();
+                            .WithExposedHeaders("X-Pagination")
+                            .AllowCredentials();
                 });
             });
             services.AddControllers().AddNewtonsoftJson(option => option.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
