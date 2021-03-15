@@ -22,25 +22,32 @@ namespace Capstone.Project.Services.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<PhotoModel>> GetUserBoughtPhoto(string id)
+        public async Task<IEnumerable<PhotoTransactionModel>> GetUserBoughtPhoto(string id)
         {
             var orderList = _unitOfWork.OrdersRepository.GetByObject(f => f.UserId == id, includeProperties: "OrderDetails").ToList();
             if(orderList != null)
             {
-                List<PhotoModel> result = new List<PhotoModel>();
+                List<PhotoTransactionModel> result = new List<PhotoTransactionModel>();
                 foreach (var order in orderList)
                 {
                     var orderDetailList = order.OrderDetails;
                     foreach (var orderDetail in orderDetailList)
                     {
-                        result.Add(_mapper.Map<PhotoModel>(await _unitOfWork.PhotoRepository.GetById(orderDetail.PhotoId)));
+                        var model = _mapper.Map<PhotoTransactionModel>(await _unitOfWork.PhotoRepository.GetById(orderDetail.PhotoId));
+                        model.TransactionId = GetTransactionIDByOrderID(orderDetail.OrderId);
+                        result.Add(model);
                     }
                 }
-                return result.AsEnumerable<PhotoModel>();
+                return result.AsEnumerable<PhotoTransactionModel>();
             }
             return null;
         }
 
+        private string GetTransactionIDByOrderID(string orderId)
+        {
+            var order = _unitOfWork.OrdersRepository.GetFirst(o => o.OrderId == orderId).Result;
+            return order.TransactionId;
+        }
         public async Task<Order> OrderPhoto(OrderModel orderModel)
         {
             Order order = null;
