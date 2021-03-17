@@ -18,7 +18,7 @@ namespace Capstone.Project.API.Controllers
         {
             _userService = userService;
         }
-        [HttpPost("Follow")]
+        [HttpPut("Follow")]
         public async Task<IActionResult> Follow([FromBody] FollowModel model)
         {
             var result = await _userService.Follow(model);
