@@ -30,5 +30,7 @@ namespace Capstone.Project.Services.IServices
         IEnumerable<PhotoModel> GetAllDeniedPhoto(string userId);
         IEnumerable<UserFollowProfileModel> GetAllFollowingUser(String userId);
         Task<UserFollowProfileModel> GetProfileByID(string id);
+        PhotoStatusStatisticModel GetPhotoStatusStatisticByUserID(string userId);
+        
     }
 }

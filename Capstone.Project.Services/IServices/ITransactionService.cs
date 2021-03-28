@@ -7,12 +7,8 @@ using System.Threading.Tasks;
 
 namespace Capstone.Project.Services.IServices
 {
-    public interface IOrderService
+    public interface ITransactionService
     {
-        public Task<IEnumerable<PhotoTransactionModel>> GetUserBoughtPhoto(string id);
-        public Task<Order> OrderPhoto(OrderModel orderModel);
-
-       
-
+        public Task<TransactionModel> GetTransaction(string transactionId);
     }
 }

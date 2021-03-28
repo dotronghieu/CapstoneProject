@@ -387,5 +387,17 @@ namespace Capstone.Project.Services.Services
         {
             return  _mapper.Map<UserFollowProfileModel>(await _unitOfWork.UsersRepository.GetById(id));
         }
+
+        public PhotoStatusStatisticModel GetPhotoStatusStatisticByUserID(string userId)
+        {
+            var numberOfApprovedPhoto = _unitOfWork.PhotoRepository.GetByObject(p => p.UserId == userId && p.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED).Count();
+            var numberOfDeniedPhoto = _unitOfWork.PhotoRepository.GetByObject(p => p.UserId == userId && p.ApproveStatus == Constants.Const.PHOTO_STATUS_DENIED).Count();
+            var numberOfPendingPhoto = _unitOfWork.PhotoRepository.GetByObject(p => p.UserId == userId && p.ApproveStatus == Constants.Const.PHOTO_STATUS_PENDING).Count();
+            PhotoStatusStatisticModel result = new PhotoStatusStatisticModel();
+            result.NumberOfApprovedPhoto = numberOfApprovedPhoto;
+            result.NumberOfDeniedPhoto = numberOfDeniedPhoto;
+            result.NumberOfPendingPhoto = numberOfPendingPhoto;
+            return result;
+        }
     }
 }

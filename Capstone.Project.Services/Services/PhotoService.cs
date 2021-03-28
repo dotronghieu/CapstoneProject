@@ -93,7 +93,7 @@ namespace Capstone.Project.Services.Services
         public (IEnumerable<PhotoModelGetAll>,int) SearchPhoto(string key, int pageSize, int pageNumber)
         {
             List<PhotoModelGetAll> resultList = new List<PhotoModelGetAll>();
-            var list1 = _unitOfWork.PhotoRepository.GetByObject(c => c.PhotoName.Contains(key));
+            var list1 = _unitOfWork.PhotoRepository.GetByObject(c => c.PhotoName.Contains(key) && c.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED);
             var list2 = _unitOfWork.PhotoCategoryRepository.GetByObject(c => c.Category.CategoryName.Contains(key), includeProperties: "Photo").ToList();
             if (list1 != null)
             {
@@ -198,7 +198,7 @@ namespace Capstone.Project.Services.Services
             var photoToCheck = await _reponsitory.GetById(photoId);
             if (photoToCheck != null)
             {
-                var listOfPhotoInDB = _reponsitory.GetByObject(p => p.DelFlg == false && p.ApproveStatus != "Denied" && p.PhotoId != photoId).ToList();
+                var listOfPhotoInDB = _reponsitory.GetByObject(p => p.DelFlg == false && p.ApproveStatus != Constants.Const.PHOTO_STATUS_DENIED && p.ApproveStatus != Constants.Const.PHOTO_STATUS_PENDING && p.PhotoId != photoId).ToList();
                 foreach (var item in listOfPhotoInDB)
                 {
                     double check = NewPerceptualHash.CalcSimilarDegree(photoToCheck.Hash, item.Hash);
