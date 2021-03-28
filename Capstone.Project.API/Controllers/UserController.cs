@@ -130,5 +130,15 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest();
         }
+        [HttpPost("GetSellPhotoStatistic")]
+        public IActionResult GetSellPhotoStatistic([FromBody] StatisicModel model)
+        {
+            var result = _userService.GetSellStatisticByUserIDAndTime(model);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return BadRequest(new { msg = "No record" });
+        }
     }
 }
