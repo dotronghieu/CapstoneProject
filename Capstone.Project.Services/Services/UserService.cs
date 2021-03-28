@@ -403,32 +403,35 @@ namespace Capstone.Project.Services.Services
         public List<UserSellStatisticModel> GetSellStatisticByUserIDAndTime(StatisicModel model)
         {
             var result = new List<UserSellStatisticModel>();
-            var listOrders = _unitOfWork.OrdersRepository.GetByObject(o => o.InsDateTime >= model.StartDate && o.InsDateTime <= model.EndDate && o.UserId == model.UserId, includeProperties: "OrderDetails").ToList();
+            var listOrders = _unitOfWork.OrdersRepository.GetByObject(o => o.InsDateTime >= model.StartDate && o.InsDateTime <= model.EndDate, includeProperties: "OrderDetails").ToList();
             foreach (var order in listOrders)
             {
                 var listOrderDetail = order.OrderDetails;
                 foreach (var orderDetail in listOrderDetail)
                 {
                     var photo = _unitOfWork.PhotoRepository.GetById(orderDetail.PhotoId).Result;
-                    var statisticPhoto = new UserSellStatisticModel
+                    if(photo.UserId == model.UserId)
                     {
-                        PhotoId = photo.PhotoId,
-                        Link = photo.Link,
-                        Wmlink = photo.Wmlink,
-                        PhotoName = photo.PhotoName,
-                        TotalNumberAmount = 0,
-                        TotalSellAmount = orderDetail.Price
-                    };
-                    var obj = result.FirstOrDefault(x => x.PhotoId == statisticPhoto.PhotoId);
-                    if(obj != null)
-                    {
-                        obj.TotalNumberAmount += 1;
-                        obj.TotalSellAmount += statisticPhoto.TotalSellAmount;
-                    }
-                    if(obj == null)
-                    {
-                        result.Add(statisticPhoto);
-                    }
+                        var statisticPhoto = new UserSellStatisticModel
+                        {
+                            PhotoId = photo.PhotoId,
+                            Link = photo.Link,
+                            Wmlink = photo.Wmlink,
+                            PhotoName = photo.PhotoName,
+                            TotalNumberAmount = 0,
+                            TotalSellAmount = orderDetail.Price
+                        };
+                        var obj = result.FirstOrDefault(x => x.PhotoId == statisticPhoto.PhotoId);
+                        if (obj != null)
+                        {
+                            obj.TotalNumberAmount += 1;
+                            obj.TotalSellAmount += statisticPhoto.TotalSellAmount;
+                        }
+                        if (obj == null)
+                        {
+                            result.Add(statisticPhoto);
+                        }
+                    }                  
                 }
             }
             return result;       
