@@ -7,7 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Net;
+using System.Net.Mail;
 using System.Threading.Tasks;
+using Capstone.Project.Data.Helper;
 
 namespace Capstone.Project.Services.Services
 {
@@ -76,6 +79,39 @@ namespace Capstone.Project.Services.Services
                     _unitOfWork.OrderDetailRepository.Add(orderDetail);
                 }
                 await _unitOfWork.SaveAsync();
+            }
+            var user = await _unitOfWork.UserGenRepository.GetById(orderModel.UserId);
+            if (user != null)
+            {
+                var verifyUrl = "http://localhost:8081/#/changeforgotpassword?userId=" + user.UserId;
+                var fromMail = new MailAddress(Constants.Const.IMAGO_EMAIL, "Imago (No Reply)");
+                var toMail = new MailAddress(user.Email);
+                var imagoPassword = Constants.Const.IMAGO_EMAIL_PASSWORD;
+                string subject = "Transaction Success";
+                string body = "<br/><br/>Hi " + user.FullName +
+                  "<br/><br/>Your transaction was successful. This is your proofid: " + orderModel.ProofId +
+                  "<br/><br/>This is proof that you can look up your transaction." +
+                  "<br/><br/>You must keep it carefully!" +
+                  "<br/><br/>Sincerely";
+
+
+                var smtp = new SmtpClient
+                {
+                    Host = "smtp.gmail.com",
+                    Port = 587,
+                    EnableSsl = true,
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(fromMail.Address, imagoPassword)
+
+                };
+                using (var message = new MailMessage(fromMail, toMail)
+                {
+                    Subject = subject,
+                    Body = body,
+                    IsBodyHtml = true
+                })
+                smtp.Send(message);
             }
             return _mapper.Map<Order>(order);
         }
