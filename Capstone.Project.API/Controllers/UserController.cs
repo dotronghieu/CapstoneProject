@@ -33,7 +33,7 @@ namespace Capstone.Project.API.Controllers
             
         }
         [HttpGet("GetById/{id}")]
-        public async Task<IActionResult> GetUserById([FromBody] string id)
+        public async Task<IActionResult> GetUserById(string id)
         {
             var user = await  _userService.GetByID(id);
             if (user != null)
