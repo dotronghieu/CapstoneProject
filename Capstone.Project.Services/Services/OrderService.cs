@@ -37,6 +37,7 @@ namespace Capstone.Project.Services.Services
                     foreach (var orderDetail in orderDetailList)
                     {
                         var model = _mapper.Map<PhotoTransactionModel>(await _unitOfWork.PhotoRepository.GetById(orderDetail.PhotoId));
+                        model.BoughtPrice = orderDetail.Price;
                         model.TransactionId = GetTransactionIDByOrderID(orderDetail.OrderId);
                         result.Add(model);
                     }
