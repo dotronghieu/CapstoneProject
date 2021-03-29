@@ -38,6 +38,7 @@ namespace Capstone.Project.Services.Services
                     {
                         var model = _mapper.Map<PhotoTransactionModel>(await _unitOfWork.PhotoRepository.GetById(orderDetail.PhotoId));
                         model.BoughtPrice = orderDetail.Price;
+                        model.BoughtTime = order.InsDateTime;
                         model.TransactionId = GetTransactionIDByOrderID(orderDetail.OrderId);
                         result.Add(model);
                     }
