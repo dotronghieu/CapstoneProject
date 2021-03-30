@@ -436,5 +436,21 @@ namespace Capstone.Project.Services.Services
             }
             return result;       
         }
+
+        public bool CheckFollow(FollowModel model)
+        {
+            var userFollowList = _unitOfWork.FollowRepository.GetByObject(c => c.UserId == model.UserId).ToList();
+            if (userFollowList.Count >= 1)
+            {
+                foreach (var item in userFollowList)
+                {
+                    if (item.FollowUserId == model.FollowUserId)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
     }
 }

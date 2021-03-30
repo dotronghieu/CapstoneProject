@@ -24,6 +24,7 @@ namespace Capstone.Project.Services.IServices
         Task<bool> DeniedPhoto(DeniedPhotoModel model);
         Task<bool> Activate(string id);
         Task<bool> Follow(FollowModel model);
+        bool CheckFollow(FollowModel model);
         Task<bool> Unfollow(FollowModel model);
         IEnumerable<PhotoModel> GetAllPhotoApproved(string userId);
         IEnumerable<PhotoModel> GetAllPendingPhoto(string userId);

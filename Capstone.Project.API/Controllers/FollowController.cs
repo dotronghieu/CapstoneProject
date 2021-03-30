@@ -38,6 +38,19 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "UnFollow Failed" });
         }
+        [HttpGet("CheckFollowedUser")]
+        public IActionResult CheckFollowedUser(string userId, string followId)
+        {
+            FollowModel model = new FollowModel();
+            model.UserId = userId;
+            model.FollowUserId = followId;
+            var result = _userService.CheckFollow(model);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return BadRequest();
+        }
         [HttpGet("GetFollowingUser/{id}")]
         public IActionResult Get(string id)
         {
