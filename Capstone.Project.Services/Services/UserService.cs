@@ -394,9 +394,9 @@ namespace Capstone.Project.Services.Services
             var DeniedPhoto = _unitOfWork.PhotoRepository.GetByObject(p => p.UserId == userId && p.ApproveStatus == Constants.Const.PHOTO_STATUS_DENIED).Count();
             var PendingPhoto = _unitOfWork.PhotoRepository.GetByObject(p => p.UserId == userId && p.ApproveStatus == Constants.Const.PHOTO_STATUS_PENDING).Count();
             PhotoStatusStatisticModel result = new PhotoStatusStatisticModel();
-            result.NumberOfApprovedPhoto = ApprovedPhoto;
-            result.NumberOfDeniedPhoto = DeniedPhoto;
-            result.NumberOfPendingPhoto = PendingPhoto;
+            result.ApprovedPhoto = ApprovedPhoto;
+            result.DeniedPhoto = DeniedPhoto;
+            result.PendingPhoto = PendingPhoto;
             return result;
         }
 
