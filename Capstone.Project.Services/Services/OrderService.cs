@@ -101,7 +101,6 @@ namespace Capstone.Project.Services.Services
                     string subject = "Transaction Success";
                     string body = "<br/><br/>Hi " + user.FullName +
                       "<br/><br/>Your transaction was successful. You have purchased an exclusive photo for $" + orderModel.Amount + 
-                      " at " + DateTime.Parse(orderModel.CreateTime).Kind.ToString() + "." + 
                       "<br/><br/>This is your proofid: " + orderModel.ProofId +
                       "<br/><br/>This is proof that you can look up your transaction. You must keep it carefully!" +
                       "<br/><br/>Thank you for choosing Imago, we hope to hear from you again soon!" + 
@@ -135,7 +134,7 @@ namespace Capstone.Project.Services.Services
                     string subject = "Transaction Success";
                     string body = "<br/><br/>Hi " + user.FullName +
                       "<br/><br/>Your transaction was successful. You have purchased " + orderModel.ListPhotoId.Count +
-                      " photo for $" + orderModel.Amount + " at " + DateTime.Parse(orderModel.CreateTime).Kind.ToString() + "." + 
+                      " photo for $" + orderModel.Amount + 
                       "<br/><br/>Thank you for choosing Imago, we hope to hear from you again soon!" +
                       "<br/><br/>Sincerely" +
                       "<br/>Imago";
