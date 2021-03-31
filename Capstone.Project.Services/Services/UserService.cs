@@ -400,9 +400,11 @@ namespace Capstone.Project.Services.Services
             return result;
         }
 
-        public List<UserSellStatisticModel> GetSellStatisticByUserIDAndTime(StatisicModel model)
+        public UserSellStatisticModel GetSellStatisticByUserIDAndTime(StatisicModel model)
         {
-            var result = new List<UserSellStatisticModel>();
+            var count = 0;
+            decimal? total = 0;
+            var statistic = new UserSellStatisticModel();
             var listOrders = _unitOfWork.OrdersRepository.GetByObject(o => o.InsDateTime >= model.StartDate && o.InsDateTime <= model.EndDate, includeProperties: "OrderDetails").ToList();
             foreach (var order in listOrders)
             {
@@ -412,29 +414,14 @@ namespace Capstone.Project.Services.Services
                     var photo = _unitOfWork.PhotoRepository.GetById(orderDetail.PhotoId).Result;
                     if(photo.UserId == model.UserId)
                     {
-                        var statisticPhoto = new UserSellStatisticModel
-                        {
-                            PhotoId = photo.PhotoId,
-                            Link = photo.Link,
-                            Wmlink = photo.Wmlink,
-                            PhotoName = photo.PhotoName,
-                            TotalNumberAmount = 0,
-                            TotalSellAmount = orderDetail.Price
-                        };
-                        var obj = result.FirstOrDefault(x => x.PhotoId == statisticPhoto.PhotoId);
-                        if (obj != null)
-                        {
-                            obj.TotalNumberAmount += 1;
-                            obj.TotalSellAmount += statisticPhoto.TotalSellAmount;
-                        }
-                        if (obj == null)
-                        {
-                            result.Add(statisticPhoto);
-                        }
+                        total += orderDetail.Price;
+                        count += 1;
+                        statistic.TotalPhotoAmount = count;
                     }                  
                 }
             }
-            return result;       
+            statistic.TotalSellAmount = total;
+            return statistic;       
         }
     }
 }
