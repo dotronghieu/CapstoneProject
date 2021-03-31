@@ -24,9 +24,10 @@ namespace Capstone.Project.Services.Services
         {
       
         }
-        public List<PhotoModel> GetPhotoByCategory(int id)
+        public List<PhotoModel> GetPhotoByCategory(string catName)
         {
-            var list = _unitOfWork.PhotoCategoryRepository.GetByObject(c => c.CategoryId == id, includeProperties: "Photo").ToList();
+            int catId = _unitOfWork.CategoryRepository.GetFirst(c => c.CategoryName == catName).Result.CategoryId;
+            var list = _unitOfWork.PhotoCategoryRepository.GetByObject(c => c.CategoryId == catId, includeProperties: "Photo").ToList();
        
             if(list != null)
             {   
@@ -53,7 +54,7 @@ namespace Capstone.Project.Services.Services
                     var category = item.Category;
                     result.Add(_mapper.Map<CategoryModel>(category));
 
-                }
+                }   
                 return result;
             }
             return null;

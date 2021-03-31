@@ -107,9 +107,9 @@ namespace Capstone.Project.API.Controllers
         }
         [AllowAnonymous]
         [HttpGet("GetByCategory/{id}")]
-        public IActionResult GetPhotoByCategory(int id)
+        public IActionResult GetPhotoByCategory(string catName)
         {
-            var photo = _photoCategoryService.GetPhotoByCategory(id);
+            var photo = _photoCategoryService.GetPhotoByCategory(catName);
             if (photo != null)
             {
                 return Ok(photo);

@@ -8,7 +8,7 @@ namespace Capstone.Project.Services.IServices
 {
     public interface IPhotoCategoryService
     {
-        List<PhotoModel> GetPhotoByCategory(int id);
+        List<PhotoModel> GetPhotoByCategory(string catName);
         List<CategoryModel> GetCategoryByPhoto(int id);
         
     }
