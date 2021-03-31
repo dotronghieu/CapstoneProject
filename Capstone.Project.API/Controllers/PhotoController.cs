@@ -106,10 +106,10 @@ namespace Capstone.Project.API.Controllers
             return BadRequest(new { msg = "photo is not found" });
         }
         [AllowAnonymous]
-        [HttpGet("GetByCategory/{id}")]
-        public IActionResult GetPhotoByCategory(string catName)
+        [HttpGet("GetByCategory")]
+        public IActionResult GetPhotoByCategory(string catName, int photoId)
         {
-            var photo = _photoCategoryService.GetPhotoByCategory(catName);
+            var photo = _photoCategoryService.GetPhotoByCategory(catName, photoId);
             if (photo != null)
             {
                 return Ok(photo);
