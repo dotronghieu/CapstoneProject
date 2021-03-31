@@ -390,13 +390,13 @@ namespace Capstone.Project.Services.Services
 
         public PhotoStatusStatisticModel GetPhotoStatusStatisticByUserID(string userId)
         {
-            var numberOfApprovedPhoto = _unitOfWork.PhotoRepository.GetByObject(p => p.UserId == userId && p.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED).Count();
-            var numberOfDeniedPhoto = _unitOfWork.PhotoRepository.GetByObject(p => p.UserId == userId && p.ApproveStatus == Constants.Const.PHOTO_STATUS_DENIED).Count();
-            var numberOfPendingPhoto = _unitOfWork.PhotoRepository.GetByObject(p => p.UserId == userId && p.ApproveStatus == Constants.Const.PHOTO_STATUS_PENDING).Count();
+            var ApprovedPhoto = _unitOfWork.PhotoRepository.GetByObject(p => p.UserId == userId && p.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED).Count();
+            var DeniedPhoto = _unitOfWork.PhotoRepository.GetByObject(p => p.UserId == userId && p.ApproveStatus == Constants.Const.PHOTO_STATUS_DENIED).Count();
+            var PendingPhoto = _unitOfWork.PhotoRepository.GetByObject(p => p.UserId == userId && p.ApproveStatus == Constants.Const.PHOTO_STATUS_PENDING).Count();
             PhotoStatusStatisticModel result = new PhotoStatusStatisticModel();
-            result.NumberOfApprovedPhoto = numberOfApprovedPhoto;
-            result.NumberOfDeniedPhoto = numberOfDeniedPhoto;
-            result.NumberOfPendingPhoto = numberOfPendingPhoto;
+            result.ApprovedPhoto = ApprovedPhoto;
+            result.DeniedPhoto = DeniedPhoto;
+            result.PendingPhoto = PendingPhoto;
             return result;
         }
 
@@ -422,6 +422,22 @@ namespace Capstone.Project.Services.Services
             }
             statistic.TotalSellAmount = total;
             return statistic;       
+        }
+
+        public bool CheckFollow(FollowModel model)
+        {
+            var userFollowList = _unitOfWork.FollowRepository.GetByObject(c => c.UserId == model.UserId).ToList();
+            if (userFollowList.Count >= 1)
+            {
+                foreach (var item in userFollowList)
+                {
+                    if (item.FollowUserId == model.FollowUserId)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
     }
 }

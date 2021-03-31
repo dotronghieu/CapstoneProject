@@ -210,6 +210,27 @@ namespace Capstone.Project.Services.Services
             }
             return null;
         }
+
+        public bool CheckBoughtPhoto(int id, string userId)
+        {
+            var orderList =  _unitOfWork.OrdersRepository.GetByObject(c => c.UserId == userId, includeProperties: "OrderDetails").ToList();
+            if (orderList != null)
+            {
+                List<PhotoTransactionModel> result = new List<PhotoTransactionModel>();
+                foreach (var order in orderList)
+                {
+                    var orderDetailList = order.OrderDetails;
+                    foreach (var orderDetail in orderDetailList)
+                    {
+                        if (orderDetail.PhotoId == id)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
     }
 }
     

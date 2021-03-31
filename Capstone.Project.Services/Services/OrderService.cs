@@ -92,35 +92,73 @@ namespace Capstone.Project.Services.Services
             var user = await _unitOfWork.UserGenRepository.GetById(orderModel.UserId);
             if (user != null)
             {
-                var verifyUrl = "http://localhost:8081/#/changeforgotpassword?userId=" + user.UserId;
-                var fromMail = new MailAddress(Constants.Const.IMAGO_EMAIL, "Imago (No Reply)");
-                var toMail = new MailAddress(user.Email);
-                var imagoPassword = Constants.Const.IMAGO_EMAIL_PASSWORD;
-                string subject = "Transaction Success";
-                string body = "<br/><br/>Hi " + user.FullName +
-                  "<br/><br/>Your transaction was successful. This is your proofid: " + orderModel.ProofId +
-                  "<br/><br/>This is proof that you can look up your transaction." +
-                  "<br/><br/>You must keep it carefully!" +
-                  "<br/><br/>Sincerely";
-
-
-                var smtp = new SmtpClient
+                if (orderModel.ProofId != null)
                 {
-                    Host = "smtp.gmail.com",
-                    Port = 587,
-                    EnableSsl = true,
-                    DeliveryMethod = SmtpDeliveryMethod.Network,
-                    UseDefaultCredentials = false,
-                    Credentials = new NetworkCredential(fromMail.Address, imagoPassword)
+                    var verifyUrl = "http://localhost:8081/#/changeforgotpassword?userId=" + user.UserId;
+                    var fromMail = new MailAddress(Constants.Const.IMAGO_EMAIL, "Imago (No Reply)");
+                    var toMail = new MailAddress(user.Email);
+                    var imagoPassword = Constants.Const.IMAGO_EMAIL_PASSWORD;
+                    string subject = "Transaction Success";
+                    string body = "<br/><br/>Hi " + user.FullName +
+                      "<br/><br/>Your transaction was successful. You have purchased an exclusive photo for $" + orderModel.Amount + 
+                      "<br/><br/>This is your proofid: " + orderModel.ProofId +
+                      "<br/><br/>This is proof that you can look up your transaction. You must keep it carefully!" +
+                      "<br/><br/>Thank you for choosing Imago, we hope to hear from you again soon!" + 
+                      "<br/><br/>Sincerely" +
+                      "<br/>Imago";
 
-                };
-                using (var message = new MailMessage(fromMail, toMail)
+
+                    var smtp = new SmtpClient
+                    {
+                        Host = "smtp.gmail.com",
+                        Port = 587,
+                        EnableSsl = true,
+                        DeliveryMethod = SmtpDeliveryMethod.Network,
+                        UseDefaultCredentials = false,
+                        Credentials = new NetworkCredential(fromMail.Address, imagoPassword)
+
+                    };
+                    using (var message = new MailMessage(fromMail, toMail)
+                    {
+                        Subject = subject,
+                        Body = body,
+                        IsBodyHtml = true
+                    })
+                    smtp.Send(message);
+                } else
                 {
-                    Subject = subject,
-                    Body = body,
-                    IsBodyHtml = true
-                })
-                smtp.Send(message);
+                    var verifyUrl = "http://localhost:8081/#/changeforgotpassword?userId=" + user.UserId;
+                    var fromMail = new MailAddress(Constants.Const.IMAGO_EMAIL, "Imago (No Reply)");
+                    var toMail = new MailAddress(user.Email);
+                    var imagoPassword = Constants.Const.IMAGO_EMAIL_PASSWORD;
+                    string subject = "Transaction Success";
+                    string body = "<br/><br/>Hi " + user.FullName +
+                      "<br/><br/>Your transaction was successful. You have purchased " + orderModel.ListPhotoId.Count +
+                      " photo for $" + orderModel.Amount + 
+                      "<br/><br/>Thank you for choosing Imago, we hope to hear from you again soon!" +
+                      "<br/><br/>Sincerely" +
+                      "<br/>Imago";
+
+
+                    var smtp = new SmtpClient
+                    {
+                        Host = "smtp.gmail.com",
+                        Port = 587,
+                        EnableSsl = true,
+                        DeliveryMethod = SmtpDeliveryMethod.Network,
+                        UseDefaultCredentials = false,
+                        Credentials = new NetworkCredential(fromMail.Address, imagoPassword)
+
+                    };
+                    using (var message = new MailMessage(fromMail, toMail)
+                    {
+                        Subject = subject,
+                        Body = body,
+                        IsBodyHtml = true
+                    })
+                        smtp.Send(message);
+                }
+                
             }
             return _mapper.Map<Order>(order);
         }
