@@ -18,9 +18,9 @@ namespace Capstone.Project.API.Controllers
             _transactionService = transactionService;
         }
         [HttpGet("GetTransaction/{id}")]
-        public async Task<IActionResult> GetBoughtPhoto(string id)
+        public IActionResult GetTransaction(string id)
         {
-            var result = await _transactionService.GetTransaction(id);
+            var result = _transactionService.GetTransaction(id);
             if (result != null)
             {
                 return Ok(result);

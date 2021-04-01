@@ -37,9 +37,24 @@ namespace Capstone.Project.Services.Services
             return null;
         }
 
-        public async Task<TransactionModel> GetTransaction(string transactionId)
+        public IEnumerable<PhotoModelGetAll> GetTransaction(string transactionId)
         {
-            return  _mapper.Map<TransactionModel>(await _unitOfWork.TransactionRepository.GetFirst(t => t.TransactionId == transactionId));
+            List<PhotoModelGetAll> photoList = new List<PhotoModelGetAll>();
+            var orderList = _unitOfWork.OrdersRepository.GetByObject(c => c.TransactionId == transactionId, includeProperties: "OrderDetails").ToList();
+            if (orderList.Count > 0)
+            {
+                foreach (var order in orderList)
+                {
+                    var orderDetail = order.OrderDetails;
+                    foreach (var item in orderDetail)
+                    { 
+                        var photo = _unitOfWork.PhotoRepository.GetById(item.PhotoId);
+                        photoList.Add(_mapper.Map<PhotoModelGetAll>(photo.Result));
+                    }
+                }
+                return photoList;
+            }
+            return  null;
         }
 
       
