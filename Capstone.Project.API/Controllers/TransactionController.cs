@@ -28,5 +28,16 @@ namespace Capstone.Project.API.Controllers
 
             return BadRequest(new { msg = "No transaction recorded" });
         }
+        [HttpGet("GetAllTransactionByUserID/{userID}")]
+        public IActionResult GetTransactionByUserId(string userID)
+        {
+            var result =  _transactionService.GetAllTransactionByUserId(userID);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(new { msg = "No transaction recorded" });
+        }
     }
 }

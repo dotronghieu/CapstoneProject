@@ -10,5 +10,6 @@ namespace Capstone.Project.Services.IServices
     public interface ITransactionService
     {
         public Task<TransactionModel> GetTransaction(string transactionId);
+        public IEnumerable<TransactionModel> GetAllTransactionByUserId(string userId);
     }
 }
