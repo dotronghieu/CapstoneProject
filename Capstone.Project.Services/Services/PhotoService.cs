@@ -231,6 +231,19 @@ namespace Capstone.Project.Services.Services
             }
             return false;
         }
+
+        public bool CheckMyPhoto(int photoId, string userId)
+        {
+            var photo = _unitOfWork.PhotoRepository.GetById(photoId);
+            if (photo != null)
+            {
+                if (photo.Result.UserId == userId)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }
     

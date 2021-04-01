@@ -226,6 +226,17 @@ namespace Capstone.Project.API.Controllers
             return BadRequest();
         }
         [AllowAnonymous]
+        [HttpGet("CheckMyPhoto")]
+        public IActionResult CheckMyPhoto(int photoId, string userId)
+        {
+            bool result = _photoService.CheckMyPhoto(photoId, userId);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return BadRequest();
+        }
+        [AllowAnonymous]
         [HttpGet("SearchPhoto/{key}")]
         public IActionResult GetPhotoByCategory(string key, int PageSize, int CurrentPage)
         {
