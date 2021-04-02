@@ -119,6 +119,10 @@ namespace Capstone.Project.Data.Models
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
+                entity.Property(e => e.OwnerId)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Price).HasColumnType("money");
 
                 entity.HasOne(d => d.Order)
@@ -126,6 +130,11 @@ namespace Capstone.Project.Data.Models
                     .HasForeignKey(d => d.OrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_OrderDetail_Order");
+
+                entity.HasOne(d => d.Owner)
+                    .WithMany(p => p.OrderDetails)
+                    .HasForeignKey(d => d.OwnerId)
+                    .HasConstraintName("FK_OrderDetail_User");
 
                 entity.HasOne(d => d.Photo)
                     .WithMany(p => p.OrderDetails)

@@ -11,8 +11,10 @@ namespace Capstone.Project.Data.Models
         public int PhotoId { get; set; }
         public decimal? Price { get; set; }
         public bool? PaymentFlag { get; set; }
+        public string OwnerId { get; set; }
 
         public virtual Order Order { get; set; }
+        public virtual User Owner { get; set; }
         public virtual Photo Photo { get; set; }
     }
 }

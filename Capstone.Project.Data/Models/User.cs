@@ -11,6 +11,7 @@ namespace Capstone.Project.Data.Models
         {
             FollowFollowUsers = new HashSet<Follow>();
             FollowUsers = new HashSet<Follow>();
+            OrderDetails = new HashSet<OrderDetail>();
             Orders = new HashSet<Order>();
             PhotoReports = new HashSet<PhotoReport>();
             Photos = new HashSet<Photo>();
@@ -36,6 +37,7 @@ namespace Capstone.Project.Data.Models
         public virtual Role Role { get; set; }
         public virtual ICollection<Follow> FollowFollowUsers { get; set; }
         public virtual ICollection<Follow> FollowUsers { get; set; }
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<PhotoReport> PhotoReports { get; set; }
         public virtual ICollection<Photo> Photos { get; set; }
