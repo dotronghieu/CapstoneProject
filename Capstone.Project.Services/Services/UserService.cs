@@ -6,6 +6,7 @@ using Capstone.Project.Data.ViewModels;
 using Capstone.Project.Services.IServices;
 using FirebaseAdmin.Auth;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -400,28 +401,52 @@ namespace Capstone.Project.Services.Services
             return result;
         }
 
-        public UserSellStatisticModel GetSellStatisticByUserIDAndTime(StatisicModel model)
+        public IEnumerable<Dictionary<string, double>> GetSellStatisticByUserIDAndTime(StatisicModel model)
         {
-            var count = 0;
-            decimal? total = 0;
-            var statistic = new UserSellStatisticModel();
-            var listOrders = _unitOfWork.OrdersRepository.GetByObject(o => o.InsDateTime >= model.StartDate && o.InsDateTime <= model.EndDate, includeProperties: "OrderDetails").ToList();
-            foreach (var order in listOrders)
+            Dictionary<string, double> totalPhoto = new Dictionary<string, double>();
+            Dictionary<string, double> totalAmount = new Dictionary<string, double>();
+            List<Dictionary<string, double>> result = new List<Dictionary<string, double>>();
+            System.Globalization.DateTimeFormatInfo mfi = new System.Globalization.DateTimeFormatInfo();
+            int startMonth = DateTime.Parse(model.StartDate.ToString()).Month;
+            int endMonth = DateTime.Parse(model.EndDate.ToString()).Month;
+            DateTime startDateOfMonth = model.StartDate;
+            DateTime endDateOfMonth = new DateTime(model.StartDate.Year, model.StartDate.Month, DateTime.DaysInMonth(model.StartDate.Year, model.StartDate.Month));
+            do
             {
-                var listOrderDetail = order.OrderDetails;
-                foreach (var orderDetail in listOrderDetail)
+                string month = mfi.GetAbbreviatedMonthName(startMonth);
+                var count = 0;
+                decimal? total = 0;
+                var listOrders = _unitOfWork.OrdersRepository.GetByObject(o => o.InsDateTime >= startDateOfMonth && o.InsDateTime <= endDateOfMonth, includeProperties: "OrderDetails").ToList();
+                foreach (var order in listOrders)
                 {
-                    var photo = _unitOfWork.PhotoRepository.GetById(orderDetail.PhotoId).Result;
-                    if(photo.UserId == model.UserId)
+                    var listOrderDetail = order.OrderDetails;
+                    foreach (var orderDetail in listOrderDetail)
                     {
-                        total += orderDetail.Price;
-                        count += 1;
-                        statistic.TotalPhotoAmount = count;
-                    }                  
+                        if (orderDetail.OwnerId == model.UserId)
+                        {
+                            total += orderDetail.Price;
+                            count += 1;
+                        }
+                    }
                 }
-            }
-            statistic.TotalSellAmount = total;
-            return statistic;       
+                startMonth++;
+                totalPhoto.Add(month, count);
+                totalAmount.Add(month, (double)total);
+                if (startMonth == endMonth)
+                {
+                    startDateOfMonth = startDateOfMonth.AddMonths(1);
+                    startDateOfMonth = new DateTime(startDateOfMonth.Year, startDateOfMonth.Month, 1);
+                    endDateOfMonth = model.EndDate;
+                } else
+                {
+                    startDateOfMonth = startDateOfMonth.AddMonths(1);
+                    startDateOfMonth = new DateTime(startDateOfMonth.Year, startDateOfMonth.Month, 1);
+                    endDateOfMonth = endDateOfMonth.AddMonths(1);
+                }
+            } while (startMonth <= endMonth);
+            result.Add(totalPhoto);
+            result.Add(totalAmount);
+            return result;
         }
 
         public bool CheckFollow(FollowModel model)
