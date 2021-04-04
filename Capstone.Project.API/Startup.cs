@@ -93,7 +93,7 @@ namespace Capstone.Project.API
                     builder.AllowAnyOrigin()
                             .AllowAnyMethod()
                             .AllowAnyHeader()
-                            .WithExposedHeaders("X-Pagination");
+                            .WithExposedHeaders("X-Pagination", "content-disposition");
                             //.AllowCredentials();
                 });
             });
