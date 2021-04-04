@@ -78,11 +78,13 @@ namespace Capstone.Project.Services.Services
                 _unitOfWork.OrdersRepository.Add(order);
                 foreach (int item in orderModel.ListPhotoId)
                 {
+                    var photo = _unitOfWork.PhotoRepository.GetById(item).Result;
                     var orderDetail = new OrderDetail()
                     {
                         OrderId = order.OrderId,
                         PhotoId = item,
-                        Price = _unitOfWork.PhotoRepository.GetById(item).Result.Price,
+                        Price = photo.Price,
+                        OwnerId = photo.UserId,
                         PaymentFlag = false
                     };
                     _unitOfWork.OrderDetailRepository.Add(orderDetail);

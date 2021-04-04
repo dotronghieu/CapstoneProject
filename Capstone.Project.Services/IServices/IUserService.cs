@@ -1,6 +1,7 @@
 ﻿using Capstone.Project.Data.Models;
 using Capstone.Project.Data.ViewModels;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,7 +33,7 @@ namespace Capstone.Project.Services.IServices
         IEnumerable<UserFollowProfileModel> GetAllFollowingUser(String userId);
         Task<UserFollowProfileModel> GetProfileByID(string id);
         PhotoStatusStatisticModel GetPhotoStatusStatisticByUserID(string userId);
-        UserSellStatisticModel GetSellStatisticByUserIDAndTime(StatisicModel model);
+        IEnumerable<Dictionary<string, double>> GetSellStatisticByUserIDAndTime(StatisicModel model);
 
     }
 }
