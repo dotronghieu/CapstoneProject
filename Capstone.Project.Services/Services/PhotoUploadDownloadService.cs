@@ -104,9 +104,7 @@ namespace Capstone.Project.Services.Services
                             var color = System.Drawing.Color.FromArgb(150, 0, 0, 0);
                             var brush = new SolidBrush(color);
                             double angle;
-                            if (img.Width <= img.Height) { angle = 180 - Math.Atan2(img.Width, img.Height) * 180; }
-                            else { angle = 180 - Math.Atan2(img.Width, img.Height) * 180; }
-                            if (angle < 0) { angle = -angle; }
+                            angle = Math.Atan2(img.Height, img.Width) * (180 / Math.PI);
                             graphic.RotateTransform((float)angle);//xoay chiều watermark
                             var point = new System.Drawing.Point((int)(img.Width * 0.1f), (int)(img.Height * -0.1f));
                             graphic.DrawString(username, font, brush, point);
