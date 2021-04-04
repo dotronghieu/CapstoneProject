@@ -94,6 +94,13 @@ namespace Capstone.Project.Services.Services
             {
                 if (orderModel.ProofId != null)
                 {
+                    var photo = _unitOfWork.PhotoRepository.GetById(orderModel.ListPhotoId.First()).Result;
+                    var linkDecrypt = Encryption.StringCipher.Decrypt(photo.Link, _unitOfWork.UserGenRepository.GetById(photo.UserId).Result.EncryptCode);
+                    var encryptLink = Encryption.StringCipher.Encrypt(linkDecrypt, _unitOfWork.UserGenRepository.GetById(orderModel.UserId).Result.EncryptCode);
+                    photo.Link = encryptLink;
+                    photo.UserId = orderModel.UserId;
+                    _unitOfWork.PhotoRepository.Update(photo);
+                    await _unitOfWork.SaveAsync();
                     var verifyUrl = "http://localhost:8081/#/changeforgotpassword?userId=" + user.UserId;
                     var fromMail = new MailAddress(Constants.Const.IMAGO_EMAIL, "Imago (No Reply)");
                     var toMail = new MailAddress(user.Email);
