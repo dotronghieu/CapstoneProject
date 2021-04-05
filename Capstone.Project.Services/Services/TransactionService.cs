@@ -37,9 +37,11 @@ namespace Capstone.Project.Services.Services
             return null;
         }
 
-        public IEnumerable<PhotoModelGetAll> GetTransaction(string transactionId)
+        public TransactionIdModel GetTransaction(string transactionId)
         {
-            List<PhotoModelGetAll> photoList = new List<PhotoModelGetAll>();
+            TransactionIdModel model = new TransactionIdModel();
+            List<PhotoModel> photoList = new List<PhotoModel>();
+            decimal? total = 0;
             var orderList = _unitOfWork.OrdersRepository.GetByObject(c => c.TransactionId == transactionId, includeProperties: "OrderDetails").ToList();
             if (orderList.Count > 0)
             {
@@ -49,12 +51,16 @@ namespace Capstone.Project.Services.Services
                     foreach (var item in orderDetail)
                     { 
                         var photo = _unitOfWork.PhotoRepository.GetById(item.PhotoId);
-                        photoList.Add(_mapper.Map<PhotoModelGetAll>(photo.Result));
+                        photo.Result.Price = item.Price;
+                        photoList.Add(_mapper.Map<PhotoModel>(photo.Result));
+                        total = total + item.Price;
                     }
                 }
-                return photoList;
+                model.photo = photoList;
+                model.total = total;
+                return model;
             }
-            return  null;
+            return null;
         }
 
       

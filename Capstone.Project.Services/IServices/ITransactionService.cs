@@ -9,7 +9,7 @@ namespace Capstone.Project.Services.IServices
 {
     public interface ITransactionService
     {
-        public IEnumerable<PhotoModelGetAll> GetTransaction(string transactionId);
+        public TransactionIdModel GetTransaction(string transactionId);
         public IEnumerable<TransactionModel> GetAllTransactionByUserId(string userId);
     }
 }
