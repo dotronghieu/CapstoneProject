@@ -93,7 +93,7 @@ namespace Capstone.Project.Services.Services
         public (IEnumerable<PhotoModelGetAll>,int) SearchPhoto(string key, int pageSize, int pageNumber)
         {
             List<PhotoModelGetAll> resultList = new List<PhotoModelGetAll>();
-            var list1 = _unitOfWork.PhotoRepository.GetByObject(c => c.PhotoName.Contains(key) && c.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED);
+            var list1 = _unitOfWork.PhotoRepository.GetByObject(c => c.PhotoName.Contains(key) && c.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED && c.DelFlg == false);
             var list2 = _unitOfWork.PhotoCategoryRepository.GetByObject(c => c.Category.CategoryName.Contains(key), includeProperties: "Photo").ToList();
             if (list1 != null)
             {
@@ -117,7 +117,7 @@ namespace Capstone.Project.Services.Services
                             flag = false;
                         }
                     }
-                    if (flag)
+                    if (flag && (photo.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED) && (photo.DelFlg == false))
                     {
                         resultList.Add(_mapper.Map<PhotoModelGetAll>(photo));
                     }
