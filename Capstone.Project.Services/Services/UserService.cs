@@ -288,7 +288,7 @@ namespace Capstone.Project.Services.Services
 
         public IEnumerable<PhotoModel> GetAllPhotoApproved(string userId)
         {
-            var listPhotoApproved =  _unitOfWork.PhotoRepository.GetByObject(p => p.DelFlg == false && p.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED && p.UserId == userId).ToList();
+            var listPhotoApproved =  _unitOfWork.PhotoRepository.GetByObject(p => p.DelFlg == false && p.DisableFlg == false && p.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED && p.UserId == userId).ToList();
             if(listPhotoApproved != null)
             {
                 List<PhotoModel> result = new List<PhotoModel>();
