@@ -23,6 +23,7 @@ namespace Capstone.Project.Data.Models
         public int? TypeId { get; set; }
         public string UserId { get; set; }
         public bool? DelFlg { get; set; }
+        public bool? DisableFlg { get; set; }
         public DateTime? InsDateTime { get; set; }
         public string ApproveStatus { get; set; }
         public bool? IsBought { get; set; }

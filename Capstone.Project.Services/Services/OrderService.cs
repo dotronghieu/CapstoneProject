@@ -101,6 +101,7 @@ namespace Capstone.Project.Services.Services
                     var encryptLink = Encryption.StringCipher.Encrypt(linkDecrypt, _unitOfWork.UserGenRepository.GetById(orderModel.UserId).Result.EncryptCode);
                     photo.Link = encryptLink;
                     photo.UserId = orderModel.UserId;
+                    photo.DisableFlg = true;
                     _unitOfWork.PhotoRepository.Update(photo);
                     await _unitOfWork.SaveAsync();
                     var verifyUrl = "http://localhost:8081/#/changeforgotpassword?userId=" + user.UserId;

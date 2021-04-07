@@ -78,7 +78,7 @@ namespace Capstone.Project.Services.Services
         public IEnumerable<PhotoModelGetAll> GetRandomPhoto()
         {
             List<PhotoModelGetAll> resultList = new List<PhotoModelGetAll>();
-            var list = _unitOfWork.PhotoRepository.GetByObject(c => c.DelFlg == false && c.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED).OrderBy(c => Guid.NewGuid()).Take(Constants.Const.NUMBER_OF_PHOTO_HOMEPAGE);
+            var list = _unitOfWork.PhotoRepository.GetByObject(c => c.DelFlg == false && c.DisableFlg == false && c.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED).OrderBy(c => Guid.NewGuid()).Take(Constants.Const.NUMBER_OF_PHOTO_HOMEPAGE);
             if (list != null)
             {
                 foreach (var item in list)
@@ -93,7 +93,7 @@ namespace Capstone.Project.Services.Services
         public (IEnumerable<PhotoModelGetAll>,int) SearchPhoto(string key, int pageSize, int pageNumber)
         {
             List<PhotoModelGetAll> resultList = new List<PhotoModelGetAll>();
-            var list1 = _unitOfWork.PhotoRepository.GetByObject(c => c.PhotoName.Contains(key) && c.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED && c.DelFlg == false);
+            var list1 = _unitOfWork.PhotoRepository.GetByObject(c => c.PhotoName.Contains(key) && c.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED && c.DelFlg == false && c.DisableFlg == false);
             var list2 = _unitOfWork.PhotoCategoryRepository.GetByObject(c => c.Category.CategoryName.Contains(key), includeProperties: "Photo").ToList();
             if (list1 != null)
             {

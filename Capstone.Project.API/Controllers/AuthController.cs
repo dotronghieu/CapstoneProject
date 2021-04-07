@@ -83,6 +83,10 @@ namespace Capstone.Project.API.Controllers
             {
                 return BadRequest(new { msg = "not found user " + model.Username });
             }
+            if(user.IsVerify == false)
+            {
+                return BadRequest(new { msg = "user not verified " + model.Username });
+            }
             if (result)
             {
                 var _role = _roleService.GetRole(user);
