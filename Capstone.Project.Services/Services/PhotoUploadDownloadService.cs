@@ -189,6 +189,7 @@ namespace Capstone.Project.Services.Services
                     photo.TypeId = model.TypeId;
                     photo.UserId = model.UserId;
                     photo.DelFlg = false;
+                    photo.DisableFlg = false;
                     photo.Hash = NewPerceptualHash.GetHash(image);
                     photo.Description = model.Description;
                     photo.ApproveStatus = Constants.Const.PHOTO_STATUS_PENDING;

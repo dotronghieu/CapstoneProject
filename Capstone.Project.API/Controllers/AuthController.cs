@@ -85,7 +85,7 @@ namespace Capstone.Project.API.Controllers
             }
             if(user.IsVerify == false)
             {
-                return BadRequest(new { msg = "user not verified " + model.Username });
+                return BadRequest(new { msg = "user " +  model.Username  + " not verified " });
             }
             if (result)
             {
