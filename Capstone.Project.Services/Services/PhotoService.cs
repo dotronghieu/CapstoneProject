@@ -117,7 +117,7 @@ namespace Capstone.Project.Services.Services
                             flag = false;
                         }
                     }
-                    if (flag && (photo.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED) && (photo.DelFlg == false))
+                    if (flag && (photo.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED) && (photo.DelFlg == false) && (photo.DisableFlg == false))
                     {
                         resultList.Add(_mapper.Map<PhotoModelGetAll>(photo));
                     }
