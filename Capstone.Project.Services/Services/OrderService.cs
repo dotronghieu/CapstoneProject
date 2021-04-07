@@ -27,7 +27,7 @@ namespace Capstone.Project.Services.Services
 
         public async Task<IEnumerable<PhotoTransactionModel>> GetUserBoughtPhoto(string id)
         {
-            var orderList = _unitOfWork.OrdersRepository.GetByObject(f => f.UserId == id, includeProperties: "OrderDetails").ToList();
+            var orderList = _unitOfWork.OrdersRepository.GetByObject(f => f.UserId == id, includeProperties: "OrderDetails").OrderByDescending(c => c.InsDateTime).ToList();
             if(orderList != null)
             {
                 List<PhotoTransactionModel> result = new List<PhotoTransactionModel>();

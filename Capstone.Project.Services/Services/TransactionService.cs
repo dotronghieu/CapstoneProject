@@ -25,7 +25,7 @@ namespace Capstone.Project.Services.Services
         public IEnumerable<TransactionModel> GetAllTransactionByUserId(string userId)
         {
             var transactionList = new List<TransactionModel>(); 
-            var orderList = _unitOfWork.OrdersRepository.GetByObject(o => o.UserId == userId, includeProperties: "Transaction").ToList();
+            var orderList = _unitOfWork.OrdersRepository.GetByObject(o => o.UserId == userId, includeProperties: "Transaction").OrderByDescending(c => c.InsDateTime).ToList();
             if(orderList.Count > 0)
             {
                 foreach (var item in orderList)
