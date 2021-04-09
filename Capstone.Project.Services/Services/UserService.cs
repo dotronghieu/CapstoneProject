@@ -438,8 +438,11 @@ namespace Capstone.Project.Services.Services
             System.Globalization.DateTimeFormatInfo mfi = new System.Globalization.DateTimeFormatInfo();
             int startMonth = DateTime.Parse(model.StartDate.ToString()).Month;
             int endMonth = DateTime.Parse(model.EndDate.ToString()).Month;
+            int startYear = DateTime.Parse(model.StartDate.ToString()).Year;
+            int endYear = DateTime.Parse(model.EndDate.ToString()).Year;
             DateTime startDateOfMonth = model.StartDate;
             DateTime endDateOfMonth = new DateTime(model.StartDate.Year, model.StartDate.Month, DateTime.DaysInMonth(model.StartDate.Year, model.StartDate.Month));
+            bool flag = true;
             do
             {
                 string month = mfi.GetAbbreviatedMonthName(startMonth);
@@ -458,21 +461,40 @@ namespace Capstone.Project.Services.Services
                         }
                     }
                 }
-                startMonth++;
-                totalPhoto.Add(month, count);
-                totalAmount.Add(month, (double)total);
-                if (startMonth == endMonth)
+                if (startMonth == 12)
+                {
+                    startMonth = 1;
+                } else
+                {
+                    startMonth++;
+                }
+                totalPhoto.Add(month+"-"+startYear, count);
+                totalAmount.Add(month+"-"+startYear, (double)total);
+                if (startMonth == endMonth && startYear == endYear)
                 {
                     startDateOfMonth = startDateOfMonth.AddMonths(1);
                     startDateOfMonth = new DateTime(startDateOfMonth.Year, startDateOfMonth.Month, 1);
                     endDateOfMonth = model.EndDate;
+                } else if(startMonth == 1 && startYear < endYear)
+                {
+                    startYear = startYear + 1;
+                    startDateOfMonth = startDateOfMonth.AddMonths(1);
+                    startDateOfMonth = new DateTime(startDateOfMonth.Year, startDateOfMonth.Month, 1);
+                    endDateOfMonth = endDateOfMonth.AddMonths(1);
                 } else
                 {
                     startDateOfMonth = startDateOfMonth.AddMonths(1);
                     startDateOfMonth = new DateTime(startDateOfMonth.Year, startDateOfMonth.Month, 1);
                     endDateOfMonth = endDateOfMonth.AddMonths(1);
                 }
-            } while (startMonth <= endMonth);
+                if (startMonth > endMonth)
+                {
+                    if (startYear == endYear)
+                    {
+                        flag = false;
+                    }
+                }
+            } while (flag);
             result.Add(totalPhoto);
             result.Add(totalAmount);
             return result;
