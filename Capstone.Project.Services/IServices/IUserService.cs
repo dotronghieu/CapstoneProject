@@ -34,6 +34,7 @@ namespace Capstone.Project.Services.IServices
         Task<UserFollowProfileModel> GetProfileByID(string id);
         PhotoStatusStatisticModel GetPhotoStatusStatisticByUserID(string userId);
         IEnumerable<Dictionary<string, double>> GetSellStatisticByUserIDAndTime(StatisicModel model);
+        IEnumerable<PhotoModelGetAll> GetAllPhotoOfAllUserWeAreFollowing(string userId);
 
     }
 }

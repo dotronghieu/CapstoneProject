@@ -515,5 +515,30 @@ namespace Capstone.Project.Services.Services
             }
             return false;
         }
+
+        public IEnumerable<PhotoModelGetAll> GetAllPhotoOfAllUserWeAreFollowing(string userId)
+        {
+            List<PhotoModelGetAll> result = new List<PhotoModelGetAll>();
+            var listOfFollowRecord = _unitOfWork.FollowRepository.GetByObject(u => u.UserId == userId).ToList();
+            if(listOfFollowRecord != null)
+            {
+                foreach (var item in listOfFollowRecord)
+                {
+                    var listPhotoOfThatUser = _unitOfWork.PhotoRepository.GetByObject(p =>
+                    p.UserId == item.FollowUserId &&
+                    p.DelFlg == false &&
+                    p.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED &&
+                    p.DisableFlg == false).ToList();
+                    foreach (var photo in listPhotoOfThatUser)
+                    {
+                        var resultPhoto = _mapper.Map<PhotoModelGetAll>(photo);
+                        resultPhoto.UserName = _unitOfWork.UserGenRepository.GetFirst(u => u.UserId == item.FollowUserId).Result.Username;
+                        result.Add(resultPhoto);
+                    }
+                }
+                return result;
+            }
+            return null;
+        }
     }
 }

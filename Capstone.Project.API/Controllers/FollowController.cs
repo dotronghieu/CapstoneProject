@@ -45,7 +45,7 @@ namespace Capstone.Project.API.Controllers
             model.UserId = userId;
             model.FollowUserId = followId;
             var result = _userService.CheckFollow(model);
-            if (result != null)
+            if (result)
             {
                 return Ok(result);
             }
@@ -70,6 +70,16 @@ namespace Capstone.Project.API.Controllers
                 return Ok(result);
             }
             return BadRequest();
+        }
+        [HttpGet("GetPhotoOfAllUserWeAreFollowing/{id}")]
+        public IActionResult GetPhotoOfUserWeAreFollowing(string userId)
+        {
+            var result =  _userService.GetAllPhotoOfAllUserWeAreFollowing(userId);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return BadRequest(new { msg ="you're not following anyone at the moment"});
         }
     }
 }
