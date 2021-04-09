@@ -83,7 +83,9 @@ namespace Capstone.Project.Services.Services
             {
                 foreach (var item in list)
                 {
-                    resultList.Add(_mapper.Map<PhotoModelGetAll>(item));
+                    var resultObject = _mapper.Map<PhotoModelGetAll>(item);
+                    resultObject.UserName = _unitOfWork.UserGenRepository.GetFirst(u => u.UserId == item.UserId).Result.Username;
+                    resultList.Add(resultObject);
                 }
                 return resultList.AsEnumerable<PhotoModelGetAll>();
             }
