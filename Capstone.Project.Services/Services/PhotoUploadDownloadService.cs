@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -60,6 +61,12 @@ namespace Capstone.Project.Services.Services
                 else
                 {
                     Directory.CreateDirectory(path);
+                    using (stream = new FileStream(Path.Combine(path, file.FileName), FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+
+                    stream = new FileStream(Path.Combine(path, file.FileName), FileMode.Open);
                 }
 
                 DateTime dateTime = DateTime.Now;
@@ -300,6 +307,153 @@ namespace Capstone.Project.Services.Services
                 default:
                     throw new NotImplementedException();
             }
+        }
+
+        public async Task<Photo> ChangeWaterMarkPhoto(int photoId)
+        {
+            var photo = await _reponsitory.GetById(photoId);
+            var user = await _unitOfWork.UsersRepository.GetById(photo.UserId);
+            string link = Encryption.StringCipher.Decrypt(photo.Link, user.EncryptCode);
+            char[] charArray = link.ToCharArray();
+            Array.Reverse(charArray);
+            string rurl = new string(charArray);
+            rurl = rurl.Substring(53, 6);
+            int i = rurl.IndexOf('.');
+            rurl = rurl.Substring(0, i);
+            charArray = rurl.ToCharArray();
+            Array.Reverse(charArray);
+            rurl = new string(charArray);
+            string folder = "firebaseFiles";
+            string path = Path.Combine(_environment.ContentRootPath, $"firebaseimages/{folder}");
+            byte[] content;
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(link);
+            WebResponse response = request.GetResponse();
+
+            Stream stream = response.GetResponseStream();
+            using (BinaryReader reader = new BinaryReader(stream))
+            {
+                content = reader.ReadBytes((int)response.ContentLength);
+                reader.Close();
+            }
+            response.Close();
+            FileStream fs = new FileStream(Path.Combine(path, "image." + rurl), FileMode.Create);
+            BinaryWriter bw = new BinaryWriter(fs);
+            bw.Write(content);
+            
+            string link1 = null;
+            FileStream wm = new FileStream(Path.Combine(path, "WMimage." + rurl), FileMode.Create);
+            using (var img = System.Drawing.Image.FromStream(fs))
+            {
+                using (var graphic = Graphics.FromImage(img))
+                {
+                    string username = "Imago - " + user.FullName;
+                    int fontSize;
+                    if (img.Width < img.Height)
+                    { fontSize = img.Height; }
+                    else { fontSize = img.Width; }
+                    var font = new Font(FontFamily.GenericSansSerif, fontSize / 35, FontStyle.Bold, GraphicsUnit.Pixel);
+                    var color = System.Drawing.Color.FromArgb(150, 0, 0, 0);
+                    var brush = new SolidBrush(color);
+                    double angle;
+                    angle = Math.Atan2(img.Height, img.Width) * (180 / Math.PI);
+                    graphic.RotateTransform((float)angle);//xoay chiều watermark
+                    var point = new System.Drawing.Point((int)(img.Width * 0.1f), (int)(img.Height * -0.1f));
+                    graphic.DrawString(username, font, brush, point);
+                    point = new System.Drawing.Point((int)(img.Width * 0.5f), (int)(img.Height * -0.1f));
+                    graphic.DrawString(username, font, brush, point);
+                    point = new System.Drawing.Point((int)(img.Width * 0.9f), (int)(img.Height * -0.1f));
+                    graphic.DrawString(username, font, brush, point);
+                    point = new System.Drawing.Point((int)(img.Width * 0.3f), (int)(img.Height * -0.3f));
+                    graphic.DrawString(username, font, brush, point);
+                    point = new System.Drawing.Point((int)(img.Width * 0.7f), (int)(img.Height * -0.3f));
+                    graphic.DrawString(username, font, brush, point);
+                    point = new System.Drawing.Point((int)(img.Width * 0.1f), (int)(img.Height * 0.1f));
+                    graphic.DrawString(username, font, brush, point);
+                    point = new System.Drawing.Point((int)(img.Width * 0.5f), (int)(img.Height * 0.1f));
+                    graphic.DrawString(username, font, brush, point);
+                    point = new System.Drawing.Point((int)(img.Width * 0.9f), (int)(img.Height * 0.1f));
+                    graphic.DrawString(username, font, brush, point);
+                    point = new System.Drawing.Point((int)(img.Width * 0.3f), (int)(img.Height * 0.3f));
+                    graphic.DrawString(username, font, brush, point);
+                    point = new System.Drawing.Point((int)(img.Width * 0.7f), (int)(img.Height * 0.3f));
+                    graphic.DrawString(username, font, brush, point);
+                    point = new System.Drawing.Point((int)(img.Width * 0.1f), (int)(img.Height * 0.5f));
+                    graphic.DrawString(username, font, brush, point);
+                    point = new System.Drawing.Point((int)(img.Width * 0.5f), (int)(img.Height * 0.5f));
+                    graphic.DrawString(username, font, brush, point);
+                    point = new System.Drawing.Point((int)(img.Width * 0.9f), (int)(img.Height * 0.5f));
+                    graphic.DrawString(username, font, brush, point);
+                    graphic.DrawString(username, font, brush, point);
+                    point = new System.Drawing.Point((int)(img.Width * 0.3f), (int)(img.Height * 0.7f));
+                    graphic.DrawString(username, font, brush, point);
+                    point = new System.Drawing.Point((int)(img.Width * 0.7f), (int)(img.Height * 0.7f));
+                    graphic.DrawString(username, font, brush, point);
+                    point = new System.Drawing.Point((int)(img.Width * 0.1f), (int)(img.Height * -0.5f));
+                    graphic.DrawString(username, font, brush, point);
+                    point = new System.Drawing.Point((int)(img.Width * 0.5f), (int)(img.Height * -0.5f));
+                    graphic.DrawString(username, font, brush, point);
+                    point = new System.Drawing.Point((int)(img.Width * 0.9f), (int)(img.Height * -0.5f));
+                    graphic.DrawString(username, font, brush, point);
+                    graphic.DrawString(username, font, brush, point);
+                    point = new System.Drawing.Point((int)(img.Width * 0.3f), (int)(img.Height * -0.7f));
+                    graphic.DrawString(username, font, brush, point);
+                    point = new System.Drawing.Point((int)(img.Width * 0.7f), (int)(img.Height * -0.7f));
+                    graphic.DrawString(username, font, brush, point);
+                    ImageFormat imageFormat = GetImageFormat("WMimage." + rurl);
+                    img.Save(wm, imageFormat);
+                }
+            }
+            wm.Dispose();
+            wm = new FileStream(Path.Combine(path, "WMimage." + rurl), FileMode.Open);
+            DateTime dateTime = DateTime.Now;
+            string date = dateTime.ToString();
+            date = date.Replace("/", "");
+            date = date.Replace(":", "");
+
+            var auth = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
+            var a = await auth.SignInWithEmailAndPasswordAsync(AuthEmail, AuthPassword);
+
+            var cancellation = new CancellationTokenSource();
+
+            var task1 = new FirebaseStorage(
+            Bucket,
+            new FirebaseStorageOptions
+            {
+                AuthTokenAsyncFactory = () => Task.FromResult(a.FirebaseToken),
+                ThrowOnCancel = true // when you cancel the upload, exception is thrown. By default no exception is thrown
+                    })
+                .Child("vmimages")
+                .Child("WM" + date + "WMimage." + rurl)
+                .PutAsync(wm);
+            try
+            {
+                link1 = await task1;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception_UploadPhotoService_WM: {0}", ex);
+            }
+
+            bw.Close();
+            stream.Dispose();
+            fs.Dispose();
+            string imgdel = Path.Combine(path, "image." + rurl);
+            System.IO.File.Delete(imgdel);
+            wm.Dispose();
+            fs.Close();
+            wm.Close();
+            stream.Close();
+            imgdel = Path.Combine(path, "WMimage." + rurl);
+            System.IO.File.Delete(imgdel);
+            if (link1 != null)
+            {
+                photo.Wmlink = link1;
+                photo.DisableFlg = false;
+                _unitOfWork.PhotoRepository.Update(photo);
+                await _unitOfWork.SaveAsync();
+                return photo;
+            }
+            return null;
         }
     }
 }
