@@ -215,6 +215,17 @@ namespace Capstone.Project.API.Controllers
             return BadRequest();
         }
         [AllowAnonymous]
+        [HttpPut("ChangeWatermarkPhoto/{id}")]
+        public async Task<IActionResult> ChangeWatermarkPhoto(int id)
+        {
+            var result = await _photoUploadDownloadService.ChangeWaterMarkPhoto(id);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return BadRequest();
+        }
+        [AllowAnonymous]
         [HttpGet("CheckBoughtPhoto")]
         public IActionResult CheckBoughtPhoto(int id, string userId)
         {

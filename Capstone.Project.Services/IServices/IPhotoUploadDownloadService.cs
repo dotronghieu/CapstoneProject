@@ -12,6 +12,6 @@ namespace Capstone.Project.Services.IServices
         Task<Photo> CreatePhoto(PhotoCreateModel model);
         Task<string> DownloadPhoto(int id);
         Task<bool> DeletePhoto(int id);
-
+        Task<Photo> ChangeWaterMarkPhoto(int photoId);
     }
 }
