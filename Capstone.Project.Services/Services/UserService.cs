@@ -533,6 +533,7 @@ namespace Capstone.Project.Services.Services
                     {
                         var resultPhoto = _mapper.Map<PhotoModelGetAll>(photo);
                         resultPhoto.UserName = _unitOfWork.UserGenRepository.GetFirst(u => u.UserId == item.FollowUserId).Result.Username;
+                        resultPhoto.UserDescription = _unitOfWork.UserGenRepository.GetFirst(u => u.UserId == item.FollowUserId).Result.Description;
                         result.Add(resultPhoto);
                     }
                 }
