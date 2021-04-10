@@ -549,16 +549,34 @@ namespace Capstone.Project.Services.Services
         public IEnumerable<UserNotFollowModel> GetAllUserWeNotFollowing(string userId)
         {
             var result = new List<UserNotFollowModel>();
+            var temp = new List<UserNotFollowModel>();
+            temp.Add(_mapper.Map<UserNotFollowModel>(_unitOfWork.UserGenRepository.GetById(userId).Result));
+
             var listUserFollowing = _unitOfWork.FollowRepository.GetByObject(q => q.UserId == userId).ToList();
             foreach (var item in listUserFollowing)
             {
-                var listUserThatThoseUserAboveFollowing = _unitOfWork.FollowRepository.GetByObject(q => q.UserId == item.FollowUserId).OrderBy(c => Guid.NewGuid()).Take(2).ToList();
-                foreach (var user in listUserThatThoseUserAboveFollowing)
+                temp.Add(_mapper.Map<UserNotFollowModel>(_unitOfWork.UserGenRepository.GetById(item.FollowUserId).Result));
+                var listUserThatThoseUserAboveFollowing = _unitOfWork.FollowRepository.GetByObject(q => q.UserId == item.FollowUserId).ToList();
+                //for (int i = 0; i < temp.Count; i++)
+                //{
+                //    for (int j = 0; j < listUserThatThoseUserAboveFollowing.Count; j++)
+                //    {
+                //        if (!temp.ElementAt(i).UserId.Equals(listUserThatThoseUserAboveFollowing.ElementAt(j).UserId))
+                //        {
+                //            var temp2 = listUserThatThoseUserAboveFollowing.ElementAt(i).UserId;
+                //            result.Add(_mapper.Map<UserNotFollowModel>(_unitOfWork.UserGenRepository.GetById(temp2).Result));
+                //            temp.Add(_mapper.Map<UserNotFollowModel>(_unitOfWork.UserGenRepository.GetById(temp2).Result));
+                //        }
+                //    }
+                //}
+                foreach (var item2 in listUserThatThoseUserAboveFollowing)
                 {
-                    if(item.UserId != user.FollowUserId && user.FollowUserId != item.FollowUserId)
+                    var test = temp.FindIndex(c => c.UserId == item2.FollowUserId);
+                    if(test < 0)
                     {
-                        result.Add(_mapper.Map<UserNotFollowModel>(_unitOfWork.UserGenRepository.GetById(user.FollowUserId).Result));
-                    }                   
+                        result.Add(_mapper.Map<UserNotFollowModel>(_unitOfWork.UserGenRepository.GetById(item2.FollowUserId).Result));
+                        temp.Add(_mapper.Map<UserNotFollowModel>(_unitOfWork.UserGenRepository.GetById(item2.FollowUserId).Result));
+                    }
                 }
             }
             return result.Take(5);
