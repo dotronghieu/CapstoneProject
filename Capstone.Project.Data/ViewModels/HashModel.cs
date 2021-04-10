@@ -6,7 +6,7 @@ namespace Capstone.Project.Data.ViewModels
 {
     public class HashModel
     {
-        public string Hash1 { get; set; }
-        public string Hash2 { get; set; }
+        public ulong Hash1 { get; set; }
+        public ulong Hash2 { get; set; }
     }
 }

@@ -149,13 +149,6 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "Photo Update Fail" });
         }
-        //[HttpPut]
-        //public IActionResult EncryptPhoto()
-        //{
-        //     _photoService.EncryptAllPhoto();         
-        //     return Ok();
-         
-        //}
         [AllowAnonymous]
         [HttpPost("CreatePhoto")]
         public async Task<IActionResult> CreatePhoto([FromForm] PhotoCreateModel model)
@@ -168,18 +161,18 @@ namespace Capstone.Project.API.Controllers
 
             return BadRequest();
         }
-        [AllowAnonymous]
-        [HttpPost("CheckSimilarity")]
-        public  IActionResult Similarity([FromForm] HashModel model)
-        {
-            var result = _photoService.percentage(model.Hash1, model.Hash2);
-            if (result > 0)
-            {
-                return Ok(result);
-            }
+        //[AllowAnonymous]
+        //[HttpPost("CheckSimilarity")]
+        //public  IActionResult Similarity([FromForm] HashModel model)
+        //{
+        //    var result = _photoService.percentage(model.Hash1, model.Hash2);
+        //    if (result > 0)
+        //    {
+        //        return Ok(result);
+        //    }
 
-            return BadRequest();
-        }
+        //    return BadRequest();
+        //}
         [AllowAnonymous]
         [HttpGet("DownloadPhoto/{id}")]
         public async Task<IActionResult> Download(int id)

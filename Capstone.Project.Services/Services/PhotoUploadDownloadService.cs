@@ -186,14 +186,15 @@ namespace Capstone.Project.Services.Services
 
                     Image<Rgba32> image1 = (Image<Rgba32>)SixLabors.ImageSharp.Image.Load(stream);
                     //chỉ được viết code ở đây thôi
-                        
+                    Photo photo = new Photo();
+                    var perceptualHash = new PerceptualHash();
+                    photo.Phash = perceptualHash.Hash(image1);
                     stream.Dispose();
                     string imgdel = Path.Combine(path, file.FileName);
                     System.IO.File.Delete(imgdel);
                     wm.Dispose();
                     imgdel = Path.Combine(path, "WM" + file.FileName);
                     System.IO.File.Delete(imgdel);
-                    Photo photo = new Photo();
                     photo.PhotoName = model.PhotoName;
                     photo.Link = Encryption.StringCipher.Encrypt(link, user.EncryptCode);
                     photo.Wmlink = link1;

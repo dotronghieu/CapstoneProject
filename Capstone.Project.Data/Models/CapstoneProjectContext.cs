@@ -161,6 +161,10 @@ namespace Capstone.Project.Data.Models
                     .HasMaxLength(150)
                     .IsUnicode(false);
 
+                entity.Property(e => e.Phash)
+                    .HasColumnType("numeric(20, 0)")
+                    .HasColumnName("PHash");
+
                 entity.Property(e => e.PhotoName).HasMaxLength(50);
 
                 entity.Property(e => e.Price).HasColumnType("money");
