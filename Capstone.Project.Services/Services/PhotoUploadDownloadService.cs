@@ -181,10 +181,10 @@ namespace Capstone.Project.Services.Services
                         Console.WriteLine("Exception_UploadPhotoService_WM: {0}", ex);
                         return null;
                     }
+                    stream.Position = 0;
+                    Image<Rgba32> image1 = (Image<Rgba32>)SixLabors.ImageSharp.Image.Load(stream);
                     System.Drawing.Image image = System.Drawing.Image.FromStream(stream);
                     stream.Dispose();
-
-                    Image<Rgba32> image1 = (Image<Rgba32>)SixLabors.ImageSharp.Image.Load(stream);
                     //chỉ được viết code ở đây thôi
                     Photo photo = new Photo();
                     var perceptualHash = new PerceptualHash();
