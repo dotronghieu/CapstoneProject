@@ -183,6 +183,11 @@ namespace Capstone.Project.Services.Services
                     }
                     System.Drawing.Image image = System.Drawing.Image.FromStream(stream);
                     stream.Dispose();
+
+                    Image<Rgba32> image1 = (Image<Rgba32>)SixLabors.ImageSharp.Image.Load(stream);
+                    //chỉ được viết code ở đây thôi
+                        
+                    stream.Dispose();
                     string imgdel = Path.Combine(path, file.FileName);
                     System.IO.File.Delete(imgdel);
                     wm.Dispose();
