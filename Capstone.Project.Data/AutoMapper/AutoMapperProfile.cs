@@ -14,10 +14,15 @@ namespace Capstone.Project.Data.AutoMapper
             CreateMap<User, UserModel>();
             CreateMap<UserModel, User>();
             CreateMap<RegisterModel, User>();
+
             CreateMap<UserUpdateModel, User>();
             CreateMap<User, UserUpdateModel>();
+
             CreateMap<User, UserFollowProfileModel>();
             CreateMap<UserFollowProfileModel, User>();
+
+            CreateMap<User, UserNotFollowModel>();
+            CreateMap<UserNotFollowModel, User>();
 
             CreateMap<Role, RoleModel>();
             CreateMap<RoleModel, Role>();

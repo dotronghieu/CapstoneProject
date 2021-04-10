@@ -541,5 +541,20 @@ namespace Capstone.Project.Services.Services
             }
             return null;
         }
+
+        public IEnumerable<UserNotFollowModel> GetAllUserWeNotFollowing(string userId)
+        {
+            var result = new List<UserNotFollowModel>();
+            var listUserFollowing = _unitOfWork.FollowRepository.GetByObject(q => q.UserId == userId).ToList();
+            foreach (var item in listUserFollowing)
+            {
+                var listUserThatThoseUserAboveFollowing = _unitOfWork.FollowRepository.GetByObject(q => q.UserId == item.FollowUserId).OrderBy(c => Guid.NewGuid()).Take(2).ToList();
+                foreach (var user in listUserThatThoseUserAboveFollowing)
+                {
+                    result.Add(_mapper.Map<UserNotFollowModel>(_unitOfWork.UserGenRepository.GetById(user.FollowUserId)));
+                }
+            }
+            return result.Take(5);
+        }
     }
 }

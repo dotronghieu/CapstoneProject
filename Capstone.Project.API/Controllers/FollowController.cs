@@ -81,5 +81,15 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg ="you're not following anyone at the moment"});
         }
+        [HttpGet("Get5UserOfUserThatWeAreFollowThatTheyAreFollowing/{id}")]
+        public IActionResult Get5UserOfUserThatWeAreFollowThatTheyAreFollowing(string id)
+        {
+            var result = _userService.GetAllUserWeNotFollowing(id);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return BadRequest(new { msg = "you're not following anyone at the moment" });
+        }
     }
 }
