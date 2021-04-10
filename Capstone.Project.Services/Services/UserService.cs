@@ -551,7 +551,7 @@ namespace Capstone.Project.Services.Services
                 var listUserThatThoseUserAboveFollowing = _unitOfWork.FollowRepository.GetByObject(q => q.UserId == item.FollowUserId).OrderBy(c => Guid.NewGuid()).Take(2).ToList();
                 foreach (var user in listUserThatThoseUserAboveFollowing)
                 {
-                    if(item.FollowUserId != user.FollowUserId)
+                    if(item.UserId != user.FollowUserId)
                     {
                         result.Add(_mapper.Map<UserNotFollowModel>(_unitOfWork.UserGenRepository.GetById(user.FollowUserId).Result));
                     }                   
