@@ -247,9 +247,9 @@ namespace Capstone.Project.Services.Services
             return false;
         }
 
-        public double CompareHash(ulong hash1, ulong hash2)
+        public double CompareTwoHash(ulong hash1, ulong hash2)
         {
-            return Capstone.Project.Data.Helper.CompareHash.Similarity(hash1, hash2);
+            return CompareHash.Similarity(hash1, hash2);
         }
     }
 }

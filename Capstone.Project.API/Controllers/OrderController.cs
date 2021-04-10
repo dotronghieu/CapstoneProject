@@ -14,10 +14,11 @@ namespace Capstone.Project.API.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
-        private readonly IPhotoService photoService;
-        public OrderController(IOrderService orderService)
+        private readonly IPhotoService _photoService;
+        public OrderController(IOrderService orderService, IPhotoService photoService)
         {
             _orderService = orderService;
+            _photoService = photoService;
         }
         [HttpPost()]
         public async Task<IActionResult> OrderPhoto([FromForm] OrderModel orderModel)
@@ -33,7 +34,7 @@ namespace Capstone.Project.API.Controllers
         [HttpPost("CheckHash")]
         public  IActionResult TestHash([FromForm] HashModel model)
         {
-            var result = photoService.CompareHash(model.Hash1, model.Hash2);
+            var result = _photoService.CompareTwoHash(model.Hash1, model.Hash2);
             if (result >= 0)
             {
                 return Ok(result);

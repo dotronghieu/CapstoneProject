@@ -223,7 +223,7 @@ namespace Capstone.Project.API.Controllers
         public IActionResult CheckBoughtPhoto(int id, string userId)
         {
             bool result = _photoService.CheckBoughtPhoto(id, userId);
-            if (result != null)
+            if (result)
             {
                 return Ok(result);
             }
@@ -234,7 +234,7 @@ namespace Capstone.Project.API.Controllers
         public IActionResult CheckMyPhoto(int photoId, string userId)
         {
             bool result = _photoService.CheckMyPhoto(photoId, userId);
-            if (result != null)
+            if (result)
             {
                 return Ok(result);
             }

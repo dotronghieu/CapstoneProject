@@ -524,11 +524,15 @@ namespace Capstone.Project.Services.Services
             {
                 foreach (var item in listOfFollowRecord)
                 {
+                    var startDateOfMonth = DateTime.Now.AddMonths(-1);
                     var listPhotoOfThatUser = _unitOfWork.PhotoRepository.GetByObject(p =>
                     p.UserId == item.FollowUserId &&
                     p.DelFlg == false &&
                     p.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED &&
-                    p.DisableFlg == false).ToList();
+                    p.DisableFlg == false &&
+                    p.InsDateTime >= startDateOfMonth &&
+                    p.InsDateTime <= DateTime.Now
+                    ).ToList();
                     foreach (var photo in listPhotoOfThatUser)
                     {
                         var resultPhoto = _mapper.Map<PhotoModelGetAll>(photo);

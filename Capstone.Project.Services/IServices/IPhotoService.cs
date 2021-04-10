@@ -22,7 +22,7 @@ namespace Capstone.Project.Services.IServices
         bool CheckMyPhoto(int photoId, string userId);
         Task<PhotoModel> GetSimilarPhoto(int photoId);
         IEnumerable<PhotoModel> GetPhotoByUser(String userId);
-        double CompareHash(ulong hash1, ulong hash2);
+        double CompareTwoHash(ulong hash1, ulong hash2);
     }
 
 }
