@@ -203,8 +203,8 @@ namespace Capstone.Project.Services.Services
                 var listOfPhotoInDB = _reponsitory.GetByObject(p => p.DelFlg == false && p.ApproveStatus != Constants.Const.PHOTO_STATUS_DENIED && p.ApproveStatus != Constants.Const.PHOTO_STATUS_PENDING && p.PhotoId != photoId).ToList();
                 foreach (var item in listOfPhotoInDB)
                 {
-                    double check = NewPerceptualHash.CalcSimilarDegree(photoToCheck.Hash, item.Hash);
-                    if(check <= 5)
+                    double check = CompareHash.Similarity(Convert.ToUInt64(photoToCheck.Phash), Convert.ToUInt64(item.Phash));
+                    if(check >= 80)
                     {
                         return _mapper.Map<PhotoModel>(item);
                     }
@@ -250,6 +250,45 @@ namespace Capstone.Project.Services.Services
         public double CompareTwoHash(ulong hash1, ulong hash2)
         {
             return CompareHash.Similarity(hash1, hash2);
+        }
+
+        public IEnumerable<PhotoModelGetAll> GetAllNormalPHoto()
+        {
+            var result = new List<PhotoModelGetAll>();
+            var listPhotoNormal = _unitOfWork.PhotoRepository.GetByObject(c => c.DelFlg == false &&
+            c.DisableFlg == false &&
+            c.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED &&
+            c.TypeId == 1);
+            foreach (var p in listPhotoNormal)
+            {
+                var photoResult = _mapper.Map<PhotoModelGetAll>(p);
+                photoResult.Category = GetCategoryByPhoto(p.PhotoId);
+                result.Add(photoResult);
+            }
+            if(result.Count >= 1)
+            {
+                return result;
+            }
+            return null;
+        }
+        public IEnumerable<PhotoModelGetAll> GetAllExclusivePhoto()
+        {
+            var result = new List<PhotoModelGetAll>();
+            var listPhotoNormal = _unitOfWork.PhotoRepository.GetByObject(c => c.DelFlg == false &&
+            c.DisableFlg == false &&
+            c.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED &&
+            c.TypeId == 2);
+            foreach (var p in listPhotoNormal)
+            {
+                var photoResult = _mapper.Map<PhotoModelGetAll>(p);
+                photoResult.Category = GetCategoryByPhoto(p.PhotoId);
+                result.Add(photoResult);
+            }
+            if (result.Count >= 1)
+            {
+                return result;
+            }
+            return null;
         }
     }
 }

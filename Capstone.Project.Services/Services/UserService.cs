@@ -557,18 +557,6 @@ namespace Capstone.Project.Services.Services
             {
                 temp.Add(_mapper.Map<UserNotFollowModel>(_unitOfWork.UserGenRepository.GetById(item.FollowUserId).Result));
                 var listUserThatThoseUserAboveFollowing = _unitOfWork.FollowRepository.GetByObject(q => q.UserId == item.FollowUserId).ToList();
-                //for (int i = 0; i < temp.Count; i++)
-                //{
-                //    for (int j = 0; j < listUserThatThoseUserAboveFollowing.Count; j++)
-                //    {
-                //        if (!temp.ElementAt(i).UserId.Equals(listUserThatThoseUserAboveFollowing.ElementAt(j).UserId))
-                //        {
-                //            var temp2 = listUserThatThoseUserAboveFollowing.ElementAt(i).UserId;
-                //            result.Add(_mapper.Map<UserNotFollowModel>(_unitOfWork.UserGenRepository.GetById(temp2).Result));
-                //            temp.Add(_mapper.Map<UserNotFollowModel>(_unitOfWork.UserGenRepository.GetById(temp2).Result));
-                //        }
-                //    }
-                //}
                 foreach (var item2 in listUserThatThoseUserAboveFollowing)
                 {
                     var test = temp.FindIndex(c => c.UserId == item2.FollowUserId);

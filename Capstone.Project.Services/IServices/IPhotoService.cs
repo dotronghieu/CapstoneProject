@@ -23,6 +23,8 @@ namespace Capstone.Project.Services.IServices
         Task<PhotoModel> GetSimilarPhoto(int photoId);
         IEnumerable<PhotoModel> GetPhotoByUser(String userId);
         double CompareTwoHash(ulong hash1, ulong hash2);
+        IEnumerable<PhotoModelGetAll> GetAllNormalPHoto();
+        IEnumerable<PhotoModelGetAll> GetAllExclusivePhoto();
     }
 
 }

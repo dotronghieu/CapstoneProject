@@ -36,5 +36,7 @@ namespace Capstone.Project.Services.IServices
         IEnumerable<Dictionary<string, double>> GetSellStatisticByUserIDAndTime(StatisicModel model);
         IEnumerable<PhotoModelGetAll> GetAllPhotoOfAllUserWeAreFollowing(string userId);
         IEnumerable<UserNotFollowModel> GetAllUserWeNotFollowing(string userId);
+      
+
     }
 }

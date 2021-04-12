@@ -138,6 +138,28 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest();
         }
+        [AllowAnonymous]
+        [HttpGet("GetAllNormalPhoto/")]
+        public IActionResult GetAllNormalPhoto()
+        {
+            var result = _photoService.GetAllNormalPHoto();
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return BadRequest(new { msg = "No photo" });
+        }
+        [AllowAnonymous]
+        [HttpGet("GetAllExclusivePhoto/")]
+        public IActionResult GetAllExclusivePhoto()
+        {
+            var result = _photoService.GetAllExclusivePhoto();
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return BadRequest(new { msg = "No exclusive photo" });
+        }
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Roles.ROLE_USER)]
         [HttpPut("{id}")]
         public IActionResult UserUpdatePhoto(int id, [FromBody] PhotoModel model)
