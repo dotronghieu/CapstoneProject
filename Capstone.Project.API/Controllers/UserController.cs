@@ -120,6 +120,36 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "No photo recorded" });
         }
+        [HttpGet("GetUserNormalPhoto/{id}")]
+        public IActionResult GetUserNormalPhoto(string id)
+        {
+            var result = _userService.GetAllNormalPhotoApproved(id);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return BadRequest(new { msg = "No photo recorded" });
+        }
+        [HttpGet("GetUserExclusivePhoto/{id}")]
+        public IActionResult GetUserExclusivePhoto(string id)
+        {
+            var result = _userService.GetAllExclusivePhotoApproved(id);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return BadRequest(new { msg = "No photo recorded" });
+        }
+        [HttpGet("GetUserExclusivePropertyPhoto/{id}")]
+        public IActionResult GetUserExclusivePropertyPhoto(string id)
+        {
+            var result = _userService.GetAllExclusivePropertyPhotoApproved(id);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return BadRequest(new { msg = "No photo recorded" });
+        }
         [HttpGet("GetPhotoStatusStatistic/{id}")]
         public IActionResult GetPhotoStatusStatistic(string id)
         {
