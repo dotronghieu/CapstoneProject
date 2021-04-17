@@ -287,6 +287,11 @@ namespace Capstone.Project.Services.Services
                 photo.ApproveStatus = Constants.Const.PHOTO_STATUS_DENIED;
                 photo.Note = model.Reason;
                 photo.Description = model.Description;
+                var editInfo = _unitOfWork.PhotoEditRepository.GetById(model.Id).Result;
+                if(editInfo != null)
+                {
+                    _unitOfWork.PhotoEditRepository.Delete(editInfo);
+                }
                 _unitOfWork.PhotoRepository.Update(photo);
                 await _unitOfWork.SaveAsync();
                 return true;
