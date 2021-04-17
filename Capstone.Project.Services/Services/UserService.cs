@@ -294,6 +294,75 @@ namespace Capstone.Project.Services.Services
             return false;
         }
 
+        public IEnumerable<PhotoModel> GetAllNormalPhotoApproved(string userId)
+        {
+            var listPhotoApproved = _unitOfWork.PhotoRepository.GetByObject(p => p.DelFlg == false && p.TypeId == 1 && p.DisableFlg == false && p.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED && p.UserId == userId).ToList();
+            if (listPhotoApproved != null)
+            {
+                List<PhotoModel> result = new List<PhotoModel>();
+                foreach (var item in listPhotoApproved)
+                {
+                    result.Add(_mapper.Map<PhotoModel>(item));
+                }
+                return result.AsEnumerable<PhotoModel>();
+            }
+            return null;
+
+        }
+
+        public IEnumerable<PhotoModel> GetAllExclusivePhotoApproved(string userId)
+        {
+            var listPhotoApproved = _unitOfWork.PhotoRepository.GetByObject(p => p.DelFlg == false && p.TypeId == 2 && p.DisableFlg == false && p.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED && p.UserId == userId).ToList();
+            if (listPhotoApproved != null)
+            {
+                List<PhotoModel> result = new List<PhotoModel>();
+                var orders = _unitOfWork.OrdersRepository.GetByObject(c => c.UserId == userId).ToList();
+                foreach (var item in listPhotoApproved)
+                {
+                    result.Add(_mapper.Map<PhotoModel>(item));
+                }
+                List<PhotoModel> result1 = (List<PhotoModel>) GetAllExclusivePropertyPhotoApproved(userId);
+                var index = 0;
+                foreach (var item in result)
+                {
+                    foreach (var item1 in result1)
+                    {
+                        if (item.PhotoId == item1.PhotoId)
+                        {
+                            result.RemoveAt(index);
+                        }
+                    }
+                    index++;
+                }
+                return result.AsEnumerable<PhotoModel>();
+            }
+            return null;
+
+        }
+
+        public IEnumerable<PhotoModel> GetAllExclusivePropertyPhotoApproved(string userId)
+        {
+            var listPhotoApproved = _unitOfWork.PhotoRepository.GetByObject(p => p.DelFlg == false && p.TypeId == 2 && p.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED && p.UserId == userId).ToList();
+            if (listPhotoApproved != null)
+            {
+                List<PhotoModel> result = new List<PhotoModel>();
+                var orders = _unitOfWork.OrdersRepository.GetByObject(c => c.UserId == userId).ToList();
+                foreach (var order in orders)
+                {
+                    foreach (var item in listPhotoApproved)
+                    {
+                        var orderdetail = _unitOfWork.OrderDetailRepository.GetByObject(c => c.PhotoId == item.PhotoId && c.OrderId == order.OrderId);
+                        if (orderdetail.Count() > 0)
+                        {
+                            result.Add(_mapper.Map<PhotoModel>(item));
+                        }
+                    }
+                }
+                return result.AsEnumerable<PhotoModel>();
+            }
+            return null;
+        }
+
         public IEnumerable<PhotoModel> GetAllPhotoApproved(string userId)
         {
             var listPhotoApproved =  _unitOfWork.PhotoRepository.GetByObject(p => p.DelFlg == false && p.DisableFlg == false && p.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED && p.UserId == userId).ToList();
