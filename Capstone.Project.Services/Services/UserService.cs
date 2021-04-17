@@ -264,6 +264,14 @@ namespace Capstone.Project.Services.Services
             var photo = await _unitOfWork.PhotoRepository.GetById(photoId);
             if(photo != null)
             {
+                var check = _unitOfWork.PhotoEditRepository.GetById(photoId).Result;
+                if(check != null)
+                {
+                    photo.PhotoName = check.PhotoName;
+                    photo.Price = check.Price;
+                    photo.Description = check.Description;
+                    _unitOfWork.PhotoEditRepository.Delete(check);
+                }
                 photo.ApproveStatus = Constants.Const.PHOTO_STATUS_APPROVED;
                 _unitOfWork.PhotoRepository.Update(photo);
                 await _unitOfWork.SaveAsync();
@@ -310,9 +318,16 @@ namespace Capstone.Project.Services.Services
                 List<PhotoModel> result = new List<PhotoModel>();
                 foreach (var item in listPhotoPending)
                 {
+                    var editPhoto = _unitOfWork.PhotoEditRepository.GetById(item.PhotoId).Result;
+                    if(editPhoto != null)
+                    {
+                        item.PhotoName = editPhoto.PhotoName;
+                        item.Description = editPhoto.Description;
+                        item.Price = editPhoto.Price;
+                    }
                     result.Add(_mapper.Map<PhotoModel>(item));
                 }
-                return result.AsEnumerable<PhotoModel>();
+                return result;
             }
             return null;
         }

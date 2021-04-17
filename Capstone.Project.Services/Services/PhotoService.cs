@@ -61,6 +61,13 @@ namespace Capstone.Project.Services.Services
                 List<PhotoModelAdmin> resultList = new List<PhotoModelAdmin>();
                 foreach (var item in list)
                 {
+                    var checkEdit = _unitOfWork.PhotoEditRepository.GetById(item.PhotoId).Result;
+                    if(checkEdit != null)
+                    {
+                        item.PhotoName = checkEdit.PhotoName;
+                        item.Description = checkEdit.Description;
+                        item.Price = checkEdit.Price;
+                    }
                     var categoryList = _unitOfWork.PhotoCategoryRepository.GetByObject(c => c.PhotoId == item.PhotoId, includeProperties: "Category").ToList();
                     List<CategoryModel> categoryResult = new List<CategoryModel>();
                     foreach (var item1 in categoryList)
@@ -71,7 +78,7 @@ namespace Capstone.Project.Services.Services
                     photo.Category = categoryResult;
                     resultList.Add(photo);
                 }
-                return resultList.AsEnumerable<PhotoModelAdmin>();
+                return resultList;
             }
             return null;
         }
@@ -134,20 +141,21 @@ namespace Capstone.Project.Services.Services
             return (null,0);
         }
 
-        public PhotoModel UpdatePhoto(int id, PhotoModel model) 
+        public PhotoEditViewModel UpdatePhoto(int id, PhotoEditViewModel model) 
         {
-            var entity =  _reponsitory.GetById(id).Result;
-            if(entity != null)
+            var entity = new PhotoEdit
             {
-                entity.PhotoName = model.PhotoName;
-                entity.Price = model.Price;
-                entity.TypeId = model.TypeId;
-                _reponsitory.Update(entity);
-                _context.SaveChanges();
-                return _mapper.Map<PhotoModel>(entity);
-            }
-       
-            return null;
+                Description = model.Description,
+                PhotoId = model.PhotoId,
+                PhotoName = model.PhotoName,
+                Price = model.Price
+            };
+            var photoEntity = _reponsitory.GetById(id).Result;
+            photoEntity.ApproveStatus = Constants.Const.PHOTO_STATUS_PENDING;
+            _unitOfWork.PhotoRepository.Update(photoEntity);
+            _unitOfWork.PhotoEditRepository.Add(entity);
+            _unitOfWork.SaveAsync();
+            return _mapper.Map<PhotoEditViewModel>(entity);
         }
 
         public IEnumerable<PhotoModel> GetPhotoByUser(string userId)
@@ -195,22 +203,36 @@ namespace Capstone.Project.Services.Services
             return NewPerceptualHash.CalcSimilarDegree(hash1, hash2);
         }
 
-        public async Task<PhotoModel> GetSimilarPhoto(int photoId)
+        public List<PhotoSimilarViewModel> GetSimilarPhoto(List<int> listPhotoId)
         {
-            var photoToCheck = await _reponsitory.GetById(photoId);
-            if (photoToCheck != null)
+            var listResult = new List<PhotoSimilarViewModel>();
+            foreach (var item in listPhotoId)
             {
-                var listOfPhotoInDB = _reponsitory.GetByObject(p => p.DelFlg == false && p.ApproveStatus != Constants.Const.PHOTO_STATUS_DENIED && p.ApproveStatus != Constants.Const.PHOTO_STATUS_PENDING && p.PhotoId != photoId).ToList();
-                foreach (var item in listOfPhotoInDB)
+                var photo = _reponsitory.GetById(item).Result;
+                var listAllPhotoInDb = _reponsitory.GetByObject(p => p.DelFlg == false &&
+                p.ApproveStatus != Constants.Const.PHOTO_STATUS_DENIED && 
+                p.ApproveStatus != Constants.Const.PHOTO_STATUS_PENDING && 
+                p.PhotoId != item).ToList();
+                double maxSimilar = 0;
+                var photoSimilar = new Photo();
+                foreach (var item2 in listAllPhotoInDb)
                 {
-                    double check = CompareHash.Similarity(Convert.ToUInt64(photoToCheck.Phash), Convert.ToUInt64(item.Phash));
-                    if(check >= 80)
+                    var percentage = CompareHash.Similarity(Convert.ToUInt64(photo.Phash), Convert.ToUInt64(item2.Phash));
+                    
+                    if(percentage >= 80)
                     {
-                        return _mapper.Map<PhotoModel>(item);
+                        maxSimilar = percentage;
+                        if(percentage >= maxSimilar)
+                        {
+                            photoSimilar = item2;
+                        }
                     }
-                }          
+                }
+                var photoResult = _mapper.Map<PhotoSimilarViewModel>(photo);
+                photoResult.SimilarPhoto = _mapper.Map<PhotoModel>(photoSimilar);
+                listResult.Add(photoResult);
             }
-            return null;
+            return listResult;
         }
 
         public bool CheckBoughtPhoto(int id, string userId)

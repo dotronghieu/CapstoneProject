@@ -23,6 +23,7 @@ namespace Capstone.Project.Data.Models
         public virtual DbSet<OrderDetail> OrderDetails { get; set; }
         public virtual DbSet<Photo> Photos { get; set; }
         public virtual DbSet<PhotoCategory> PhotoCategories { get; set; }
+        public virtual DbSet<PhotoEdit> PhotoEdits { get; set; }
         public virtual DbSet<PhotoReport> PhotoReports { get; set; }
         public virtual DbSet<PhotoReportDetail> PhotoReportDetails { get; set; }
         public virtual DbSet<Report> Reports { get; set; }
@@ -37,7 +38,7 @@ namespace Capstone.Project.Data.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=tcp:haihieuchien.database.windows.net,1433;Initial Catalog=CapstoneProject;Persist Security Info=False;User ID=haihieuchien;Password=Hai19hieuchien;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+                optionsBuilder.UseSqlServer("Server=tcp:haihieuchiencapstone.database.windows.net,1433;Initial Catalog=CapstoneProject;Persist Security Info=False;User ID=haihieuchien;Password=Hai19hieuchien;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
             }
         }
 
@@ -203,6 +204,25 @@ namespace Capstone.Project.Data.Models
                     .HasForeignKey(d => d.PhotoId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PhotoCategory_Photo");
+            });
+
+            modelBuilder.Entity<PhotoEdit>(entity =>
+            {
+                entity.HasKey(e => e.PhotoId);
+
+                entity.ToTable("PhotoEdit");
+
+                entity.Property(e => e.PhotoId).ValueGeneratedNever();
+
+                entity.Property(e => e.PhotoName).HasMaxLength(50);
+
+                entity.Property(e => e.Price).HasColumnType("money");
+
+                entity.HasOne(d => d.Photo)
+                    .WithOne(p => p.PhotoEdit)
+                    .HasForeignKey<PhotoEdit>(d => d.PhotoId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PhotoEdit_Photo");
             });
 
             modelBuilder.Entity<PhotoReport>(entity =>

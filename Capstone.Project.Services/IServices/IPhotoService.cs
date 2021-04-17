@@ -11,7 +11,7 @@ namespace Capstone.Project.Services.IServices
     public interface IPhotoService : IBaseService<Photo, PhotoModel>
     {
         IEnumerable<PhotoModelGetAll> GetRandomPhoto();
-        PhotoModel UpdatePhoto(int id, PhotoModel model);
+        PhotoEditViewModel UpdatePhoto(int id, PhotoEditViewModel model);
         Task<PhotoModel> GetPhotoById(int id);
         Task<PhotoModel> GetById(int id);
         void EncryptAllPhoto();
@@ -20,7 +20,7 @@ namespace Capstone.Project.Services.IServices
         (IEnumerable<PhotoModelGetAll>,int) SearchPhoto(string key, int pageSize, int pageNumber);
         bool CheckBoughtPhoto(int id, string userId);
         bool CheckMyPhoto(int photoId, string userId);
-        Task<PhotoModel> GetSimilarPhoto(int photoId);
+        List<PhotoSimilarViewModel> GetSimilarPhoto(List<int> listPhotoId);
         IEnumerable<PhotoModel> GetPhotoByUser(String userId);
         double CompareTwoHash(ulong hash1, ulong hash2);
         IEnumerable<PhotoModelGetAll> GetAllNormalPHoto();

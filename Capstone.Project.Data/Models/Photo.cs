@@ -34,6 +34,7 @@ namespace Capstone.Project.Data.Models
 
         public virtual Type Type { get; set; }
         public virtual User User { get; set; }
+        public virtual PhotoEdit PhotoEdit { get; set; }
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
         public virtual ICollection<PhotoCategory> PhotoCategories { get; set; }
         public virtual ICollection<PhotoReport> PhotoReports { get; set; }

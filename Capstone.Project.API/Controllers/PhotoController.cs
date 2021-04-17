@@ -162,7 +162,7 @@ namespace Capstone.Project.API.Controllers
         }
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Roles.ROLE_USER)]
         [HttpPut("{id}")]
-        public IActionResult UserUpdatePhoto(int id, [FromBody] PhotoModel model)
+        public IActionResult UserUpdatePhoto(int id, [FromBody] PhotoEditViewModel model)
         {
             var result =  _photoService.UpdatePhoto(id, model);
             if(result != null)
