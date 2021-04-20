@@ -36,7 +36,6 @@ namespace Capstone.Project.Data.Helper.HashAlgorithms
             {
                 for (var x = 0; x < Size; x++)
                     sequence[x] = image[x, y].R;
-
                 rows[y] = Dct1D(sequence);
             }
 
@@ -45,7 +44,6 @@ namespace Capstone.Project.Data.Helper.HashAlgorithms
             {
                 for (var y = 0; y < Size; y++)
                     sequence[y] = rows[y][x];
-
                 matrix[x] = Dct1D(sequence);
             }
 
@@ -104,7 +102,6 @@ namespace Capstone.Project.Data.Helper.HashAlgorithms
                 if (coef == 0)
                     coefficients[coef] *= Sqrt2;
             }
-
             return coefficients;
         }
     }
