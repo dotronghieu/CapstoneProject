@@ -85,9 +85,9 @@ namespace Capstone.Project.API.Controllers
         }
         [AllowAnonymous]
         [HttpGet("GetSimilarPhoto/{id}")]
-        public async Task<IActionResult> GetSimilarPhoto(int id)
+        public  IActionResult GetSimilarPhoto(List<int> id)
         {
-            var photo = await _photoService.GetSimilarPhoto(id);
+            var photo =  _photoService.GetSimilarPhoto(id);
             if (photo != null)
             {
                 return Ok(photo);
