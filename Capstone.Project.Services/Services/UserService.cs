@@ -274,6 +274,12 @@ namespace Capstone.Project.Services.Services
                 }
                 photo.ApproveStatus = Constants.Const.PHOTO_STATUS_APPROVED;
                 _unitOfWork.PhotoRepository.Update(photo);
+                var listUser = _unitOfWork.FollowRepository.GetByObject(c => c.FollowUserId == photo.UserId).ToList();
+                foreach (var user in listUser)
+                {
+                    user.NewNotify = true;
+                    _unitOfWork.FollowRepository.Update(user);
+                }
                 await _unitOfWork.SaveAsync();
                 return true;
             }
@@ -326,19 +332,6 @@ namespace Capstone.Project.Services.Services
                 {
                     result.Add(_mapper.Map<PhotoModel>(item));
                 }
-                List<PhotoModel> result1 = (List<PhotoModel>) GetAllExclusivePropertyPhotoApproved(userId);
-                var index = 0;
-                foreach (var item in result)
-                {
-                    foreach (var item1 in result1)
-                    {
-                        if (item.PhotoId == item1.PhotoId)
-                        {
-                            result.RemoveAt(index);
-                        }
-                    }
-                    index++;
-                }
                 return result.AsEnumerable<PhotoModel>();
             }
             return null;
@@ -347,7 +340,7 @@ namespace Capstone.Project.Services.Services
 
         public IEnumerable<PhotoModel> GetAllExclusivePropertyPhotoApproved(string userId)
         {
-            var listPhotoApproved = _unitOfWork.PhotoRepository.GetByObject(p => p.DelFlg == false && p.TypeId == 2 && p.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED && p.UserId == userId).ToList();
+            var listPhotoApproved = _unitOfWork.PhotoRepository.GetByObject(p => p.DelFlg == false && p.TypeId == 2 && p.DisableFlg == true && p.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED && p.UserId == userId).ToList();
             if (listPhotoApproved != null)
             {
                 List<PhotoModel> result = new List<PhotoModel>();
@@ -657,6 +650,34 @@ namespace Capstone.Project.Services.Services
                 }
             }
             return result.Take(5);
+        }
+
+        public IEnumerable<string> CheckNotification(string userId)
+        {
+            var listUser = _unitOfWork.FollowRepository.GetByObject(c => c.UserId == userId && c.NewNotify == true).ToList();
+            List<string> result = new List<string>();
+            if (listUser != null)
+            {
+                foreach (var user in listUser)
+                {
+                    result.Add(user.UserId);
+                }
+                return result;
+            }
+            return null;
+        }
+
+        public async Task<bool> DeleteNotification(string userId, string followUserId)
+        {
+            var result = _unitOfWork.FollowRepository.GetFirst(c => c.UserId == userId && c.FollowUserId == followUserId).Result;
+            if(result != null)
+            {
+                result.NewNotify = false;
+                _unitOfWork.FollowRepository.Update(result);
+                await _unitOfWork.SaveAsync();
+                return true;
+            }
+            return false;
         }
     }
 }

@@ -39,6 +39,7 @@ namespace Capstone.Project.Services.IServices
         IEnumerable<PhotoModel> GetAllNormalPhotoApproved(string userId);
         IEnumerable<PhotoModel> GetAllExclusivePhotoApproved(string userId);
         IEnumerable<PhotoModel> GetAllExclusivePropertyPhotoApproved(string userId);
-
+        IEnumerable<string> CheckNotification(string userId);
+        Task<bool> DeleteNotification(string userId, string followUserId);
     }
 }

@@ -170,5 +170,26 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "No record" });
         }
+        [HttpGet("GetNotification/{userid}")]
+        public IActionResult GetNotification(string userid)
+        {
+            var result = _userService.CheckNotification(userid);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(new { msg = "No new notification" });
+        }
+        [HttpPut("DeleteNotification")]
+        public async Task<IActionResult> DeleteNotification(string userid, string followUserId)
+        {
+            var result = await _userService.DeleteNotification(userid, followUserId);
+            if (result == true)
+            {
+                return Ok(new { msg = "Notification has been deleted" });
+            }
+            return BadRequest();
+        }
     }
 }
