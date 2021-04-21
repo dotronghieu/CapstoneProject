@@ -153,6 +153,7 @@ namespace Capstone.Project.Services.Services
             var photoEntity = _reponsitory.GetById(id).Result;
             photoEntity.ApproveStatus = Constants.Const.PHOTO_STATUS_PENDING;
             _unitOfWork.PhotoRepository.Update(photoEntity);
+            _unitOfWork.SaveAsync();
             _unitOfWork.PhotoEditRepository.Add(entity);
             _unitOfWork.SaveAsync();
             return _mapper.Map<PhotoEditViewModel>(entity);

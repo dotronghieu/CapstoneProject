@@ -274,13 +274,14 @@ namespace Capstone.Project.Services.Services
                 }
                 photo.ApproveStatus = Constants.Const.PHOTO_STATUS_APPROVED;
                 _unitOfWork.PhotoRepository.Update(photo);
+                await _unitOfWork.SaveAsync();
                 var listUser = _unitOfWork.FollowRepository.GetByObject(c => c.FollowUserId == photo.UserId).ToList();
                 foreach (var user in listUser)
                 {
                     user.NewNotify = true;
                     _unitOfWork.FollowRepository.Update(user);
+                    await _unitOfWork.SaveAsync();
                 }
-                await _unitOfWork.SaveAsync();
                 return true;
             }
             return false;
