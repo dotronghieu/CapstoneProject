@@ -653,15 +653,22 @@ namespace Capstone.Project.Services.Services
             return result.Take(5);
         }
 
-        public IEnumerable<string> CheckNotification(string userId)
+        public IEnumerable<Dictionary<string, string>> CheckNotification(string userId)
         {
             var listUser = _unitOfWork.FollowRepository.GetByObject(c => c.UserId == userId && c.NewNotify == true).ToList();
-            List<string> result = new List<string>();
+
+            List<Dictionary<string, string>> result = new List<Dictionary<string, string>>();
             if (listUser != null)
             {
                 foreach (var user in listUser)
                 {
-                    result.Add(user.UserId);
+                    Dictionary<string, string> item = new Dictionary<string, string>();
+                    var userTemp = _unitOfWork.UsersRepository.GetById(user.FollowUserId).Result;
+                    item.Add("userId", user.FollowUserId);
+                    item.Add("username", userTemp.Username);
+                    var photo = _unitOfWork.PhotoRepository.GetByObject(c => c.UserId == user.FollowUserId && c.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED).ToList().Last();
+                    item.Add("photoId", photo.PhotoId.ToString());
+                    result.Add(item);
                 }
                 return result;
             }
