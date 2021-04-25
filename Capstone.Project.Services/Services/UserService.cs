@@ -278,8 +278,15 @@ namespace Capstone.Project.Services.Services
                 var listUser = _unitOfWork.FollowRepository.GetByObject(c => c.FollowUserId == photo.UserId).ToList();
                 foreach (var user in listUser)
                 {
-                    user.NewNotify = true;
-                    _unitOfWork.FollowRepository.Update(user);
+                    Notification noti = new Notification();
+                    noti.UserId = user.UserId;
+                    noti.FollowUserId = user.FollowUserId;
+                    noti.PhotoId = photoId;
+                    noti.NotificationContent = Constants.Const.NOTIFICATION_1;
+                    noti.PhotoName = photo.PhotoName;
+                    noti.Wmlink = photo.Wmlink;
+                    noti.IsNotified = false;
+                    _unitOfWork.NotificationRepository.Add(noti);
                     await _unitOfWork.SaveAsync();
                 }
                 return true;
@@ -655,19 +662,22 @@ namespace Capstone.Project.Services.Services
 
         public IEnumerable<Dictionary<string, string>> CheckNotification(string userId)
         {
-            var listUser = _unitOfWork.FollowRepository.GetByObject(c => c.UserId == userId && c.NewNotify == true).ToList();
+            var listNoti = _unitOfWork.NotificationRepository.GetByObject(c => c.UserId == userId && c.IsNotified == false).ToList();
 
             List<Dictionary<string, string>> result = new List<Dictionary<string, string>>();
-            if (listUser != null)
+            if (listNoti != null)
             {
-                foreach (var user in listUser)
+                foreach (var noti in listNoti)
                 {
                     Dictionary<string, string> item = new Dictionary<string, string>();
-                    var userTemp = _unitOfWork.UsersRepository.GetById(user.FollowUserId).Result;
-                    item.Add("userId", user.FollowUserId);
+                    var userTemp = _unitOfWork.UsersRepository.GetById(noti.FollowUserId).Result;
+                    item.Add("userId", noti.FollowUserId);
                     item.Add("username", userTemp.Username);
-                    var photo = _unitOfWork.PhotoRepository.GetByObject(c => c.UserId == user.FollowUserId && c.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED).ToList().Last();
-                    item.Add("photoId", photo.PhotoId.ToString());
+                    item.Add("photoId", noti.PhotoId.ToString());
+                    item.Add("WMLink", noti.Wmlink);
+                    item.Add("photoname", noti.PhotoName);
+                    item.Add("notificationcontent", noti.NotificationContent);
+                    item.Add("notificationid", noti.NotificationId.ToString());
                     result.Add(item);
                 }
                 return result;
@@ -675,13 +685,13 @@ namespace Capstone.Project.Services.Services
             return null;
         }
 
-        public async Task<bool> DeleteNotification(string userId, string followUserId)
+        public async Task<bool> DeleteNotification(int NotificationId)
         {
-            var result = _unitOfWork.FollowRepository.GetFirst(c => c.UserId == userId && c.FollowUserId == followUserId).Result;
+            var result = _unitOfWork.NotificationRepository.GetFirst(c => c.NotificationId == NotificationId).Result;
             if(result != null)
             {
-                result.NewNotify = false;
-                _unitOfWork.FollowRepository.Update(result);
+                result.IsNotified = true;
+                _unitOfWork.NotificationRepository.Update(result);
                 await _unitOfWork.SaveAsync();
                 return true;
             }

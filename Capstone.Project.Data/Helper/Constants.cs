@@ -19,6 +19,8 @@ namespace Capstone.Project.Data.Helper
             public const string PHOTO_STATUS_PENDING = "pending";
             public const string PHOTO_STATUS_APPROVED = "approved";
             public const string PHOTO_STATUS_DENIED = "denied";
+            public const string NOTIFICATION_1 = "posted a new photo";
+            public const string NOTIFICATION_2 = "sold a exclusive photo";
         }
     }
 }

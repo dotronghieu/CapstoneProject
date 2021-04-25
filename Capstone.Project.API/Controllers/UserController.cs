@@ -181,10 +181,10 @@ namespace Capstone.Project.API.Controllers
 
             return BadRequest(new { msg = "No new notification" });
         }
-        [HttpPut("DeleteNotification")]
-        public async Task<IActionResult> DeleteNotification(string userid, string followUserId)
+        [HttpPut("DeleteNotification/{NotificationId}")]
+        public async Task<IActionResult> DeleteNotification(int NotificationId)
         {
-            var result = await _userService.DeleteNotification(userid, followUserId);
+            var result = await _userService.DeleteNotification(NotificationId);
             if (result == true)
             {
                 return Ok(new { msg = "Notification has been deleted" });
