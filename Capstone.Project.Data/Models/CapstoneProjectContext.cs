@@ -19,6 +19,7 @@ namespace Capstone.Project.Data.Models
 
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Follow> Follows { get; set; }
+        public virtual DbSet<Notification> Notifications { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<OrderDetail> OrderDetails { get; set; }
         public virtual DbSet<Photo> Photos { get; set; }
@@ -80,6 +81,35 @@ namespace Capstone.Project.Data.Models
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Follow_User");
+            });
+
+            modelBuilder.Entity<Notification>(entity =>
+            {
+                entity.ToTable("Notification");
+
+                entity.Property(e => e.FollowUserId)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.NotificationContent).HasMaxLength(50);
+
+                entity.Property(e => e.PhotoName).HasMaxLength(50);
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Wmlink).HasColumnName("WMLink");
+
+                entity.HasOne(d => d.Photo)
+                    .WithMany(p => p.Notifications)
+                    .HasForeignKey(d => d.PhotoId)
+                    .HasConstraintName("FK_Notification_Photo");
+
+                entity.HasOne(d => d.Follow)
+                    .WithMany(p => p.Notifications)
+                    .HasForeignKey(d => new { d.UserId, d.FollowUserId })
+                    .HasConstraintName("FK_Notification_Follow");
             });
 
             modelBuilder.Entity<Order>(entity =>
