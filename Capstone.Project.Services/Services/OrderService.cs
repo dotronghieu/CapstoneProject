@@ -36,11 +36,15 @@ namespace Capstone.Project.Services.Services
                     var orderDetailList = order.OrderDetails;
                     foreach (var orderDetail in orderDetailList)
                     {
-                        var model = _mapper.Map<PhotoTransactionModel>(await _unitOfWork.PhotoRepository.GetById(orderDetail.PhotoId));
-                        model.BoughtPrice = orderDetail.Price;
-                        model.BoughtTime = order.InsDateTime;
-                        model.TransactionId = GetTransactionIDByOrderID(orderDetail.OrderId);
-                        result.Add(model);
+                        var photo = _unitOfWork.PhotoRepository.GetById(orderDetail.PhotoId).Result;
+                        if (photo.TypeId == 2 && photo.UserId == id && photo.DisableFlg == false) { }
+                        else {
+                            var model = _mapper.Map<PhotoTransactionModel>(await _unitOfWork.PhotoRepository.GetById(orderDetail.PhotoId));
+                            model.BoughtPrice = orderDetail.Price;
+                            model.BoughtTime = order.InsDateTime;
+                            model.TransactionId = GetTransactionIDByOrderID(orderDetail.OrderId);
+                            result.Add(model);
+                        }
                     }
                 }
                 return result.AsEnumerable<PhotoTransactionModel>();

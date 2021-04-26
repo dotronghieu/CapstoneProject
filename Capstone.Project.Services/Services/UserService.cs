@@ -264,30 +264,38 @@ namespace Capstone.Project.Services.Services
             var photo = await _unitOfWork.PhotoRepository.GetById(photoId);
             if(photo != null)
             {
-                var check = _unitOfWork.PhotoEditRepository.GetById(photoId).Result;
+                var check = await _unitOfWork.PhotoEditRepository.GetById(photoId);
                 if(check != null)
                 {
                     photo.PhotoName = check.PhotoName;
                     photo.Price = check.Price;
                     photo.Description = check.Description;
-                    _unitOfWork.PhotoEditRepository.Delete(check);
-                }
-                photo.ApproveStatus = Constants.Const.PHOTO_STATUS_APPROVED;
-                _unitOfWork.PhotoRepository.Update(photo);
-                await _unitOfWork.SaveAsync();
-                var listUser = _unitOfWork.FollowRepository.GetByObject(c => c.FollowUserId == photo.UserId).ToList();
-                foreach (var user in listUser)
-                {
-                    Notification noti = new Notification();
-                    noti.UserId = user.UserId;
-                    noti.FollowUserId = user.FollowUserId;
-                    noti.PhotoId = photoId;
-                    noti.NotificationContent = Constants.Const.NOTIFICATION_1;
-                    noti.PhotoName = photo.PhotoName;
-                    noti.Wmlink = photo.Wmlink;
-                    noti.IsNotified = false;
-                    _unitOfWork.NotificationRepository.Add(noti);
+                    _unitOfWork.PhotoEditRepository.Delete(check.PhotoId);
                     await _unitOfWork.SaveAsync();
+                    photo.ApproveStatus = Constants.Const.PHOTO_STATUS_APPROVED;
+                    _unitOfWork.PhotoRepository.Update(photo);
+                    await _unitOfWork.SaveAsync();
+                }
+                else
+                {
+                    photo.ApproveStatus = Constants.Const.PHOTO_STATUS_APPROVED;
+                    _unitOfWork.PhotoRepository.Update(photo);
+                    await _unitOfWork.SaveAsync();
+
+                    var listUser = _unitOfWork.FollowRepository.GetByObject(c => c.FollowUserId == photo.UserId).ToList();
+                    foreach (var user in listUser)
+                    {
+                        Notification noti = new Notification();
+                        noti.UserId = user.UserId;
+                        noti.FollowUserId = user.FollowUserId;
+                        noti.PhotoId = photoId;
+                        noti.NotificationContent = Constants.Const.NOTIFICATION_1;
+                        noti.PhotoName = photo.PhotoName;
+                        noti.Wmlink = photo.Wmlink;
+                        noti.IsNotified = false;
+                        _unitOfWork.NotificationRepository.Add(noti);
+                        await _unitOfWork.SaveAsync();
+                    }
                 }
                 return true;
             }
@@ -463,13 +471,20 @@ namespace Capstone.Project.Services.Services
         {
             if(model.UserId != null && model.FollowUserId != null)
             {
-                var followModel = new FollowModel()
+                Follow value = new Follow();
+                Follow followModel = await _unitOfWork.FollowRepository.GetFirst(c => c.UserId == model.UserId && c.FollowUserId == model.FollowUserId);
+                if (followModel != null)
                 {
-                    UserId = model.UserId,
-                    FollowUserId = model.FollowUserId
+                    followModel.DelFlg = false;
+                    _unitOfWork.FollowRepository.Update(followModel);
                 }
-                ;
-                _unitOfWork.FollowRepository.Add(_mapper.Map<Follow>(followModel));
+                else
+                {
+                    value.UserId = model.UserId;
+                    value.FollowUserId = model.FollowUserId;
+                    value.DelFlg = false;
+                    _unitOfWork.FollowRepository.Add(value);
+                }
                 await _unitOfWork.SaveAsync();
                 return true;
             }
@@ -481,7 +496,7 @@ namespace Capstone.Project.Services.Services
             Follow followModel = await _unitOfWork.FollowRepository.GetFirst(c => c.UserId == model.UserId && c.FollowUserId == model.FollowUserId);
             if(followModel != null)
             {
-                _unitOfWork.FollowRepository.Delete2(followModel.UserId, followModel.FollowUserId);
+                followModel.DelFlg = true;
                 await _unitOfWork.SaveAsync();
                 return true;
             }
@@ -490,7 +505,7 @@ namespace Capstone.Project.Services.Services
 
         public IEnumerable<UserFollowProfileModel> GetAllFollowingUser(string userId)
         {
-            var userFollowList = _unitOfWork.FollowRepository.GetByObject(c => c.UserId == userId).ToList();
+            var userFollowList = _unitOfWork.FollowRepository.GetByObject(c => c.UserId == userId && c.DelFlg == false).ToList();
             List<UserFollowProfileModel> resultList = new List<UserFollowProfileModel>();
             if(userFollowList.Count >= 1)
             {
@@ -592,15 +607,12 @@ namespace Capstone.Project.Services.Services
 
         public bool CheckFollow(FollowModel model)
         {
-            var userFollowList = _unitOfWork.FollowRepository.GetByObject(c => c.UserId == model.UserId).ToList();
-            if (userFollowList.Count >= 1)
+            var userFollowList = _unitOfWork.FollowRepository.GetFirst(c => c.UserId == model.UserId).Result;
+            if (userFollowList != null)
             {
-                foreach (var item in userFollowList)
+                if (userFollowList.DelFlg == false)
                 {
-                    if (item.FollowUserId == model.FollowUserId)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
             return false;

@@ -142,7 +142,7 @@ namespace Capstone.Project.Services.Services
             return (null,0);
         }
 
-        public PhotoEditViewModel UpdatePhoto(int id, PhotoEditViewModel model) 
+        public async Task<PhotoEditViewModel> UpdatePhoto(int id, PhotoEditViewModel model) 
         {
             var entity = new PhotoEdit
             {
@@ -154,9 +154,9 @@ namespace Capstone.Project.Services.Services
             var photoEntity = _reponsitory.GetById(id).Result;
             photoEntity.ApproveStatus = Constants.Const.PHOTO_STATUS_PENDING;
             _unitOfWork.PhotoRepository.Update(photoEntity);
-            _unitOfWork.SaveAsync();
+            await _unitOfWork.SaveAsync();
             _unitOfWork.PhotoEditRepository.Add(entity);
-            _unitOfWork.SaveAsync();
+            await _unitOfWork.SaveAsync();
             return _mapper.Map<PhotoEditViewModel>(entity);
         }
 
