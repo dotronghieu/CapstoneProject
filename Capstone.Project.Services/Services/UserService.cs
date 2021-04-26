@@ -264,30 +264,38 @@ namespace Capstone.Project.Services.Services
             var photo = await _unitOfWork.PhotoRepository.GetById(photoId);
             if(photo != null)
             {
-                var check = _unitOfWork.PhotoEditRepository.GetById(photoId).Result;
+                var check = await _unitOfWork.PhotoEditRepository.GetById(photoId);
                 if(check != null)
                 {
                     photo.PhotoName = check.PhotoName;
                     photo.Price = check.Price;
                     photo.Description = check.Description;
-                    _unitOfWork.PhotoEditRepository.Delete(check);
-                }
-                photo.ApproveStatus = Constants.Const.PHOTO_STATUS_APPROVED;
-                _unitOfWork.PhotoRepository.Update(photo);
-                await _unitOfWork.SaveAsync();
-                var listUser = _unitOfWork.FollowRepository.GetByObject(c => c.FollowUserId == photo.UserId).ToList();
-                foreach (var user in listUser)
-                {
-                    Notification noti = new Notification();
-                    noti.UserId = user.UserId;
-                    noti.FollowUserId = user.FollowUserId;
-                    noti.PhotoId = photoId;
-                    noti.NotificationContent = Constants.Const.NOTIFICATION_1;
-                    noti.PhotoName = photo.PhotoName;
-                    noti.Wmlink = photo.Wmlink;
-                    noti.IsNotified = false;
-                    _unitOfWork.NotificationRepository.Add(noti);
+                    _unitOfWork.PhotoEditRepository.Delete(check.PhotoId);
                     await _unitOfWork.SaveAsync();
+                    photo.ApproveStatus = Constants.Const.PHOTO_STATUS_APPROVED;
+                    _unitOfWork.PhotoRepository.Update(photo);
+                    await _unitOfWork.SaveAsync();
+                }
+                else
+                {
+                    photo.ApproveStatus = Constants.Const.PHOTO_STATUS_APPROVED;
+                    _unitOfWork.PhotoRepository.Update(photo);
+                    await _unitOfWork.SaveAsync();
+
+                    var listUser = _unitOfWork.FollowRepository.GetByObject(c => c.FollowUserId == photo.UserId).ToList();
+                    foreach (var user in listUser)
+                    {
+                        Notification noti = new Notification();
+                        noti.UserId = user.UserId;
+                        noti.FollowUserId = user.FollowUserId;
+                        noti.PhotoId = photoId;
+                        noti.NotificationContent = Constants.Const.NOTIFICATION_1;
+                        noti.PhotoName = photo.PhotoName;
+                        noti.Wmlink = photo.Wmlink;
+                        noti.IsNotified = false;
+                        _unitOfWork.NotificationRepository.Add(noti);
+                        await _unitOfWork.SaveAsync();
+                    }
                 }
                 return true;
             }

@@ -11,7 +11,7 @@ namespace Capstone.Project.Services.IServices
     public interface IPhotoService : IBaseService<Photo, PhotoModel>
     {
         IEnumerable<PhotoModelGetAll> GetRandomPhoto();
-        PhotoEditViewModel UpdatePhoto(int id, PhotoEditViewModel model);
+        Task<PhotoEditViewModel> UpdatePhoto(int id, PhotoEditViewModel model);
         Task<PhotoModel> GetPhotoById(int id);
         Task<PhotoModel> GetById(int id);
         void EncryptAllPhoto();
