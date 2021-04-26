@@ -84,8 +84,8 @@ namespace Capstone.Project.API.Controllers
             return BadRequest( new { msg = "photo is not found"});
         }
         [AllowAnonymous]
-        [HttpGet("GetSimilarPhoto/{id}")]
-        public  IActionResult GetSimilarPhoto(List<int> id)
+        [HttpPost("GetSimilarPhoto")]
+        public  IActionResult GetSimilarPhoto([FromBody] List<int> id)
         {
             var photo =  _photoService.GetSimilarPhoto(id);
             if (photo != null)

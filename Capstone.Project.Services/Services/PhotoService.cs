@@ -230,7 +230,10 @@ namespace Capstone.Project.Services.Services
                     }
                 }
                 var photoResult = _mapper.Map<PhotoSimilarViewModel>(photo);
-                photoResult.SimilarPhoto = _mapper.Map<PhotoModel>(photoSimilar);
+                if(photoSimilar.PhotoId > 0)
+                {
+                    photoResult.SimilarPhoto = _mapper.Map<PhotoModel>(photoSimilar);
+                }
                 listResult.Add(photoResult);
             }
             return listResult;
