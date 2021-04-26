@@ -182,11 +182,15 @@ namespace Capstone.Project.Data.Models
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
+                entity.Property(e => e.Description).HasMaxLength(255);
+
                 entity.Property(e => e.Hash).IsUnicode(false);
 
                 entity.Property(e => e.InsDateTime)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.Link).HasMaxLength(1000);
 
                 entity.Property(e => e.Note)
                     .HasMaxLength(150)
@@ -204,7 +208,9 @@ namespace Capstone.Project.Data.Models
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Wmlink).HasColumnName("WMLink");
+                entity.Property(e => e.Wmlink)
+                    .HasMaxLength(1000)
+                    .HasColumnName("WMLink");
 
                 entity.HasOne(d => d.Type)
                     .WithMany(p => p.Photos)
@@ -243,6 +249,8 @@ namespace Capstone.Project.Data.Models
                 entity.ToTable("PhotoEdit");
 
                 entity.Property(e => e.PhotoId).ValueGeneratedNever();
+
+                entity.Property(e => e.Description).HasMaxLength(255);
 
                 entity.Property(e => e.PhotoName).HasMaxLength(50);
 

@@ -14,6 +14,7 @@ namespace Capstone.Project.Data.Models
 
         public string UserId { get; set; }
         public string FollowUserId { get; set; }
+        public bool? DelFlg { get; set; }
 
         public virtual User FollowUser { get; set; }
         public virtual User User { get; set; }
