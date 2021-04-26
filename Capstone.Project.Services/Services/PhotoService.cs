@@ -55,7 +55,7 @@ namespace Capstone.Project.Services.Services
         public  IEnumerable<PhotoModelAdmin> GetPhotoNotApproved()
         {
             PhotoCategoryService service = new PhotoCategoryService();
-            var list =  _reponsitory.GetByObject(p => p.DelFlg == false && p.ApproveStatus == Constants.Const.PHOTO_STATUS_PENDING).OrderBy(c => c.PhotoId).Take(Constants.Const.NUMBER_OF_NOT_APPROVED_PHOTO);
+            var list =  _reponsitory.GetByObject(p => p.DelFlg == false && p.ApproveStatus == Constants.Const.PHOTO_STATUS_PENDING).OrderBy(c => c.PhotoId);
             if (list != null)
             {
                 List<PhotoModelAdmin> resultList = new List<PhotoModelAdmin>();
@@ -76,6 +76,7 @@ namespace Capstone.Project.Services.Services
                     }
                     PhotoModelAdmin photo = _mapper.Map<PhotoModelAdmin>(item);
                     photo.Category = categoryResult;
+                    photo.SimilarPhoto = GetSimilarPhoto2(photo.PhotoId);
                     resultList.Add(photo);
                 }
                 return resultList;
@@ -203,7 +204,34 @@ namespace Capstone.Project.Services.Services
         {
             return NewPerceptualHash.CalcSimilarDegree(hash1, hash2);
         }
+        private PhotoModel GetSimilarPhoto2(int photoId)
+        {
+            var photo = _reponsitory.GetById(photoId).Result;
+            var listAllPhotoInDb = _reponsitory.GetByObject(p => p.DelFlg == false &&
+             p.ApproveStatus != Constants.Const.PHOTO_STATUS_DENIED &&
+             p.ApproveStatus != Constants.Const.PHOTO_STATUS_PENDING &&
+             p.PhotoId != photoId).ToList();
+            double maxSimilar = 0;
+            var photoSimilar = new Photo();
+            foreach (var item in listAllPhotoInDb)
+            {
+                var percentage = CompareHash.Similarity(Convert.ToUInt64(photo.Phash), Convert.ToUInt64(item2.Phash));
 
+                if (percentage >= 80)
+                {
+                    maxSimilar = percentage;
+                    if (percentage >= maxSimilar)
+                    {
+                        photoSimilar = item;
+                    }
+                }
+            }
+            if(photoSimilar.PhotoId > 0)
+            {
+                return _mapper.Map<PhotoModel>(photoSimilar);
+            }
+            return null;
+        }
         public List<PhotoSimilarViewModel> GetSimilarPhoto(List<int> listPhotoId)
         {
             var listResult = new List<PhotoSimilarViewModel>();
