@@ -468,14 +468,15 @@ namespace Capstone.Project.Services.Services
                 if (followModel != null)
                 {
                     followModel.DelFlg = false;
+                    _unitOfWork.FollowRepository.Update(followModel);
                 }
                 else
                 {
                     value.UserId = model.UserId;
                     value.FollowUserId = model.FollowUserId;
                     value.DelFlg = false;
+                    _unitOfWork.FollowRepository.Add(value);
                 }
-                _unitOfWork.FollowRepository.Add(value);
                 await _unitOfWork.SaveAsync();
                 return true;
             }
