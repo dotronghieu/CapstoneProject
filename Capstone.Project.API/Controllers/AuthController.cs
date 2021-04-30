@@ -50,7 +50,7 @@ namespace Capstone.Project.API.Controllers
             var result = await _userService.Activate(id);
             if (result)
             {
-                return Ok();
+                return RedirectPermanent("http://localhost:8081/#/login");
             }
             return BadRequest();
         }

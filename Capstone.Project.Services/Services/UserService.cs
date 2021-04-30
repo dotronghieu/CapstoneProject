@@ -58,14 +58,16 @@ namespace Capstone.Project.Services.Services
                 user.IsVerify = false;
                 if(user.Email != null)
                 {
-                    var verifyUrl = "https://imago.azurewebsites.net//api/v1/Auth/Verify/" + user.UserId;
+                    var verifyUrl = "https://capstoneprojectapi20210418160622.azurewebsites.net//api/v1/Auth/Verify/" + user.UserId;
                     var fromMail = new MailAddress(Constants.Const.IMAGO_EMAIL, "Imago (No Reply)");
                     var toMail = new MailAddress(model.Email);
                     var imagoPassword = Constants.Const.IMAGO_EMAIL_PASSWORD;
                     string subject = "Your account is successfull created";
-                    string body = "<br/><br/>We are excited to tell you that your account is" +
+                    string body = "Hi " + user.FullName +
+                        "<br/><br/>We are excited to tell you that your account is" +
                       " successfully created. Please click on the below link to verify your account" +
-                      " <br/><br/><a href='" + verifyUrl + "'>" + "Click here to verify" + "</a> ";
+                      " <br/><br/><a href='" + verifyUrl + "'>" + "Click here to verify" + "</a>" +
+                      " <br/><br/> Sincerely <br/>Imago";
 
                     var smtp = new SmtpClient
                     {
