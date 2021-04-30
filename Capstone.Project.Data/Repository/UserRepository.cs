@@ -83,7 +83,8 @@ namespace Capstone.Project.Data.Repository
             {
                     entity.Email = user.Email;
                     entity.IsVerify = false;
-            }          
+            }
+                entity.Phone = user.Phone;
                 entity.DelFlg = false;
                 entity.DayOfBirth = user.DayOfBirth;
                 entity.Description = user.Description;                
