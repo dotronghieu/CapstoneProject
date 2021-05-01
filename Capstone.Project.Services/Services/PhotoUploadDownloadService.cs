@@ -454,7 +454,6 @@ namespace Capstone.Project.Services.Services
             if (link1 != null)
             {
                 photo.Wmlink = link1;
-                photo.DisableFlg = false;
                 _unitOfWork.PhotoRepository.Update(photo);
                 await _unitOfWork.SaveAsync();
                 return photo;

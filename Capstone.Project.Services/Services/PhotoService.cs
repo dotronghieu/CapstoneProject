@@ -344,6 +344,19 @@ namespace Capstone.Project.Services.Services
             }
             return null;
         }
+
+        public async Task<bool> EnablePhoto(int id)
+        {
+            var photo = _reponsitory.GetById(id).Result;
+            if (photo != null)
+            {
+                photo.DisableFlg = false;
+                _unitOfWork.PhotoRepository.Update(photo);
+                await _unitOfWork.SaveAsync();
+                return true;
+            }
+            return false;
+        }
     }
 }
     

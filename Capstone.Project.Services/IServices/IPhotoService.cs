@@ -25,6 +25,7 @@ namespace Capstone.Project.Services.IServices
         double CompareTwoHash(ulong hash1, ulong hash2);
         IEnumerable<PhotoModelGetAll> GetAllNormalPHoto();
         IEnumerable<PhotoModelGetAll> GetAllExclusivePhoto();
+        Task<bool> EnablePhoto(int id);
     }
 
 }

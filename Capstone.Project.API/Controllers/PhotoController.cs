@@ -233,8 +233,8 @@ namespace Capstone.Project.API.Controllers
         [HttpPut("ChangeWatermarkPhoto/{id}")]
         public async Task<IActionResult> ChangeWatermarkPhoto(int id)
         {
-            var result = await _photoUploadDownloadService.ChangeWaterMarkPhoto(id);
-            if (result != null)
+            var result = await _photoService.EnablePhoto(id);
+            if (result == true)
             {
                 return Ok(result);
             }
