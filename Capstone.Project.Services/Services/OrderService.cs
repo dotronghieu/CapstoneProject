@@ -109,6 +109,7 @@ namespace Capstone.Project.Services.Services
                     photo.Link = encryptLink;
                     photo.UserId = orderModel.UserId;
                     photo.DisableFlg = true;
+                    photo.IsBought = false;
                     _unitOfWork.PhotoRepository.Update(photo);
                     await _unitOfWork.SaveAsync();
                     var changewm = await _photoUploadDownloadService.ChangeWaterMarkPhoto(photo.PhotoId);
