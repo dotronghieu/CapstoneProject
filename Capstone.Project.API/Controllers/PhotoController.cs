@@ -48,7 +48,19 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "not found any photo" });
         }
-
+        [AllowAnonymous]
+        [HttpGet("AddToCart")]
+        public async Task<IActionResult> AddToCart(int photoId)
+        {
+            try
+            {
+                var list = await _photoService.AddToCart(photoId);
+                return Ok(list);
+            } catch
+            {
+                return BadRequest();
+            }
+        }
         [AllowAnonymous]
         [HttpGet("Random")]
         public IActionResult GetRandom()
@@ -197,9 +209,9 @@ namespace Capstone.Project.API.Controllers
         //}
         [AllowAnonymous]
         [HttpGet("DownloadPhoto/{id}")]
-        public async Task<IActionResult> Download(int id)
+        public async Task<IActionResult> Download(int id, string userId)
         {
-            string url = await _photoUploadDownloadService.DownloadPhoto(id);
+            string url = await _photoUploadDownloadService.DownloadPhoto(id,userId);
             if(url != null)
             {
                 using var httpClient = new HttpClient();
@@ -233,34 +245,40 @@ namespace Capstone.Project.API.Controllers
         [HttpPut("ChangeWatermarkPhoto/{id}")]
         public async Task<IActionResult> ChangeWatermarkPhoto(int id)
         {
-            var result = await _photoService.EnablePhoto(id);
-            if (result == true)
+            try
             {
+                var result = await _photoService.EnablePhoto(id);
                 return Ok(result);
+            } catch
+            {
+                return BadRequest();
             }
-            return BadRequest();
         }
         [AllowAnonymous]
         [HttpGet("CheckBoughtPhoto")]
         public IActionResult CheckBoughtPhoto(int id, string userId)
         {
-            bool result = _photoService.CheckBoughtPhoto(id, userId);
-            if (result)
+            try
             {
+                bool result = _photoService.CheckBoughtPhoto(id, userId);
                 return Ok(result);
+            } catch
+            {
+                return BadRequest();
             }
-            return BadRequest();
         }
         [AllowAnonymous]
         [HttpGet("CheckMyPhoto")]
         public IActionResult CheckMyPhoto(int photoId, string userId)
         {
-            bool result = _photoService.CheckMyPhoto(photoId, userId);
-            if (result)
+            try
             {
+                bool result = _photoService.CheckMyPhoto(photoId, userId);
                 return Ok(result);
+            } catch
+            {
+                return BadRequest();
             }
-            return BadRequest();
         }
         [AllowAnonymous]
         [HttpGet("SearchPhoto/{key}")]

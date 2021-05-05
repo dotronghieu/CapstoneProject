@@ -609,7 +609,7 @@ namespace Capstone.Project.Services.Services
 
         public bool CheckFollow(FollowModel model)
         {
-            var userFollowList = _unitOfWork.FollowRepository.GetFirst(c => c.UserId == model.UserId).Result;
+            var userFollowList = _unitOfWork.FollowRepository.GetFirst(c => c.UserId == model.UserId && c.FollowUserId == model.FollowUserId).Result;
             if (userFollowList != null)
             {
                 if (userFollowList.DelFlg == false)

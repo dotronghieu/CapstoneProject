@@ -20,10 +20,11 @@ namespace Capstone.Project.Services.Services
         private readonly IMapper _mapper;
         private readonly IPhotoUploadDownloadService _photoUploadDownloadService;
 
-        public OrderService(IUnitOfWork unitOfWork, IMapper mapper)
+        public OrderService(IUnitOfWork unitOfWork, IMapper mapper, IPhotoUploadDownloadService photoUploadDownloadService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _photoUploadDownloadService = photoUploadDownloadService;
         }
 
         public async Task<IEnumerable<PhotoTransactionModel>> GetUserBoughtPhoto(string id)
@@ -101,52 +102,48 @@ namespace Capstone.Project.Services.Services
             {
                 if (orderModel.ProofId != null)
                 {
-                    var changewm = await _photoUploadDownloadService.ChangeWaterMarkPhoto(orderModel.ListPhotoId[0]);
-                    if (changewm != null)
+                    
+                    var photo = _unitOfWork.PhotoRepository.GetById(orderModel.ListPhotoId.First()).Result;
+                    var linkDecrypt = Encryption.StringCipher.Decrypt(photo.Link, _unitOfWork.UserGenRepository.GetById(photo.UserId).Result.EncryptCode);
+                    var encryptLink = Encryption.StringCipher.Encrypt(linkDecrypt, _unitOfWork.UserGenRepository.GetById(orderModel.UserId).Result.EncryptCode);
+                    photo.Link = encryptLink;
+                    photo.UserId = orderModel.UserId;
+                    photo.DisableFlg = true;
+                    _unitOfWork.PhotoRepository.Update(photo);
+                    await _unitOfWork.SaveAsync();
+                    var changewm = await _photoUploadDownloadService.ChangeWaterMarkPhoto(photo.PhotoId);
+                    if (changewm == null) { return null; }
+                    var verifyUrl = "http://localhost:8081/#/changeforgotpassword?userId=" + user.UserId;
+                    var fromMail = new MailAddress(Constants.Const.IMAGO_EMAIL, "Imago (No Reply)");
+                    var toMail = new MailAddress(user.Email);
+                    var imagoPassword = Constants.Const.IMAGO_EMAIL_PASSWORD;
+                    string subject = "Transaction Success";
+                    string body = "<br/><br/>Hi " + user.FullName +
+                        "<br/><br/>Your transaction was successful. You have purchased an exclusive photo for $" + orderModel.Amount +
+                        "<br/><br/>This is your proofid: " + orderModel.ProofId +
+                        "<br/><br/>This is proof that you can look up your transaction. You must keep it carefully!" +
+                        "<br/><br/>Thank you for choosing Imago, we hope to hear from you again soon!" +
+                        "<br/><br/>Sincerely" +
+                        "<br/>Imago";
+
+
+                    var smtp = new SmtpClient
                     {
-                        var photo = _unitOfWork.PhotoRepository.GetById(orderModel.ListPhotoId.First()).Result;
-                        var linkDecrypt = Encryption.StringCipher.Decrypt(photo.Link, _unitOfWork.UserGenRepository.GetById(photo.UserId).Result.EncryptCode);
-                        var encryptLink = Encryption.StringCipher.Encrypt(linkDecrypt, _unitOfWork.UserGenRepository.GetById(orderModel.UserId).Result.EncryptCode);
-                        photo.Link = encryptLink;
-                        photo.UserId = orderModel.UserId;
-                        photo.DisableFlg = true;
-                        _unitOfWork.PhotoRepository.Update(photo);
-                        await _unitOfWork.SaveAsync();
-                        var verifyUrl = "http://localhost:8081/#/changeforgotpassword?userId=" + user.UserId;
-                        var fromMail = new MailAddress(Constants.Const.IMAGO_EMAIL, "Imago (No Reply)");
-                        var toMail = new MailAddress(user.Email);
-                        var imagoPassword = Constants.Const.IMAGO_EMAIL_PASSWORD;
-                        string subject = "Transaction Success";
-                        string body = "<br/><br/>Hi " + user.FullName +
-                          "<br/><br/>Your transaction was successful. You have purchased an exclusive photo for $" + orderModel.Amount +
-                          "<br/><br/>This is your proofid: " + orderModel.ProofId +
-                          "<br/><br/>This is proof that you can look up your transaction. You must keep it carefully!" +
-                          "<br/><br/>Thank you for choosing Imago, we hope to hear from you again soon!" +
-                          "<br/><br/>Sincerely" +
-                          "<br/>Imago";
+                        Host = "smtp.gmail.com",
+                        Port = 587,
+                        EnableSsl = true,
+                        DeliveryMethod = SmtpDeliveryMethod.Network,
+                        UseDefaultCredentials = false,
+                        Credentials = new NetworkCredential(fromMail.Address, imagoPassword)
 
-
-                        var smtp = new SmtpClient
-                        {
-                            Host = "smtp.gmail.com",
-                            Port = 587,
-                            EnableSsl = true,
-                            DeliveryMethod = SmtpDeliveryMethod.Network,
-                            UseDefaultCredentials = false,
-                            Credentials = new NetworkCredential(fromMail.Address, imagoPassword)
-
-                        };
-                        using (var message = new MailMessage(fromMail, toMail)
-                        {
-                            Subject = subject,
-                            Body = body,
-                            IsBodyHtml = true
-                        })
-                            smtp.Send(message);
-                    } else
+                    };
+                    using (var message = new MailMessage(fromMail, toMail)
                     {
-                        return null;
-                    }
+                        Subject = subject,
+                        Body = body,
+                        IsBodyHtml = true
+                    })
+                        smtp.Send(message);
                     
                 } else
                 {

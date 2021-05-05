@@ -206,6 +206,7 @@ namespace Capstone.Project.Services.Services
                     photo.Hash = NewPerceptualHash.GetHash(image);
                     photo.Description = model.Description;
                     photo.ApproveStatus = Constants.Const.PHOTO_STATUS_PENDING;
+                    photo.IsBought = false;
                     // add to DB
                     _reponsitory.Add(photo);
                     await _unitOfWork.SaveAsync();
@@ -241,12 +242,21 @@ namespace Capstone.Project.Services.Services
             return null;
         }
 
-        public async Task<string> DownloadPhoto(int id)
+        public async Task<string> DownloadPhoto(int id, string userId)
         {
             var photo = _reponsitory.GetById(id);
             var user = await _unitOfWork.UsersRepository.GetById(photo.Result.UserId);
             string link = Encryption.StringCipher.Decrypt(photo.Result.Link, user.EncryptCode);
-            return link;
+            var orderlist = _unitOfWork.OrdersRepository.GetByObject(c => c.UserId == userId);
+            foreach (var order in orderlist)
+            {
+                var orderDetail = _unitOfWork.OrderDetailRepository.GetFirst(c => c.OrderId == order.OrderId && c.PhotoId == id).Result;
+                if (orderDetail != null)
+                {
+                    return link;
+                }
+            }
+            return null;
         }
 
         public async Task<bool> DeletePhoto(int id)

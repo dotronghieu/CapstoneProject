@@ -26,6 +26,7 @@ namespace Capstone.Project.Services.IServices
         IEnumerable<PhotoModelGetAll> GetAllNormalPHoto();
         IEnumerable<PhotoModelGetAll> GetAllExclusivePhoto();
         Task<bool> EnablePhoto(int id);
+        Task<bool> AddToCart(int photoId);
     }
 
 }

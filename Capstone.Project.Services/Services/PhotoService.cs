@@ -104,7 +104,7 @@ namespace Capstone.Project.Services.Services
         {
             List<PhotoModelGetAll> resultList = new List<PhotoModelGetAll>();
             var list1 = _unitOfWork.PhotoRepository.GetByObject(c => c.PhotoName.Contains(key) && c.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED && c.DelFlg == false && c.DisableFlg == false);
-            var list2 = _unitOfWork.PhotoCategoryRepository.GetByObject(c => c.Category.CategoryName.Contains(key), includeProperties: "Photo").ToList();
+            var list2 = _unitOfWork.PhotoCategoryRepository.GetByObject(c => c.Category.CategoryName == key, includeProperties: "Photo").ToList();
             if (list1 != null)
             {
 
@@ -153,6 +153,7 @@ namespace Capstone.Project.Services.Services
             };
             var photoEntity = _reponsitory.GetById(id).Result;
             photoEntity.ApproveStatus = Constants.Const.PHOTO_STATUS_PENDING;
+            photoEntity.DisableFlg = false;
             _unitOfWork.PhotoRepository.Update(photoEntity);
             await _unitOfWork.SaveAsync();
             _unitOfWork.PhotoEditRepository.Add(entity);
@@ -355,6 +356,19 @@ namespace Capstone.Project.Services.Services
                 await _unitOfWork.SaveAsync();
                 return true;
             }
+            return false;
+        }
+
+        public async Task<bool> AddToCart(int photoId)
+        {
+            var photo = _unitOfWork.PhotoRepository.GetFirst(c => c.PhotoId == photoId).Result;
+            if (photo.IsBought == false)
+            {
+                photo.IsBought = true;
+                _unitOfWork.PhotoRepository.Update(photo);
+                await _unitOfWork.SaveAsync();
+                return true;
+            } 
             return false;
         }
     }

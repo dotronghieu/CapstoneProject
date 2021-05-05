@@ -44,12 +44,14 @@ namespace Capstone.Project.API.Controllers
             FollowModel model = new FollowModel();
             model.UserId = userId;
             model.FollowUserId = followId;
-            var result = _userService.CheckFollow(model);
-            if (result)
+            try
             {
+                var result = _userService.CheckFollow(model);
                 return Ok(result);
+            } catch
+            {
+                return BadRequest();
             }
-            return BadRequest();
         }
         [HttpGet("GetFollowingUser/{id}")]
         public IActionResult Get(string id)
