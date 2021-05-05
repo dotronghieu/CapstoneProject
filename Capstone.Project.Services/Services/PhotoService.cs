@@ -371,6 +371,19 @@ namespace Capstone.Project.Services.Services
             } 
             return false;
         }
+
+        public async Task<bool> MotifyIsBought(int photoId)
+        {
+            var photo = _reponsitory.GetById(photoId).Result;
+            if(photo != null)
+            {
+                photo.IsBought = false;
+                _unitOfWork.PhotoRepository.Update(photo);
+                await _unitOfWork.SaveAsync();
+                return true;
+            }
+            return false;
+        }
     }
 }
     

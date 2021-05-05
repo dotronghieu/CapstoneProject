@@ -183,6 +183,16 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "Photo Update Fail" });
         }
+        [HttpPut("ChangeIsBought/{id}")]
+        public async Task<IActionResult> UserUpdatePhoto(int id)
+        {
+            var result = await _photoService.MotifyIsBought(id);
+            if (result)
+            {
+                return Ok(result);
+            }
+            return BadRequest(new { msg = "Not found that photo" });
+        }
         [AllowAnonymous]
         [HttpPost("CreatePhoto")]
         public async Task<IActionResult> CreatePhoto([FromForm] PhotoCreateModel model)
