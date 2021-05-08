@@ -314,7 +314,8 @@ namespace Capstone.Project.Services.Services
                 var editInfo = _unitOfWork.PhotoEditRepository.GetById(model.Id).Result;
                 if(editInfo != null)
                 {
-                    _unitOfWork.PhotoEditRepository.Delete(editInfo);
+                    _unitOfWork.PhotoEditRepository.Delete(editInfo.PhotoId);
+                    await _unitOfWork.SaveAsync();
                 }
                 _unitOfWork.PhotoRepository.Update(photo);
                 await _unitOfWork.SaveAsync();
