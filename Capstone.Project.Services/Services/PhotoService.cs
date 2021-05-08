@@ -55,7 +55,7 @@ namespace Capstone.Project.Services.Services
         public  IEnumerable<PhotoModelAdmin> GetPhotoNotApproved()
         {
             PhotoCategoryService service = new PhotoCategoryService();
-            var list =  _reponsitory.GetByObject(p => p.DelFlg == false && p.ApproveStatus == Constants.Const.PHOTO_STATUS_PENDING).OrderBy(c => c.PhotoId);
+            var list =  _reponsitory.GetByObject(p => p.DelFlg == false && p.DisableFlg == false && p.ApproveStatus == Constants.Const.PHOTO_STATUS_PENDING).OrderBy(c => c.PhotoId);
             if (list != null)
             {
                 List<PhotoModelAdmin> resultList = new List<PhotoModelAdmin>();
@@ -219,12 +219,12 @@ namespace Capstone.Project.Services.Services
                 var percentage = CompareHash.Similarity(Convert.ToUInt64(photo.Phash), Convert.ToUInt64(item.Phash));
 
                 if (percentage >= 80)
-                {
-                    maxSimilar = percentage;
+                {                 
                     if (percentage >= maxSimilar)
                     {
                         photoSimilar = item;
                     }
+                    maxSimilar = percentage;
                 }
             }
             if(photoSimilar.PhotoId > 0)
@@ -384,6 +384,8 @@ namespace Capstone.Project.Services.Services
             }
             return false;
         }
+
+        
     }
 }
     

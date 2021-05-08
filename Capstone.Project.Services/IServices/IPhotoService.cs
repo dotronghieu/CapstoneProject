@@ -28,6 +28,7 @@ namespace Capstone.Project.Services.IServices
         Task<bool> EnablePhoto(int id);
         Task<bool> AddToCart(int photoId);
         Task<bool> MotifyIsBought(int photoId);
+        
     }
 
 }

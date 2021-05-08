@@ -258,6 +258,23 @@ namespace Capstone.Project.Services.Services
             }
             return null;
         }
+        public async Task<PhotoModel> DeleteOrDisablePhoto(int photoId)
+        {
+            var photoIsBought = await _unitOfWork.OrderDetailRepository.GetFirst(c => c.PhotoId == photoId);
+            var photo = await  _reponsitory.GetById(photoId);
+            var check = false;
+            if (photoIsBought == null)
+            {
+                 check = await DeletePhoto(photoId);
+            }
+            else
+            {
+                photo.DisableFlg = true;
+            }
+            _reponsitory.Update(photo);
+            await _unitOfWork.SaveAsync();
+            return _mapper.Map<PhotoModel>(photo);
+        }
 
         public async Task<bool> DeletePhoto(int id)
         {

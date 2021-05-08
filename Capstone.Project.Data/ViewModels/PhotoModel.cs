@@ -16,6 +16,7 @@ namespace Capstone.Project.Data.ViewModels
         public string ApproveStatus { get; set; }
         public string Note { get; set; }
         public bool? DelFlg { get; set; }
+        public bool? DisableFlg { get; set; }
         public string Description { get; set; }
         public string UserName { get; set; }
         public string Hash { get; set; }

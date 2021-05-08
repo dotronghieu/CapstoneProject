@@ -72,7 +72,7 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "Empty List" });
         }
-        [AllowAnonymous]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_ADMIN)]
         [HttpGet("GetToApprove")]
         public IActionResult GetPhotoNotApproved()
         {
@@ -128,7 +128,7 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest();
         }
-        [AllowAnonymous]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
         [HttpGet("GetPhotoByUserId/{id}")]
         public IActionResult GetPhotoByUser(string id)
         {
@@ -150,7 +150,7 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest();
         }
-        [AllowAnonymous]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
         [HttpGet("GetAllNormalPhoto/")]
         public IActionResult GetAllNormalPhoto()
         {
@@ -161,7 +161,7 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "No photo" });
         }
-        [AllowAnonymous]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
         [HttpGet("GetAllExclusivePhoto/")]
         public IActionResult GetAllExclusivePhoto()
         {
@@ -172,7 +172,7 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "No exclusive photo" });
         }
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Roles.ROLE_USER)]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
         [HttpPut("{id}")]
         public IActionResult UserUpdatePhoto(int id, [FromBody] PhotoEditViewModel model)
         {
@@ -183,6 +183,7 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "Photo Update Fail" });
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
         [HttpPut("ChangeIsBought/{id}")]
         public async Task<IActionResult> UserUpdatePhoto(int id)
         {
@@ -193,7 +194,7 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "Not found that photo" });
         }
-        [AllowAnonymous]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
         [HttpPost("CreatePhoto")]
         public async Task<IActionResult> CreatePhoto([FromForm] PhotoCreateModel model)
         {
@@ -217,7 +218,7 @@ namespace Capstone.Project.API.Controllers
 
         //    return BadRequest();
         //}
-        [AllowAnonymous]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
         [HttpGet("DownloadPhoto/{id}")]
         public async Task<IActionResult> Download(int id, string userId)
         {
@@ -240,7 +241,7 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest();
         }
-        [AllowAnonymous]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
         [HttpPut("DeletePhoto/{id}")]
         public async Task<IActionResult> DeletePhoto(int id)
         {
@@ -251,7 +252,7 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest();
         }
-        [AllowAnonymous]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
         [HttpPut("ChangeWatermarkPhoto/{id}")]
         public async Task<IActionResult> ChangeWatermarkPhoto(int id)
         {
@@ -264,7 +265,21 @@ namespace Capstone.Project.API.Controllers
                 return BadRequest();
             }
         }
-        [AllowAnonymous]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
+        [HttpPut("DeletOrDisable/{id}")]
+        public async Task<IActionResult> DeleteOrDisable(int id)
+        {
+            try
+            {
+                var result = await _photoUploadDownloadService.DeleteOrDisablePhoto(id);
+                return Ok(result);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
         [HttpGet("CheckBoughtPhoto")]
         public IActionResult CheckBoughtPhoto(int id, string userId)
         {
@@ -277,7 +292,7 @@ namespace Capstone.Project.API.Controllers
                 return BadRequest();
             }
         }
-        [AllowAnonymous]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
         [HttpGet("CheckMyPhoto")]
         public IActionResult CheckMyPhoto(int photoId, string userId)
         {
