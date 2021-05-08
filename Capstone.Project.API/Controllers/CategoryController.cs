@@ -41,7 +41,7 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "Cannot found that category"});
         }
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Roles.ROLE_ADMIN)]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Roles.ROLE_ADMIN)]
         [HttpPost]
         public async Task<IActionResult> CreateCategory([FromBody] CategoryModel model)
         {
@@ -53,7 +53,7 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "Duplicate Category Name"});
         }
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Roles.ROLE_ADMIN)]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Roles.ROLE_ADMIN)]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCategory(int id, [FromBody] CategoryModel model)
         {

@@ -1,4 +1,7 @@
-﻿using Capstone.Project.Services.IServices;
+﻿using Capstone.Project.Data.Helper;
+using Capstone.Project.Services.IServices;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -17,6 +20,7 @@ namespace Capstone.Project.API.Controllers
         {
             _transactionService = transactionService;
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
         [HttpGet("GetTransaction/{id}")]
         public IActionResult GetTransaction(string id)
         {
@@ -28,6 +32,7 @@ namespace Capstone.Project.API.Controllers
 
             return BadRequest(new { msg = "No transaction recorded" });
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
         [HttpGet("GetAllTransactionByUserID/{userID}")]
         public IActionResult GetTransactionByUserId(string userID)
         {

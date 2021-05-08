@@ -1,5 +1,7 @@
-﻿using Capstone.Project.Data.ViewModels;
+﻿using Capstone.Project.Data.Helper;
+using Capstone.Project.Data.ViewModels;
 using Capstone.Project.Services.IServices;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +23,7 @@ namespace Capstone.Project.API.Controllers
             _userService = userService;
             _orderService = orderService;
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
         [HttpPut("{id}")]
         public IActionResult UpdateUser(string id, [FromBody] UserUpdateModel viewModel)
         {
@@ -49,6 +52,7 @@ namespace Capstone.Project.API.Controllers
             var result = await _userService.GetAllUsers();
             return Ok(result);
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
         [HttpGet("GetBoughtPhoto/{id}")]
         public async Task<IActionResult> GetBoughtPhoto(string id)
         {
@@ -60,6 +64,7 @@ namespace Capstone.Project.API.Controllers
 
             return BadRequest(new { msg = "No order recorded" });
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
         [HttpPut]
         public async Task<IActionResult> UpdateUserPassword([FromBody] UserUpdatePasswordModel viewModel)
         {
@@ -69,7 +74,7 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "Old Password is not correct"});
         }
-       
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_ADMIN)]
         [HttpPut("ApprovePhoto/{id}")]
         public async Task<IActionResult> ApprovePhoto(int id)
         {
@@ -79,6 +84,7 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "Invalid PhotoID" });
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_ADMIN)]
         [HttpPut("DeniedPhoto")]
         public async Task<IActionResult> DeniedPhoto([FromBody] DeniedPhotoModel model)
         {
@@ -88,6 +94,7 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "Invalid PhotoID" });
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
         [HttpGet("GetUserApprovedPhoto/{id}")]
         public  IActionResult GetUserApprovedPhoto(string id)
         {
@@ -99,6 +106,7 @@ namespace Capstone.Project.API.Controllers
 
             return BadRequest(new { msg = "No photo recorded" });
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
         [HttpGet("GetUserPendingPhoto/{id}")]
         public IActionResult GetUserPendingPhoto(string id)
         {
@@ -110,6 +118,7 @@ namespace Capstone.Project.API.Controllers
 
             return BadRequest(new { msg = "No photo recorded" });
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
         [HttpGet("GetUserDeniedPhoto/{id}")]
         public IActionResult GetUserDeniedPhoto(string id)
         {
@@ -120,6 +129,7 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "No photo recorded" });
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
         [HttpGet("GetUserNormalPhoto/{id}")]
         public IActionResult GetUserNormalPhoto(string id)
         {
@@ -130,6 +140,7 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "No photo recorded" });
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
         [HttpGet("GetUserExclusivePhoto/{id}")]
         public IActionResult GetUserExclusivePhoto(string id)
         {
@@ -140,6 +151,7 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "No photo recorded" });
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
         [HttpGet("GetUserExclusivePropertyPhoto/{id}")]
         public IActionResult GetUserExclusivePropertyPhoto(string id)
         {
@@ -150,6 +162,7 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "No photo recorded" });
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
         [HttpGet("GetPhotoStatusStatistic/{id}")]
         public IActionResult GetPhotoStatusStatistic(string id)
         {
@@ -160,6 +173,7 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest();
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
         [HttpPost("GetSellPhotoStatistic")]
         public IActionResult GetSellPhotoStatistic([FromBody] StatisicModel model)
         {
@@ -170,6 +184,7 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "No record" });
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
         [HttpGet("GetNotification/{userid}")]
         public IActionResult GetNotification(string userid)
         {
@@ -181,6 +196,7 @@ namespace Capstone.Project.API.Controllers
 
             return BadRequest(new { msg = "No new notification" });
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
         [HttpPut("DeleteNotification/{NotificationId}")]
         public async Task<IActionResult> DeleteNotification(int NotificationId)
         {
