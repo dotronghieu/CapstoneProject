@@ -263,16 +263,16 @@ namespace Capstone.Project.Services.Services
             var photoIsBought = await _unitOfWork.OrderDetailRepository.GetFirst(c => c.PhotoId == photoId);
             var photo = await  _reponsitory.GetById(photoId);
             var check = false;
-            if (photoIsBought == null)
+            if (photoIsBought == null || photo.TypeId == 2)
             {
                  check = await DeletePhoto(photoId);
             }
             else
             {
                 photo.DisableFlg = true;
+                _reponsitory.Update(photo);
+                await _unitOfWork.SaveAsync();
             }
-            _reponsitory.Update(photo);
-            await _unitOfWork.SaveAsync();
             return _mapper.Map<PhotoModel>(photo);
         }
 
@@ -281,21 +281,26 @@ namespace Capstone.Project.Services.Services
             var photo = _reponsitory.GetById(id);
             string link = photo.Result.Wmlink;
             int length = link.Length - 53 - 79;
-            link = link.Substring(79, length);
+            link = link.Substring(81);
+            int last = link.LastIndexOf('?');
+            link = link.Substring(0, last);
             link = link.Replace("%20", " ");
-            string link1 = photo.Result.Link;
-            int length1 = link.Length - 53 - 79;
-            link1 = link1.Substring(79, length1);
+            var user = await _unitOfWork.UsersRepository.GetById(photo.Result.UserId);
+            string link1 = Encryption.StringCipher.Decrypt(photo.Result.Link, user.EncryptCode);
+            link1 = link1.Substring(79);
+            last = link1.LastIndexOf('?');
+            link1 = link1.Substring(0, last);
             link1 = link1.Replace("%20", " ");
             FirebaseStorage task = new FirebaseStorage(Bucket);
             try
             {
-                await task.Child("images").Child(link).DeleteAsync();
                 await task.Child("images").Child(link1).DeleteAsync();
+                await task.Child("vmimages").Child(link).DeleteAsync();
                 photo.Result.Link = "";
                 photo.Result.Wmlink = "";
                 photo.Result.DelFlg = true;
                 _reponsitory.Update(photo.Result);
+                await _unitOfWork.SaveAsync();
                 return true;
             }
             catch (Exception ex)
