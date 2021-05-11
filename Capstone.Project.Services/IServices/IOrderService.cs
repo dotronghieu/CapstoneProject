@@ -11,8 +11,7 @@ namespace Capstone.Project.Services.IServices
     {
         public Task<IEnumerable<PhotoTransactionModel>> GetUserBoughtPhoto(string id);
         public Task<Order> OrderPhoto(OrderModel orderModel);
-
-       
+        public string ConvertToBinary(ulong hash);
 
     }
 }

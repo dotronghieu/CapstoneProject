@@ -216,8 +216,8 @@ namespace Capstone.Project.Services.Services
             var photoSimilar = new Photo();
             foreach (var item in listAllPhotoInDb)
             {
-                var percentage = CompareHash.Similarity(Convert.ToUInt64(photo.Phash), Convert.ToUInt64(item.Phash));
-
+                //var percentage = CompareHash.Similarity(Convert.ToUInt64(photo.Phash), Convert.ToUInt64(item.Phash));
+                var percentage = CompareHash.SimilarityByBinary(Convert.ToUInt64(photo.Phash), Convert.ToUInt64(item.Phash));
                 if (percentage >= 80)
                 {                 
                     if (percentage >= maxSimilar)
@@ -383,9 +383,7 @@ namespace Capstone.Project.Services.Services
                 return true;
             }
             return false;
-        }
-
-        
+        }       
     }
 }
     

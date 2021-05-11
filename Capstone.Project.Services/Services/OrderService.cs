@@ -183,5 +183,17 @@ namespace Capstone.Project.Services.Services
             }
             return _mapper.Map<Order>(order);
         }
+
+        public string ConvertToBinary(ulong hash)
+        {
+            string result = string.Empty;
+            var number = UInt64.Parse(hash.ToString());
+            for (int i = 0; number > 0; i++)
+            {   
+                result = number % 2 + result;
+                number = number / 2;
+            }
+            return result;
+        }
     }
 }

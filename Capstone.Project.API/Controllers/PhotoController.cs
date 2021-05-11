@@ -72,7 +72,7 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "Empty List" });
         }
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_ADMIN)]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_ADMIN)]
         [AllowAnonymous]
         [HttpGet("GetToApprove")]
         public IActionResult GetPhotoNotApproved()
@@ -151,7 +151,7 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest();
         }
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
+        [AllowAnonymous]
         [HttpGet("GetAllNormalPhoto/")]
         public IActionResult GetAllNormalPhoto()
         {
@@ -162,7 +162,7 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "No photo" });
         }
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
+        [AllowAnonymous]
         [HttpGet("GetAllExclusivePhoto/")]
         public IActionResult GetAllExclusivePhoto()
         {

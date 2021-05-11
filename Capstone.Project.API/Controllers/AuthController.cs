@@ -74,6 +74,7 @@ namespace Capstone.Project.API.Controllers
             }
             return BadRequest(new { msg = "Email not correct" });
         }
+
         [HttpPost]
         public async Task<ActionResult> Login([FromBody] LoginModel model)
         {

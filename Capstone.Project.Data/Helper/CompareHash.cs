@@ -30,7 +30,7 @@ namespace Capstone.Project.Data.Helper
         {
             return (64 - BitCount(hash1 ^ hash2)) * 100 / 64.0;
         }
-
+        
         /// <summary>
         /// Returns a percentage-based similarity value between the two given hashes. The higher
         /// the percentage, the closer the hashes are to being identical.
@@ -42,20 +42,45 @@ namespace Capstone.Project.Data.Helper
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="hash1"/> or <paramref name="hash2"/> has a length other than <c>8</c>.</exception>
         public static double SimilarityByteParam(byte[] hash1, byte[] hash2)
         {
-            //if (hash1 == null)
-            //    throw new ArgumentNullException(nameof(hash1));
-            //if (hash2 == null)
-            //    throw new ArgumentNullException(nameof(hash2));
-            //if (hash1.Length != 8)
-            //    throw new ArgumentOutOfRangeException(nameof(hash1));
-            //if (hash2.Length != 8)
-            //    throw new ArgumentOutOfRangeException(nameof(hash2));
-
             var h1 = BitConverter.ToUInt64(hash1, 0);
             var h2 = BitConverter.ToUInt64(hash2, 0);
             return Similarity(h1, h2);
         }
+        public static double SimilarityByBinary(ulong hash1, ulong hash2)
+        {
 
+            var h1 = ConvertToBinary(hash1);
+            var h2 = ConvertToBinary(hash2);
+            var hammmingDistance = CalculateHammingDistance(h1, h2);
+            return CalculatePercentageFor2BinaryHash(hammmingDistance);
+        }
+        public static double CalculatePercentageFor2BinaryHash(int hammingDistance)
+        {
+            return (64 - hammingDistance) * 100 / 64.0;
+        }
+        private static Int32 CalculateHammingDistance(string a, string b)
+        {
+            if (a.Length != b.Length)
+                throw new ArgumentException();
+            int count = 0;
+            for (int i = 0; i < a.Length; i++)
+            {
+                if (a[i] != b[i])
+                    count++;
+            }
+            return count;
+        }
+        private static string ConvertToBinary(ulong hash)
+        {
+            string result = string.Empty;
+            var number = UInt64.Parse(hash.ToString());
+            for (int i = 0; number > 0; i++)
+            {
+                result = number % 2 + result;
+                number = number / 2;
+            }
+            return result;
+        }
         /// <summary>Counts bits Utility function for similarity.</summary>
         /// <param name="num">The hash we are counting.</param>
         /// <returns>The total bit count.</returns>
