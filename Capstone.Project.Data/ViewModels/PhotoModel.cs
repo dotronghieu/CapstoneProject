@@ -20,6 +20,7 @@ namespace Capstone.Project.Data.ViewModels
         public string Description { get; set; }
         public string UserName { get; set; }
         public string Hash { get; set; }
+        public decimal? Phash { get; set; }
         public virtual ICollection<CategoryModel> Category { get; set; }
         public DateTime? InsDateTime { get; set; }
     }
