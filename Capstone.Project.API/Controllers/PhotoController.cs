@@ -220,7 +220,7 @@ namespace Capstone.Project.API.Controllers
         //    return BadRequest();
         //}
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
-        [HttpGet("DownloadPhoto/{id}")]
+        [HttpGet("DownloadPhoto")]
         public async Task<IActionResult> Download(string tokenId, int photoId, string userId)
         {
             string url = await _photoUploadDownloadService.DownloadPhoto(tokenId, photoId, userId);
@@ -240,7 +240,7 @@ namespace Capstone.Project.API.Controllers
                 rurl = new string(charArray);
                 return File(imageBytes, "image/*", "image." + rurl);
             }
-            return BadRequest();
+            return BadRequest("Token expired");
         }
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
         [HttpPost("CreateToken")]
