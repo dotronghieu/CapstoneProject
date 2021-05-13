@@ -30,6 +30,7 @@ namespace Capstone.Project.Data.Models
         public virtual DbSet<Report> Reports { get; set; }
         public virtual DbSet<RequestDeletePhoto> RequestDeletePhotos { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
+        public virtual DbSet<Token> Tokens { get; set; }
         public virtual DbSet<Transaction> Transactions { get; set; }
         public virtual DbSet<Type> Types { get; set; }
         public virtual DbSet<User> Users { get; set; }
@@ -336,6 +337,31 @@ namespace Capstone.Project.Data.Models
                 entity.ToTable("Role");
 
                 entity.Property(e => e.RoleName).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<Token>(entity =>
+            {
+                entity.ToTable("Token");
+
+                entity.Property(e => e.TokenId)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ExpirationDate).HasColumnType("datetime");
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.Photo)
+                    .WithMany(p => p.Tokens)
+                    .HasForeignKey(d => d.PhotoId)
+                    .HasConstraintName("FK_Token_Photo");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Tokens)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("FK_Token_User");
             });
 
             modelBuilder.Entity<Transaction>(entity =>

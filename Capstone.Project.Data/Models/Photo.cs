@@ -14,6 +14,7 @@ namespace Capstone.Project.Data.Models
             PhotoCategories = new HashSet<PhotoCategory>();
             PhotoReports = new HashSet<PhotoReport>();
             RequestDeletePhotos = new HashSet<RequestDeletePhoto>();
+            Tokens = new HashSet<Token>();
         }
 
         public int PhotoId { get; set; }
@@ -41,5 +42,6 @@ namespace Capstone.Project.Data.Models
         public virtual ICollection<PhotoCategory> PhotoCategories { get; set; }
         public virtual ICollection<PhotoReport> PhotoReports { get; set; }
         public virtual ICollection<RequestDeletePhoto> RequestDeletePhotos { get; set; }
+        public virtual ICollection<Token> Tokens { get; set; }
     }
 }
