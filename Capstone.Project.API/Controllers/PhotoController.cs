@@ -249,7 +249,7 @@ namespace Capstone.Project.API.Controllers
             string token = await _photoUploadDownloadService.CreateToken(photoId, userId);
             if (token != null)
             {
-                return Created("http://localhost:8080/#/download?tokenId=" + token + "&photoId=" + photoId);
+                return Ok("http://localhost:8080/#/download?tokenId=" + token + "&photoId=" + photoId);
             }
             return BadRequest();
         }
