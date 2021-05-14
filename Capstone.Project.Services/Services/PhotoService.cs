@@ -76,7 +76,18 @@ namespace Capstone.Project.Services.Services
                     }
                     PhotoModelAdmin photo = _mapper.Map<PhotoModelAdmin>(item);
                     photo.Category = categoryResult;
-                    photo.SimilarPhoto = GetSimilarPhoto2(photo.PhotoId);
+                    var checkSimilar = GetSimilarPhoto2(photo.PhotoId);
+                    if(checkSimilar != null)
+                    {
+                        if (checkSimilar.DelFlg == true && checkSimilar.UserId == photo.UserId)
+                        {
+                            photo.SimilarPhoto = null;
+                        }
+                        if (checkSimilar.DelFlg == false)
+                        {
+                            photo.SimilarPhoto = checkSimilar;
+                        }
+                    }
                     resultList.Add(photo);
                 }
                 return resultList;
@@ -208,7 +219,7 @@ namespace Capstone.Project.Services.Services
         private PhotoModel GetSimilarPhoto2(int photoId)
         {
             var photo = _reponsitory.GetById(photoId).Result;
-            var listAllPhotoInDb = _reponsitory.GetByObject(p => p.DelFlg == false &&
+            var listAllPhotoInDb = _reponsitory.GetByObject(p =>
              p.ApproveStatus != Constants.Const.PHOTO_STATUS_DENIED &&
              p.ApproveStatus != Constants.Const.PHOTO_STATUS_PENDING &&
              p.PhotoId != photoId).ToList();
