@@ -37,6 +37,7 @@ namespace Capstone.Project.Data.UnitOfWork
         public IGenericRepository<Follow> FollowRepository { get; set; }
         public IGenericRepository<PhotoEdit> PhotoEditRepository { get; set; }
         public IGenericRepository<Notification> NotificationRepository { get; set; }
+        public IGenericRepository<Token> TokenRepository { get; set; }
         private void InitRepository()
         {
             CategoryRepository = new GenericRepository<Category>(_context);
@@ -53,6 +54,7 @@ namespace Capstone.Project.Data.UnitOfWork
             FollowRepository = new GenericRepository<Follow>(_context);
             PhotoEditRepository = new GenericRepository<PhotoEdit>(_context);
             NotificationRepository = new GenericRepository<Notification>(_context);
+            TokenRepository = new GenericRepository<Token>(_context);
         }
 
         public async Task<int> SaveAsync()

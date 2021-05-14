@@ -242,19 +242,19 @@ namespace Capstone.Project.Services.Services
             return null;
         }
 
-        public async Task<string> DownloadPhoto(int id, string userId)
+        public async Task<string> DownloadPhoto(string tokenId, int id, string userId)
         {
             var photo = _reponsitory.GetById(id);
             var user = await _unitOfWork.UsersRepository.GetById(photo.Result.UserId);
             string link = Encryption.StringCipher.Decrypt(photo.Result.Link, user.EncryptCode);
-            var orderlist = _unitOfWork.OrdersRepository.GetByObject(c => c.UserId == userId);
-            foreach (var order in orderlist)
+
+            var token = await _unitOfWork.TokenRepository.GetById(tokenId);
+            if ((token.ExpirationDate > DateTime.Now) && (token.NumberOfUses < 3))
             {
-                var orderDetail = _unitOfWork.OrderDetailRepository.GetFirst(c => c.OrderId == order.OrderId && c.PhotoId == id).Result;
-                if (orderDetail != null)
-                {
-                    return link;
-                }
+                token.NumberOfUses += 1;
+                _unitOfWork.TokenRepository.Update(token);
+                await _unitOfWork.SaveAsync();
+                return link;
             }
             return null;
         }
@@ -489,6 +489,34 @@ namespace Capstone.Project.Services.Services
                 _unitOfWork.PhotoRepository.Update(photo);
                 await _unitOfWork.SaveAsync();
                 return photo;
+            }
+            return null;
+        }
+
+        public async Task<string> CreateToken(int photoId, string userId)
+        {
+            bool flag = false;
+            var orderlist = _unitOfWork.OrdersRepository.GetByObject(c => c.UserId == userId);
+            foreach (var order in orderlist)
+            {
+                var orderDetail = _unitOfWork.OrderDetailRepository.GetFirst(c => c.OrderId == order.OrderId && c.PhotoId == photoId).Result;
+                if (orderDetail != null)
+                {
+                    flag = true;
+                    break;
+                }
+            }
+            if (flag)
+            {
+                Token token = new Token();
+                token.TokenId = Guid.NewGuid().ToString();
+                token.UserId = userId;
+                token.PhotoId = photoId;
+                token.NumberOfUses = 0;
+                token.ExpirationDate = DateTime.Now.AddMinutes(15);
+                _unitOfWork.TokenRepository.Add(token);
+                await _unitOfWork.SaveAsync();
+                return token.TokenId;
             }
             return null;
         }
