@@ -502,7 +502,17 @@ namespace Capstone.Project.Services.Services
                 var orderDetail = _unitOfWork.OrderDetailRepository.GetFirst(c => c.OrderId == order.OrderId && c.PhotoId == photoId).Result;
                 if (orderDetail != null)
                 {
-                    flag = true;
+                    var photo = _unitOfWork.PhotoRepository.GetById(photoId).Result;
+                    if (photo.TypeId == 2)
+                    {
+                        if (photo.UserId == userId)
+                        {
+                            flag = true;
+                        }
+                    } else
+                    {
+                        flag = true;
+                    }
                     break;
                 }
             }

@@ -39,8 +39,8 @@ namespace Capstone.Project.Services.Services
                     foreach (var orderDetail in orderDetailList)
                     {
                         var photo = _unitOfWork.PhotoRepository.GetById(orderDetail.PhotoId).Result;
-                        if (photo.TypeId == 2 && photo.UserId == id && photo.DisableFlg == false) { }
-                        else {
+                        if (photo.TypeId == 2 && photo.UserId == id && photo.DisableFlg == true)
+                        {
                             var model = _mapper.Map<PhotoTransactionModel>(await _unitOfWork.PhotoRepository.GetById(orderDetail.PhotoId));
                             model.BoughtPrice = orderDetail.Price;
                             model.BoughtTime = order.InsDateTime;
