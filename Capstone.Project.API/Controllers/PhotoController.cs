@@ -75,9 +75,9 @@ namespace Capstone.Project.API.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_ADMIN)]
         [AllowAnonymous]
         [HttpGet("GetToApprove")]
-        public IActionResult GetPhotoNotApproved()
+        public async Task<IActionResult> GetPhotoNotApproved()
         {
-            var list = _photoService.GetPhotoNotApproved();
+            var list = await _photoService.GetPhotoNotApprovedAsync();
             if (list != null)
             {
                 return Ok(list);
