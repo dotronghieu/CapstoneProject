@@ -46,7 +46,7 @@ namespace Capstone.Project.Data.Helper
             var h2 = BitConverter.ToUInt64(hash2, 0);
             return Similarity(h1, h2);
         }
-        public static double SimilarityByBinary(ulong hash1, ulong hash2)
+        public static double SimilarityByBinary(string hash1, string hash2)
         {
 
             var h1 = ConvertToBinary(hash1);
@@ -70,10 +70,10 @@ namespace Capstone.Project.Data.Helper
             }
             return count;
         }
-        private static string ConvertToBinary(ulong hash)
+        private static string ConvertToBinary(string hash)
         {
             string result = string.Empty;
-            var number = UInt64.Parse(hash.ToString());
+            var number = UInt64.Parse(hash);
             for (int i = 0; number > 0; i++)
             {
                 result = number % 2 + result;

@@ -188,7 +188,7 @@ namespace Capstone.Project.Services.Services
                     //chỉ được viết code ở đây thôi
                     Photo photo = new Photo();
                     var perceptualHash = new PerceptualHash();
-                    photo.Phash = perceptualHash.Hash(image1);
+                    photo.Phash = perceptualHash.Hash(image1).ToString();
                     stream.Dispose();
                     string imgdel = Path.Combine(path, file.FileName);
                     System.IO.File.Delete(imgdel);

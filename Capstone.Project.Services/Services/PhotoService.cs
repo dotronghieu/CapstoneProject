@@ -228,7 +228,7 @@ namespace Capstone.Project.Services.Services
             foreach (var item in listAllPhotoInDb)
             {
                 //var percentage = CompareHash.Similarity(Convert.ToUInt64(photo.Phash), Convert.ToUInt64(item.Phash));
-                var percentage = CompareHash.SimilarityByBinary(Convert.ToUInt64(photo.Phash), Convert.ToUInt64(item.Phash));
+                var percentage = CompareHash.SimilarityByBinary(photo.Phash, item.Phash);
                 if (percentage >= 80)
                 {                 
                     if (percentage >= maxSimilar)

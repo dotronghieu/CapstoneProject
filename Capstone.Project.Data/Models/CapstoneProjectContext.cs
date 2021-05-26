@@ -198,7 +198,8 @@ namespace Capstone.Project.Data.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.Phash)
-                    .HasColumnType("numeric(20, 0)")
+                    .HasMaxLength(64)
+                    .IsUnicode(false)
                     .HasColumnName("PHash");
 
                 entity.Property(e => e.PhotoName).HasMaxLength(50);
