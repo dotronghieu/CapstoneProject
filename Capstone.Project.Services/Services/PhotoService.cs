@@ -9,7 +9,9 @@ using Capstone.Project.Services.IServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Capstone.Project.Services.Services
@@ -17,9 +19,12 @@ namespace Capstone.Project.Services.Services
     public class PhotoService : BaseService<Photo, PhotoModel>, IPhotoService
     {
         private readonly CapstoneProjectContext _context;
-        public PhotoService(IUnitOfWork unitOfWork, IMapper mapper, CapstoneProjectContext capstoneProjectContext) : base(unitOfWork, mapper)
+        private readonly IHttpClientFactory _clientFactory;
+
+        public PhotoService(IUnitOfWork unitOfWork, IMapper mapper, CapstoneProjectContext capstoneProjectContext, IHttpClientFactory clientFactory) : base(unitOfWork, mapper)
         {
             _context = capstoneProjectContext;
+            _clientFactory = clientFactory;
         }
         protected override IGenericRepository<Photo> _reponsitory => _unitOfWork.PhotoRepository;
 
@@ -52,10 +57,11 @@ namespace Capstone.Project.Services.Services
         }
 
      
-        public  IEnumerable<PhotoModelAdmin> GetPhotoNotApproved()
+        public async Task<IEnumerable<PhotoModelAdmin>> GetPhotoNotApprovedAsync()
         {
+            IEnumerable<ProvenDBDataModel> data;
             PhotoCategoryService service = new PhotoCategoryService();
-            var list =  _reponsitory.GetByObject(p => p.DelFlg == false && p.DisableFlg == false && p.ApproveStatus == Constants.Const.PHOTO_STATUS_PENDING).OrderBy(c => c.PhotoId);
+            var list =  _reponsitory.GetByObject(p => p.DelFlg == false && p.DisableFlg == false && p.ApproveStatus == Constants.Const.PHOTO_STATUS_PENDING).OrderBy(c => c.PhotoId).Take(10);
             if (list != null)
             {
                 List<PhotoModelAdmin> resultList = new List<PhotoModelAdmin>();
@@ -88,6 +94,39 @@ namespace Capstone.Project.Services.Services
                             photo.SimilarPhoto = checkSimilar;
                         }
                     }
+                    //check similar provendb
+
+                    //var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:3000/transactions/getPhotoHistory/" + item.Phash);
+                    //var client = _clientFactory.CreateClient();
+
+                    //var response = await client.SendAsync(request);
+
+                    //if (response.IsSuccessStatusCode)
+                    //{
+                    //    using var responseStream = await response.Content.ReadAsStreamAsync();
+                    //    data = await JsonSerializer.DeserializeAsync<IEnumerable<ProvenDBDataModel>>(responseStream);
+                    //    if (data.Count() > 0)
+                    //    {
+                    //        if (data.ToList().Last().versions.First().document.ownerID != item.UserId)
+                    //        {
+                    //            if (photo.SimilarPhoto == null)
+                    //            {
+                    //                photo.SimilarPhoto = _mapper.Map<PhotoModel>(
+                    //                    _unitOfWork.PhotoRepository.GetById(Int32.Parse(data.ToList().Last().versions.First().document.photoId)));
+                    //            }
+                    //            else if (photo.SimilarPhoto.PhotoId != Int32.Parse(data.ToList().Last().versions.First().document.photoId))
+                    //            {
+                    //                photo.SimilarPhoto = _mapper.Map<PhotoModel>(
+                    //                    _unitOfWork.PhotoRepository.GetById(Int32.Parse(data.ToList().Last().versions.First().document.photoId)));
+                    //            }
+                    //        }
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    data = Array.Empty<ProvenDBDataModel>();
+                    //}
+
                     resultList.Add(photo);
                 }
                 return resultList;
@@ -292,7 +331,20 @@ namespace Capstone.Project.Services.Services
                     {
                         if (orderDetail.PhotoId == id)
                         {
-                            return true;
+                            var photo = _unitOfWork.PhotoRepository.GetById(orderDetail.PhotoId).Result;
+                            if (photo.TypeId == 2)
+                            {
+                                if (photo.UserId == userId)
+                                {
+                                    return true;
+                                } else
+                                {
+                                    return false;
+                                }
+                            } else
+                            {
+                                return true;
+                            }
                         }
                     }
                 }

@@ -16,7 +16,7 @@ namespace Capstone.Project.Services.IServices
         Task<PhotoModel> GetById(int id);
         void EncryptAllPhoto();
         double percentage(string hash1, string hash2);
-        IEnumerable<PhotoModelAdmin> GetPhotoNotApproved();
+        Task<IEnumerable<PhotoModelAdmin>> GetPhotoNotApprovedAsync();
         (IEnumerable<PhotoModelGetAll>,int) SearchPhoto(string key, int pageSize, int pageNumber);
         bool CheckBoughtPhoto(int id, string userId);
         bool CheckMyPhoto(int photoId, string userId);
