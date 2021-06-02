@@ -18,7 +18,7 @@ namespace Capstone.Project.Data.ViewModels
         public string Note { get; set; }
         public bool? DelFlg { get; set; }
         public string Description { get; set; }
-        public decimal? Phash { get; set; }
+        public string Phash { get; set; }
         public virtual PhotoModel SimilarPhoto { get; set; }
         public virtual ICollection<CategoryModel> Category { get; set; }
         public DateTime? InsDateTime { get; set; }

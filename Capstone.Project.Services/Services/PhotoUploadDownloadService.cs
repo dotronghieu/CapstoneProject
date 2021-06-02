@@ -249,7 +249,7 @@ namespace Capstone.Project.Services.Services
             string link = Encryption.StringCipher.Decrypt(photo.Result.Link, user.EncryptCode);
 
             var token = await _unitOfWork.TokenRepository.GetById(tokenId);
-            if ((token.ExpirationDate > DateTime.Now) && (token.NumberOfUses < 3))
+            if ((token.ExpirationDate > DateTime.Now) && (token.NumberOfUses < 3) && (token.UserId == userId))
             {
                 token.NumberOfUses += 1;
                 _unitOfWork.TokenRepository.Update(token);

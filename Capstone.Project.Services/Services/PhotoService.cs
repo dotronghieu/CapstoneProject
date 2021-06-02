@@ -61,7 +61,7 @@ namespace Capstone.Project.Services.Services
         {
             IEnumerable<ProvenDBDataModel> data;
             PhotoCategoryService service = new PhotoCategoryService();
-            var list =  _reponsitory.GetByObject(p => p.DelFlg == false && p.DisableFlg == false && p.ApproveStatus == Constants.Const.PHOTO_STATUS_PENDING).OrderBy(c => c.PhotoId).Take(10);
+            var list =  _reponsitory.GetByObject(p => p.DelFlg == false && p.DisableFlg == false && p.ApproveStatus == Constants.Const.PHOTO_STATUS_PENDING).OrderBy(c => c.PhotoId).Take(5);
             if (list != null)
             {
                 List<PhotoModelAdmin> resultList = new List<PhotoModelAdmin>();
@@ -96,36 +96,31 @@ namespace Capstone.Project.Services.Services
                     }
                     //check similar provendb
 
-                    //var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:3000/transactions/getPhotoHistory/" + item.Phash);
-                    //var client = _clientFactory.CreateClient();
+                    var request = new HttpRequestMessage(HttpMethod.Get, "http://35.185.185.238:3000/transactions/getPhotoHistory/" + item.Phash);
+                    var client = _clientFactory.CreateClient();
 
-                    //var response = await client.SendAsync(request);
+                    var response = await client.SendAsync(request);
 
-                    //if (response.IsSuccessStatusCode)
-                    //{
-                    //    using var responseStream = await response.Content.ReadAsStreamAsync();
-                    //    data = await JsonSerializer.DeserializeAsync<IEnumerable<ProvenDBDataModel>>(responseStream);
-                    //    if (data.Count() > 0)
-                    //    {
-                    //        if (data.ToList().Last().versions.First().document.ownerID != item.UserId)
-                    //        {
-                    //            if (photo.SimilarPhoto == null)
-                    //            {
-                    //                photo.SimilarPhoto = _mapper.Map<PhotoModel>(
-                    //                    _unitOfWork.PhotoRepository.GetById(Int32.Parse(data.ToList().Last().versions.First().document.photoId)));
-                    //            }
-                    //            else if (photo.SimilarPhoto.PhotoId != Int32.Parse(data.ToList().Last().versions.First().document.photoId))
-                    //            {
-                    //                photo.SimilarPhoto = _mapper.Map<PhotoModel>(
-                    //                    _unitOfWork.PhotoRepository.GetById(Int32.Parse(data.ToList().Last().versions.First().document.photoId)));
-                    //            }
-                    //        }
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    data = Array.Empty<ProvenDBDataModel>();
-                    //}
+                    if (response.IsSuccessStatusCode)
+                    {
+                        using var responseStream = await response.Content.ReadAsStreamAsync();
+                        data = await JsonSerializer.DeserializeAsync<IEnumerable<ProvenDBDataModel>>(responseStream);
+                        if (data.Count() > 0)
+                        {
+                            if (data.ToList().Last().versions.First().document.ownerID != item.UserId)
+                            {
+                                if (photo.SimilarPhoto == null)
+                                {
+                                    photo.SimilarPhoto = _mapper.Map<PhotoModel>(
+                                        _unitOfWork.PhotoRepository.GetById(Int32.Parse(data.ToList().Last().versions.First().document.photoId)).Result);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        data = Array.Empty<ProvenDBDataModel>();
+                    }
 
                     resultList.Add(photo);
                 }
