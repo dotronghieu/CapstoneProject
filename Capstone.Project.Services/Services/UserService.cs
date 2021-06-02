@@ -314,6 +314,7 @@ namespace Capstone.Project.Services.Services
                 if (editInfo != null)
                 {
                     _unitOfWork.PhotoEditRepository.Delete(editInfo.PhotoId);
+                    photo.ApproveStatus = Constants.Const.PHOTO_STATUS_APPROVED;
                     await _unitOfWork.SaveAsync();
                 }
                 else 
