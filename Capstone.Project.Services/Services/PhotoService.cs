@@ -84,15 +84,8 @@ namespace Capstone.Project.Services.Services
                     photo.Category = categoryResult;
                     var checkSimilar = GetSimilarPhoto2(photo.PhotoId);
                     if(checkSimilar != null)
-                    {
-                        if (checkSimilar.DelFlg == true && checkSimilar.UserId == photo.UserId)
-                        {
-                            photo.SimilarPhoto = null;
-                        }
-                        if (checkSimilar.DelFlg == false)
-                        {
+                    {                   
                             photo.SimilarPhoto = checkSimilar;
-                        }
                     }
                     //check similar provendb
 

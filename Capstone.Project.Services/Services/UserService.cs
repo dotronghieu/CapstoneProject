@@ -307,18 +307,21 @@ namespace Capstone.Project.Services.Services
         {
             var photo = await _unitOfWork.PhotoRepository.GetById(model.Id);
             if (photo != null)
-            {
-                photo.ApproveStatus = Constants.Const.PHOTO_STATUS_DENIED;
+            {        
                 photo.Note = model.Reason;
                 photo.Description = model.Description;
                 var editInfo = _unitOfWork.PhotoEditRepository.GetById(model.Id).Result;
-                if(editInfo != null)
+                if (editInfo != null)
                 {
                     _unitOfWork.PhotoEditRepository.Delete(editInfo.PhotoId);
                     await _unitOfWork.SaveAsync();
                 }
-                _unitOfWork.PhotoRepository.Update(photo);
-                await _unitOfWork.SaveAsync();
+                else 
+                {
+                    photo.ApproveStatus = Constants.Const.PHOTO_STATUS_DENIED;
+                    _unitOfWork.PhotoRepository.Update(photo);
+                    await _unitOfWork.SaveAsync();
+                }         
                 return true;
             }
             return false;

@@ -73,7 +73,6 @@ namespace Capstone.Project.API.Controllers
             return BadRequest(new { msg = "Empty List" });
         }
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_ADMIN)]
-        [AllowAnonymous]
         [HttpGet("GetToApprove")]
         public async Task<IActionResult> GetPhotoNotApproved()
         {
