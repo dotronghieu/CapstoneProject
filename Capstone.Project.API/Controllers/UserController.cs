@@ -119,6 +119,18 @@ namespace Capstone.Project.API.Controllers
             return BadRequest(new { msg = "No photo recorded" });
         }
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
+        [HttpGet("GetUserDisabledPhotos/{id}")]
+        public IActionResult GetUserDisabledPhotos(string id)
+        {
+            var result = _userService.GetAllDisablePhoto(id);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(new { msg = "No photo recorded" });
+        }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = Constants.Const.ROLE_USER)]
         [HttpGet("GetUserDeniedPhoto/{id}")]
         public IActionResult GetUserDeniedPhoto(string id)
         {

@@ -712,5 +712,25 @@ namespace Capstone.Project.Services.Services
             }
             return false;
         }
+
+        public IEnumerable<PhotoModel> GetAllDisablePhoto(string userId)
+        {
+            var listPhotoApproved = _unitOfWork.PhotoRepository.GetByObject(p => p.DelFlg == false && 
+            p.DisableFlg == true && 
+            p.ApproveStatus == Constants.Const.PHOTO_STATUS_APPROVED && 
+            p.UserId == userId).ToList();
+            if (listPhotoApproved != null)
+            {
+                List<PhotoModel> result = new List<PhotoModel>();
+                foreach (var item in listPhotoApproved)
+                {
+                    result.Add(_mapper.Map<PhotoModel>(item));
+                }
+                return result.AsEnumerable<PhotoModel>();
+            }
+            return null;
+        }
+
+   
     }
 }
