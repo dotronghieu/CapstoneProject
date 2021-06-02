@@ -24,6 +24,7 @@ namespace Capstone.Project.Services.IServices
         IEnumerable<PhotoModel> GetPhotoByUser(String userId);
         double CompareTwoHash(ulong hash1, ulong hash2);
         IEnumerable<PhotoModelGetAll> GetAllNormalPHoto();
+        
         IEnumerable<PhotoModelGetAll> GetAllExclusivePhoto();
         Task<bool> EnablePhoto(int id);
         Task<bool> AddToCart(int photoId);
