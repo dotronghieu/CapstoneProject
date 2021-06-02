@@ -38,7 +38,7 @@ namespace Capstone.Project.Services.IServices
         IEnumerable<UserNotFollowModel> GetAllUserWeNotFollowing(string userId);
         IEnumerable<PhotoModel> GetAllNormalPhotoApproved(string userId);
         IEnumerable<PhotoModel> GetAllExclusivePhotoApproved(string userId);
-        IEnumerable<PhotoModelGetAll> GetAllDisablePhoto(string userId);
+        IEnumerable<PhotoModel> GetAllDisablePhoto(string userId);
         IEnumerable<PhotoModel> GetAllExclusivePropertyPhotoApproved(string userId);
         IEnumerable<Dictionary<string, string>> CheckNotification(string userId);
         Task<bool> DeleteNotification(int NotificationId);
