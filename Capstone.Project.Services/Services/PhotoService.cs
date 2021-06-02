@@ -85,14 +85,7 @@ namespace Capstone.Project.Services.Services
                     var checkSimilar = GetSimilarPhoto2(photo.PhotoId);
                     if(checkSimilar != null)
                     {
-                        if (checkSimilar.DelFlg == true && checkSimilar.UserId == photo.UserId)
-                        {
-                            photo.SimilarPhoto = null;
-                        }
-                        if (checkSimilar.DelFlg == false)
-                        {
-                            photo.SimilarPhoto = checkSimilar;
-                        }
+                        photo.SimilarPhoto = checkSimilar;
                     }
                     //check similar provendb
 
@@ -107,36 +100,18 @@ namespace Capstone.Project.Services.Services
                         data = await JsonSerializer.DeserializeAsync<IEnumerable<ProvenDBDataModel>>(responseStream);
                         if (data.Count() > 0)
                         {
-                            if (data.ToList().Last().versions.First().document.ownerID != item.UserId)
-                            {
-                                if (photo.SimilarPhoto == null)
-                                {
-                                    photo.SimilarPhoto = _mapper.Map<PhotoModel>(
-                                        _unitOfWork.PhotoRepository.GetById(Int32.Parse(data.ToList().Last().versions.First().document.photoId)).Result);
-                                    if (photo.SimilarPhoto.DelFlg == false && photo.SimilarPhoto.DisableFlg == true)
-                                    {
-                                        photo.SimilarPhoto = null;
-                                    }
-                                }
-                            }
-                            if (data.ToList().Last().versions.First().document.ownerID == item.UserId)
-                            {
-                                if (photo.SimilarPhoto == null)
-                                {
-                                    photo.SimilarPhoto = _mapper.Map<PhotoModel>(
-                                        _unitOfWork.PhotoRepository.GetById(Int32.Parse(data.ToList().Last().versions.First().document.photoId)).Result);
-                                    if (photo.SimilarPhoto.DelFlg == true && photo.SimilarPhoto.DisableFlg == false)
-                                    {
-                                        photo.SimilarPhoto = null;
-                                    }
-                                }
-                            }
-
+                            photo.SimilarPhoto = _mapper.Map<PhotoModel>(
+                                _unitOfWork.PhotoRepository.GetById(Int32.Parse(data.ToList().Last().versions.First().document.photoId)).Result);
                         }
                     }
                     else
                     {
                         data = Array.Empty<ProvenDBDataModel>();
+                    }
+
+                    if (photo.SimilarPhoto.DelFlg == true && photo.SimilarPhoto.DisableFlg == false && photo.SimilarPhoto.UserId == item.UserId)
+                    {
+                        photo.SimilarPhoto = null;
                     }
 
                     resultList.Add(photo);
