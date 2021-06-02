@@ -147,7 +147,12 @@ namespace Capstone.Project.API
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Capstone API V1");
             });
 
-            app.UseCors("AllowAll");
+            app.UseCors(builder =>
+            {
+                builder.AllowAnyHeader();
+                builder.AllowAnyMethod();
+                builder.AllowAnyOrigin();
+            });
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseRouting();
