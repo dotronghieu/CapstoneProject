@@ -91,10 +91,10 @@ namespace Capstone.Project.API
             {
                 opts.AddPolicy("AllowAll", builder =>
                 {
-                    builder.AllowAnyOrigin()
-                            .AllowAnyMethod()
-                            .AllowAnyHeader()
-                            .WithExposedHeaders("X-Pagination", "content-disposition");
+                    builder.AllowAnyHeader();
+                    builder.AllowAnyMethod();
+                    builder.AllowAnyOrigin();
+                    builder.WithExposedHeaders("X-Pagination", "content-disposition");
                             //.AllowCredentials();
                 });
             });
