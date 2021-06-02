@@ -113,8 +113,25 @@ namespace Capstone.Project.Services.Services
                                 {
                                     photo.SimilarPhoto = _mapper.Map<PhotoModel>(
                                         _unitOfWork.PhotoRepository.GetById(Int32.Parse(data.ToList().Last().versions.First().document.photoId)).Result);
+                                    if (photo.SimilarPhoto.DelFlg == false && photo.SimilarPhoto.DisableFlg == true)
+                                    {
+                                        photo.SimilarPhoto = null;
+                                    }
                                 }
                             }
+                            if (data.ToList().Last().versions.First().document.ownerID == item.UserId)
+                            {
+                                if (photo.SimilarPhoto == null)
+                                {
+                                    photo.SimilarPhoto = _mapper.Map<PhotoModel>(
+                                        _unitOfWork.PhotoRepository.GetById(Int32.Parse(data.ToList().Last().versions.First().document.photoId)).Result);
+                                    if (photo.SimilarPhoto.DelFlg == true && photo.SimilarPhoto.DisableFlg == false)
+                                    {
+                                        photo.SimilarPhoto = null;
+                                    }
+                                }
+                            }
+
                         }
                     }
                     else

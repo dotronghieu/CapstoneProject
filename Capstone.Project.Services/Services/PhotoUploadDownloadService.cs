@@ -295,7 +295,6 @@ namespace Capstone.Project.Services.Services
             try
             {
                 await task.Child("images").Child(link1).DeleteAsync();
-                await task.Child("vmimages").Child(link).DeleteAsync();
                 photo.Result.Link = "";
                 photo.Result.Wmlink = "";
                 photo.Result.DelFlg = true;
